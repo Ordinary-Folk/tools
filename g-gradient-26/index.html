@@ -100,7 +100,8 @@ body {
 .hex-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem; margin-bottom: 1.5rem; }
 .hex-field { display: flex; flex-direction: column; gap: 0.3rem; }
 .hex-field label { font-size: 12px; color: var(--text-secondary); }
-.hex-field input {
+.hex-row { display: flex; align-items: stretch; gap: 6px; }
+.hex-row input[type=text] {
   font-family: 'Geist Mono', monospace;
   font-size: 13px;
   padding: 0.55rem 0.7rem;
@@ -111,8 +112,19 @@ body {
   text-transform: uppercase;
   outline: none;
   transition: border-color 0.15s;
+  flex: 1;
+  min-width: 0;
 }
-.hex-field input:focus { border-color: var(--border-strong); }
+.hex-row input[type=text]:focus { border-color: var(--border-strong); }
+.hex-row input[type=color] {
+  width: 36px;
+  padding: 0;
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius-md);
+  background: transparent;
+  cursor: pointer;
+  flex-shrink: 0;
+}
 
 .sliders { display: flex; flex-direction: column; gap: 0.55rem; }
 .slider-row { display: grid; grid-template-columns: 220px 1fr 60px; align-items: center; gap: 0.75rem; }
@@ -242,9 +254,27 @@ select {
   </div>
 
   <div class="hex-grid">
-    <div class="hex-field"><label>Start</label><input type="text" id="hex-a" value="#6349FF" maxlength="7"/></div>
-    <div class="hex-field"><label>Mid</label><input type="text" id="hex-b" value="#53A9FF" maxlength="7"/></div>
-    <div class="hex-field"><label>End</label><input type="text" id="hex-c" value="#A7DE61" maxlength="7"/></div>
+    <div class="hex-field">
+      <label>Start</label>
+      <div class="hex-row">
+        <input type="text" id="hex-a" value="#6349FF" maxlength="7"/>
+        <input type="color" id="hex-a-picker" value="#6349FF"/>
+      </div>
+    </div>
+    <div class="hex-field">
+      <label>Mid</label>
+      <div class="hex-row">
+        <input type="text" id="hex-b" value="#53A9FF" maxlength="7"/>
+        <input type="color" id="hex-b-picker" value="#53A9FF"/>
+      </div>
+    </div>
+    <div class="hex-field">
+      <label>End</label>
+      <div class="hex-row">
+        <input type="text" id="hex-c" value="#A7DE61" maxlength="7"/>
+        <input type="color" id="hex-c-picker" value="#A7DE61"/>
+      </div>
+    </div>
   </div>
 
   <div class="section">
@@ -506,6 +536,17 @@ function render() {
   renderRow(darkStops, 'dark-sw', 'dark-bar', 'dark-css', t1, t2);
   updateUrl();
 }
+function syncHex(key, fromText) {
+  const textEl = $('hex-' + key);
+  const pickerEl = $('hex-' + key + '-picker');
+  if (fromText) {
+    const rgb = hexToRgb(textEl.value);
+    if (rgb) pickerEl.value = rgbToHex(rgb);
+  } else {
+    textEl.value = pickerEl.value.toUpperCase();
+  }
+  render();
+}
 function syncBg(fromText) {
   if (fromText) {
     const rgb = hexToRgb($('d-bg').value);
@@ -520,6 +561,9 @@ function applyDefaults() {
   $('hex-a').value = DEFAULTS.a;
   $('hex-b').value = DEFAULTS.b;
   $('hex-c').value = DEFAULTS.c;
+  $('hex-a-picker').value = DEFAULTS.a;
+  $('hex-b-picker').value = DEFAULTS.b;
+  $('hex-c-picker').value = DEFAULTS.c;
   $('t1').value = DEFAULTS.t1;
   $('t2').value = DEFAULTS.t2;
   $('sat').value = DEFAULTS.sat;
@@ -571,11 +615,18 @@ function loadFromUrl() {
   set('d-blend', 'bl');
   set('d-op', 'op');
   if (params.has('bg')) $('d-bg-picker').value = '#' + params.get('bg');
+  if (params.has('a')) $('hex-a-picker').value = '#' + params.get('a');
+  if (params.has('b')) $('hex-b-picker').value = '#' + params.get('b');
+  if (params.has('c')) $('hex-c-picker').value = '#' + params.get('c');
 }
 
-['hex-a', 'hex-b', 'hex-c', 't1', 't2', 'sat', 'light-bright', 'd-sat', 'd-light', 'd-bright', 'd-contrast', 'd-blend', 'd-op'].forEach(id => {
+['t1', 't2', 'sat', 'light-bright', 'd-sat', 'd-light', 'd-bright', 'd-contrast', 'd-blend', 'd-op'].forEach(id => {
   $(id).addEventListener('input', render);
   $(id).addEventListener('change', render);
+});
+['a', 'b', 'c'].forEach(key => {
+  $('hex-' + key).addEventListener('input', () => syncHex(key, true));
+  $('hex-' + key + '-picker').addEventListener('input', () => syncHex(key, false));
 });
 $('d-bg').addEventListener('input', () => syncBg(true));
 $('d-bg-picker').addEventListener('input', () => syncBg(false));
