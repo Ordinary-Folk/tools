@@ -901,7 +901,7 @@ function renderBetween() {
   const hex = rgbToHex(hslToRgb(mid));
   const aHex = rgbToHex(A);
   const bHex = rgbToHex(B);
-  $('bw-gradient').style.background = 'linear-gradient(to right, ' + aHex + ', ' + bHex + ')';
+  $('bw-gradient').style.background = 'linear-gradient(to right, ' + aHex + ' 0%, ' + hex + ' ' + (t * 100).toFixed(1) + '%, ' + bHex + ' 100%)';
   $('bw-marker').style.left = (t * 100) + '%';
   $('bw-result').value = hex;
   $('bw-result-swatch').style.background = hex;
