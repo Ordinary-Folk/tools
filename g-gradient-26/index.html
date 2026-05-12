@@ -116,15 +116,99 @@ body {
   min-width: 0;
 }
 .hex-row input[type=text]:focus { border-color: var(--border-strong); }
-.hex-row input[type=color] {
+.hex-swatch {
   width: 36px;
+  min-height: 34px;
   padding: 0;
   border: 0.5px solid var(--border);
   border-radius: var(--radius-md);
-  background: transparent;
   cursor: pointer;
   flex-shrink: 0;
+  background: #000;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06);
+  transition: transform 0.1s;
 }
+.hex-swatch:hover { transform: scale(1.04); }
+.hex-swatch:active { transform: scale(0.97); }
+
+.color-pop {
+  position: fixed;
+  z-index: 100;
+  background: var(--surface);
+  border: 0.5px solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  padding: 10px;
+  width: 232px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  user-select: none;
+}
+.color-pop[hidden] { display: none; }
+.cp-sv {
+  position: relative;
+  width: 212px;
+  height: 150px;
+  border-radius: var(--radius-md);
+  cursor: crosshair;
+  background-image:
+    linear-gradient(to top, #000, transparent),
+    linear-gradient(to right, #fff, transparent);
+}
+.cp-hue {
+  position: relative;
+  width: 212px;
+  height: 12px;
+  border-radius: 6px;
+  background: linear-gradient(to right, #f00 0%, #ff0 17%, #0f0 33%, #0ff 50%, #00f 67%, #f0f 83%, #f00 100%);
+  cursor: pointer;
+}
+.cp-handle {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid white;
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.5), 0 1px 3px rgba(0,0,0,0.3);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.cp-hue .cp-handle { top: 50%; width: 14px; height: 14px; }
+.cp-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.cp-hex {
+  font-family: 'Geist Mono', monospace;
+  font-size: 12px;
+  padding: 0.4rem 0.55rem;
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  text-transform: uppercase;
+  outline: none;
+  flex: 1;
+  min-width: 0;
+}
+.cp-hex:focus { border-color: var(--border-strong); }
+.cp-eyedrop {
+  width: 30px;
+  height: 30px;
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--text-primary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.cp-eyedrop:hover { background: var(--bg-secondary); }
+.cp-eyedrop svg { width: 14px; height: 14px; }
 
 .sliders { display: flex; flex-direction: column; gap: 0.55rem; }
 .slider-row { display: grid; grid-template-columns: 220px 1fr 60px; align-items: center; gap: 0.75rem; }
@@ -258,21 +342,21 @@ select {
       <label>Start</label>
       <div class="hex-row">
         <input type="text" id="hex-a" value="#6349FF" maxlength="7"/>
-        <input type="color" id="hex-a-picker" value="#6349FF"/>
+        <button type="button" class="hex-swatch" id="hex-a-picker" style="background:#6349FF" aria-label="Pick start colour"></button>
       </div>
     </div>
     <div class="hex-field">
       <label>Mid</label>
       <div class="hex-row">
         <input type="text" id="hex-b" value="#53A9FF" maxlength="7"/>
-        <input type="color" id="hex-b-picker" value="#53A9FF"/>
+        <button type="button" class="hex-swatch" id="hex-b-picker" style="background:#53A9FF" aria-label="Pick mid colour"></button>
       </div>
     </div>
     <div class="hex-field">
       <label>End</label>
       <div class="hex-row">
         <input type="text" id="hex-c" value="#A7DE61" maxlength="7"/>
-        <input type="color" id="hex-c-picker" value="#A7DE61"/>
+        <button type="button" class="hex-swatch" id="hex-c-picker" style="background:#A7DE61" aria-label="Pick end colour"></button>
       </div>
     </div>
   </div>
@@ -391,6 +475,38 @@ function hslToRgb(hsl) {
 }
 function rgbToHex(rgb) {
   return '#' + [rgb.r, rgb.g, rgb.b].map(v => v.toString(16).padStart(2, '0').toUpperCase()).join('');
+}
+function rgbToHsv(rgb) {
+  let { r, g, b } = rgb;
+  r /= 255; g /= 255; b /= 255;
+  const mx = Math.max(r, g, b), mn = Math.min(r, g, b);
+  const d = mx - mn;
+  let h = 0;
+  if (d !== 0) {
+    if (mx === r) h = ((g - b) / d) % 6;
+    else if (mx === g) h = (b - r) / d + 2;
+    else h = (r - g) / d + 4;
+    h *= 60;
+    if (h < 0) h += 360;
+  }
+  return { h, s: mx === 0 ? 0 : (d / mx) * 100, v: mx * 100 };
+}
+function hsvToRgb(hsv) {
+  let { h, s, v } = hsv;
+  h = ((h % 360) + 360) % 360;
+  s /= 100; v /= 100;
+  const c = v * s;
+  const hp = h / 60;
+  const x = c * (1 - Math.abs((hp % 2) - 1));
+  let r1, g1, b1;
+  if (hp < 1) { r1 = c; g1 = x; b1 = 0; }
+  else if (hp < 2) { r1 = x; g1 = c; b1 = 0; }
+  else if (hp < 3) { r1 = 0; g1 = c; b1 = x; }
+  else if (hp < 4) { r1 = 0; g1 = x; b1 = c; }
+  else if (hp < 5) { r1 = x; g1 = 0; b1 = c; }
+  else { r1 = c; g1 = 0; b1 = x; }
+  const m = v - c;
+  return { r: Math.round((r1 + m) * 255), g: Math.round((g1 + m) * 255), b: Math.round((b1 + m) * 255) };
 }
 function lerp(a, b, t) { return a + (b - a) * t; }
 function lerpHue(a, b, t) {
@@ -534,19 +650,138 @@ function render() {
     return { n: s.n, hex: rgbToHex(dRgb), hsl: rgbToHsl(dRgb) };
   });
   renderRow(darkStops, 'dark-sw', 'dark-bar', 'dark-css', t1, t2);
+  ['a', 'b', 'c'].forEach(key => {
+    const sw = $('hex-' + key + '-picker');
+    if (sw) sw.style.background = $('hex-' + key).value;
+  });
   updateUrl();
 }
-function syncHex(key, fromText) {
-  const textEl = $('hex-' + key);
-  const pickerEl = $('hex-' + key + '-picker');
-  if (fromText) {
-    const rgb = hexToRgb(textEl.value);
-    if (rgb) pickerEl.value = rgbToHex(rgb);
-  } else {
-    textEl.value = pickerEl.value.toUpperCase();
+function mountColorPicker(triggerEl, getHex, setHex) {
+  let h = 0, s = 0, v = 0;
+  function syncFromHex() {
+    const rgb = hexToRgb(getHex());
+    if (!rgb) return;
+    const hsv = rgbToHsv(rgb);
+    if (hsv.s > 0.5) h = hsv.h;
+    s = hsv.s; v = hsv.v;
   }
-  render();
+  const pop = document.createElement('div');
+  pop.className = 'color-pop';
+  pop.hidden = true;
+  pop.innerHTML =
+    '<div class="cp-sv"><div class="cp-handle cp-sv-h"></div></div>' +
+    '<div class="cp-hue"><div class="cp-handle cp-hue-h"></div></div>' +
+    '<div class="cp-row">' +
+      '<button class="cp-eyedrop" type="button" title="Eyedropper">' +
+        '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">' +
+          '<path d="M11 2.5l2.5 2.5-7.5 7.5H3.5V10L11 2.5z"/>' +
+          '<path d="M9.5 4l1.5-1.5a1.8 1.8 0 012.5 2.5L12 6.5"/>' +
+        '</svg>' +
+      '</button>' +
+      '<input type="text" class="cp-hex" maxlength="7"/>' +
+    '</div>';
+  document.body.appendChild(pop);
+  const sv = pop.querySelector('.cp-sv');
+  const svH = pop.querySelector('.cp-sv-h');
+  const hueEl = pop.querySelector('.cp-hue');
+  const hueH = pop.querySelector('.cp-hue-h');
+  const hexInp = pop.querySelector('.cp-hex');
+  const eyedrop = pop.querySelector('.cp-eyedrop');
+  function refresh(emit) {
+    sv.style.backgroundColor = 'hsl(' + h + ', 100%, 50%)';
+    svH.style.left = s + '%';
+    svH.style.top = (100 - v) + '%';
+    hueH.style.left = (h / 360 * 100) + '%';
+    const hex = rgbToHex(hsvToRgb({ h, s, v }));
+    if (document.activeElement !== hexInp) hexInp.value = hex;
+    svH.style.background = hex;
+    hueH.style.background = 'hsl(' + h + ', 100%, 50%)';
+    if (emit !== false) setHex(hex);
+  }
+  function position() {
+    const r = triggerEl.getBoundingClientRect();
+    const w = 252, hgt = 240;
+    pop.style.left = Math.min(window.innerWidth - w - 8, Math.max(8, r.left)) + 'px';
+    pop.style.top = Math.min(window.innerHeight - hgt - 8, r.bottom + 6) + 'px';
+  }
+  function onOutside(e) {
+    if (!pop.contains(e.target) && e.target !== triggerEl) close();
+  }
+  function onKey(e) { if (e.key === 'Escape') close(); }
+  function open() {
+    closeAll();
+    syncFromHex();
+    position();
+    pop.hidden = false;
+    refresh(false);
+    setTimeout(() => {
+      document.addEventListener('mousedown', onOutside);
+      document.addEventListener('keydown', onKey);
+      window.addEventListener('resize', position);
+      window.addEventListener('scroll', position, true);
+    }, 0);
+  }
+  function close() {
+    pop.hidden = true;
+    document.removeEventListener('mousedown', onOutside);
+    document.removeEventListener('keydown', onKey);
+    window.removeEventListener('resize', position);
+    window.removeEventListener('scroll', position, true);
+  }
+  triggerEl.addEventListener('click', () => { pop.hidden ? open() : close(); });
+  function drag(el, fn) {
+    el.addEventListener('pointerdown', e => {
+      e.preventDefault();
+      const rect = el.getBoundingClientRect();
+      const move = ev => fn(ev, rect);
+      move(e);
+      const up = () => {
+        window.removeEventListener('pointermove', move);
+        window.removeEventListener('pointerup', up);
+      };
+      window.addEventListener('pointermove', move);
+      window.addEventListener('pointerup', up);
+    });
+  }
+  drag(sv, (ev, rect) => {
+    s = clamp((ev.clientX - rect.left) / rect.width * 100, 0, 100);
+    v = clamp(100 - (ev.clientY - rect.top) / rect.height * 100, 0, 100);
+    refresh();
+  });
+  drag(hueEl, (ev, rect) => {
+    h = clamp((ev.clientX - rect.left) / rect.width * 360, 0, 360);
+    refresh();
+  });
+  hexInp.addEventListener('input', () => {
+    const rgb = hexToRgb(hexInp.value);
+    if (rgb) {
+      const hsv = rgbToHsv(rgb);
+      if (hsv.s > 0.5) h = hsv.h;
+      s = hsv.s; v = hsv.v;
+      refresh();
+    }
+  });
+  if (window.EyeDropper) {
+    eyedrop.addEventListener('click', async () => {
+      try {
+        const r = await new EyeDropper().open();
+        const rgb = hexToRgb(r.sRGBHex);
+        if (rgb) {
+          const hsv = rgbToHsv(rgb);
+          if (hsv.s > 0.5) h = hsv.h;
+          s = hsv.s; v = hsv.v;
+          refresh();
+        }
+      } catch (e) {}
+    });
+  } else {
+    eyedrop.style.display = 'none';
+  }
+  openPickers.push(close);
+  return { open, close };
 }
+const openPickers = [];
+function closeAll() { openPickers.forEach(c => c()); }
 function syncBg(fromText) {
   if (fromText) {
     const rgb = hexToRgb($('d-bg').value);
@@ -561,9 +796,6 @@ function applyDefaults() {
   $('hex-a').value = DEFAULTS.a;
   $('hex-b').value = DEFAULTS.b;
   $('hex-c').value = DEFAULTS.c;
-  $('hex-a-picker').value = DEFAULTS.a;
-  $('hex-b-picker').value = DEFAULTS.b;
-  $('hex-c-picker').value = DEFAULTS.c;
   $('t1').value = DEFAULTS.t1;
   $('t2').value = DEFAULTS.t2;
   $('sat').value = DEFAULTS.sat;
@@ -615,18 +847,21 @@ function loadFromUrl() {
   set('d-blend', 'bl');
   set('d-op', 'op');
   if (params.has('bg')) $('d-bg-picker').value = '#' + params.get('bg');
-  if (params.has('a')) $('hex-a-picker').value = '#' + params.get('a');
-  if (params.has('b')) $('hex-b-picker').value = '#' + params.get('b');
-  if (params.has('c')) $('hex-c-picker').value = '#' + params.get('c');
 }
 
 ['t1', 't2', 'sat', 'light-bright', 'd-sat', 'd-light', 'd-bright', 'd-contrast', 'd-blend', 'd-op'].forEach(id => {
   $(id).addEventListener('input', render);
   $(id).addEventListener('change', render);
 });
+['hex-a', 'hex-b', 'hex-c'].forEach(id => {
+  $(id).addEventListener('input', render);
+});
 ['a', 'b', 'c'].forEach(key => {
-  $('hex-' + key).addEventListener('input', () => syncHex(key, true));
-  $('hex-' + key + '-picker').addEventListener('input', () => syncHex(key, false));
+  mountColorPicker(
+    $('hex-' + key + '-picker'),
+    () => $('hex-' + key).value,
+    (hex) => { $('hex-' + key).value = hex; render(); }
+  );
 });
 $('d-bg').addEventListener('input', () => syncBg(true));
 $('d-bg-picker').addEventListener('input', () => syncBg(false));
