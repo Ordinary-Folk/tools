@@ -237,15 +237,6 @@ input[type=range] {
   width: 110px;
   outline: none;
 }
-.bg-row input[type=color] {
-  width: 32px;
-  height: 32px;
-  padding: 0;
-  border: 0.5px solid var(--border);
-  border-radius: var(--radius-md);
-  background: transparent;
-  cursor: pointer;
-}
 select {
   font-family: 'Geist', sans-serif;
   font-size: 13px;
@@ -301,6 +292,24 @@ select {
   gap: 0.5rem;
 }
 .divider { height: 0.5px; background: var(--border); margin: 0.5rem 0; }
+
+.between-cells { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+.bw-gradient {
+  position: relative;
+  height: 24px;
+  border-radius: var(--radius-md);
+}
+.bw-marker {
+  position: absolute;
+  top: -4px;
+  bottom: -4px;
+  width: 3px;
+  background: var(--text-primary);
+  border-radius: 2px;
+  transform: translateX(-50%);
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.6), 0 1px 3px rgba(0,0,0,0.3);
+  pointer-events: none;
+}
 
 .footer-actions {
   margin-top: 2.5rem;
@@ -398,7 +407,7 @@ select {
         <label for="d-bg">Background color</label>
         <div class="bg-row">
           <input type="text" id="d-bg" value="#22242A" maxlength="7"/>
-          <input type="color" id="d-bg-picker" value="#22242A"/>
+          <button type="button" class="hex-swatch" id="d-bg-picker" style="background:#22242A" aria-label="Pick background colour"></button>
         </div>
         <span class="val"></span>
       </div>
@@ -414,6 +423,36 @@ select {
       <div class="bar" id="dark-bar"></div>
     </div>
     <div class="css-line" id="dark-css" title="Click to copy">linear-gradient(...)</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section">
+    <div class="section-header">Find a colour in between</div>
+    <div class="between-cells">
+      <div class="hex-field">
+        <label>Colour A</label>
+        <div class="hex-row">
+          <input type="text" id="bw-a" value="#6349FF" maxlength="7"/>
+          <button type="button" class="hex-swatch" id="bw-a-picker" style="background:#6349FF" aria-label="Pick colour A"></button>
+        </div>
+      </div>
+      <div class="hex-field">
+        <label>Colour B</label>
+        <div class="hex-row">
+          <input type="text" id="bw-b" value="#A7DE61" maxlength="7"/>
+          <button type="button" class="hex-swatch" id="bw-b-picker" style="background:#A7DE61" aria-label="Pick colour B"></button>
+        </div>
+      </div>
+    </div>
+    <div class="sliders">
+      <div class="slider-row"><label for="bw-t">Position (A &rarr; B)</label><input type="range" id="bw-t" min="0" max="100" step="1" value="50"/><span class="val" id="bw-tv">50%</span></div>
+      <div class="slider-row"><label for="bw-sat">Saturation offset</label><input type="range" id="bw-sat" min="-100" max="100" step="1" value="0"/><span class="val" id="bw-satv">0</span></div>
+      <div class="slider-row"><label for="bw-light">Lightness offset</label><input type="range" id="bw-light" min="-100" max="100" step="1" value="0"/><span class="val" id="bw-lightv">0</span></div>
+    </div>
+    <div class="bw-gradient" id="bw-gradient"><div class="bw-marker" id="bw-marker"></div></div>
+    <div class="bar" id="bw-bar"></div>
+    <div class="css-line" id="bw-css" title="Click to copy">#XXXXXX</div>
   </div>
 
   <div class="footer-actions">
@@ -654,6 +693,7 @@ function render() {
     const sw = $('hex-' + key + '-picker');
     if (sw) sw.style.background = $('hex-' + key).value;
   });
+  $('d-bg-picker').style.background = $('d-bg').value;
   updateUrl();
 }
 function mountColorPicker(triggerEl, getHex, setHex) {
@@ -782,14 +822,31 @@ function mountColorPicker(triggerEl, getHex, setHex) {
 }
 const openPickers = [];
 function closeAll() { openPickers.forEach(c => c()); }
-function syncBg(fromText) {
-  if (fromText) {
-    const rgb = hexToRgb($('d-bg').value);
-    if (rgb) $('d-bg-picker').value = rgbToHex(rgb);
-  } else {
-    $('d-bg').value = $('d-bg-picker').value.toUpperCase();
-  }
-  render();
+function renderBetween() {
+  const A = hexToRgb($('bw-a').value);
+  const B = hexToRgb($('bw-b').value);
+  if (!A || !B) return;
+  const Ahsl = rgbToHsl(A);
+  const Bhsl = rgbToHsl(B);
+  const t = +$('bw-t').value / 100;
+  const so = +$('bw-sat').value;
+  const lo = +$('bw-light').value;
+  $('bw-tv').textContent = $('bw-t').value + '%';
+  $('bw-satv').textContent = (so >= 0 ? '+' : '') + so;
+  $('bw-lightv').textContent = (lo >= 0 ? '+' : '') + lo;
+  const mid = interp(Ahsl, Bhsl, t);
+  mid.s = clamp(mid.s + so, 0, 100);
+  mid.l = clamp(mid.l + lo, 0, 100);
+  const hex = rgbToHex(hslToRgb(mid));
+  const aHex = rgbToHex(A);
+  const bHex = rgbToHex(B);
+  $('bw-gradient').style.background = 'linear-gradient(to right, ' + aHex + ', ' + bHex + ')';
+  $('bw-marker').style.left = (t * 100) + '%';
+  $('bw-bar').style.background = hex;
+  $('bw-css').textContent = hex;
+  $('bw-css').onclick = () => copy(hex, $('bw-css'));
+  $('bw-a-picker').style.background = aHex;
+  $('bw-b-picker').style.background = bHex;
 }
 
 function applyDefaults() {
@@ -805,7 +862,6 @@ function applyDefaults() {
   $('d-bright').value = DEFAULTS.dBright;
   $('d-contrast').value = DEFAULTS.dContrast;
   $('d-bg').value = DEFAULTS.dBg;
-  $('d-bg-picker').value = DEFAULTS.dBg;
   $('d-blend').value = DEFAULTS.dBlend;
   $('d-op').value = DEFAULTS.dOp;
 }
@@ -846,7 +902,6 @@ function loadFromUrl() {
   set('d-bg', 'bg', '#');
   set('d-blend', 'bl');
   set('d-op', 'op');
-  if (params.has('bg')) $('d-bg-picker').value = '#' + params.get('bg');
 }
 
 ['t1', 't2', 'sat', 'light-bright', 'd-sat', 'd-light', 'd-bright', 'd-contrast', 'd-blend', 'd-op'].forEach(id => {
@@ -863,8 +918,12 @@ function loadFromUrl() {
     (hex) => { $('hex-' + key).value = hex; render(); }
   );
 });
-$('d-bg').addEventListener('input', () => syncBg(true));
-$('d-bg-picker').addEventListener('input', () => syncBg(false));
+$('d-bg').addEventListener('input', render);
+mountColorPicker(
+  $('d-bg-picker'),
+  () => $('d-bg').value,
+  (hex) => { $('d-bg').value = hex; render(); }
+);
 
 $('reset').addEventListener('click', () => {
   applyDefaults();
@@ -875,8 +934,20 @@ $('share').addEventListener('click', () => {
   copy(location.href, $('share'));
 });
 
+['bw-a', 'bw-b', 'bw-t', 'bw-sat', 'bw-light'].forEach(id => {
+  $(id).addEventListener('input', renderBetween);
+});
+['a', 'b'].forEach(key => {
+  mountColorPicker(
+    $('bw-' + key + '-picker'),
+    () => $('bw-' + key).value,
+    (hex) => { $('bw-' + key).value = hex; renderBetween(); }
+  );
+});
+
 loadFromUrl();
 render();
+renderBetween();
 </script>
 </body>
 </html>
