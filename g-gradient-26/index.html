@@ -219,6 +219,21 @@ body {
   color: var(--text-secondary);
   text-align: right;
 }
+.val[contenteditable] {
+  cursor: text;
+  border-radius: 4px;
+  padding: 2px 5px;
+  margin: -2px -5px;
+  transition: background 0.1s, color 0.1s;
+  outline: none;
+  white-space: nowrap;
+}
+.val[contenteditable]:hover { background: var(--bg-secondary); color: var(--text-primary); }
+.val[contenteditable]:focus {
+  background: var(--surface);
+  color: var(--text-primary);
+  box-shadow: 0 0 0 0.5px var(--border-strong);
+}
 input[type=range] {
   width: 100%;
   accent-color: var(--accent);
@@ -293,7 +308,8 @@ select {
 }
 .divider { height: 0.5px; background: var(--border); margin: 0.5rem 0; }
 
-.between-cells { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+.between-cells { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem; }
+.hex-row input[readonly] { background: var(--bg-secondary); cursor: text; }
 .bw-gradient {
   position: relative;
   height: 24px;
@@ -438,6 +454,13 @@ select {
         </div>
       </div>
       <div class="hex-field">
+        <label>Result</label>
+        <div class="hex-row">
+          <input type="text" id="bw-result" value="#7CC1B0" maxlength="7" readonly/>
+          <button type="button" class="hex-swatch" id="bw-result-swatch" style="background:#7CC1B0" aria-label="Copy result"></button>
+        </div>
+      </div>
+      <div class="hex-field">
         <label>Colour B</label>
         <div class="hex-row">
           <input type="text" id="bw-b" value="#A7DE61" maxlength="7"/>
@@ -445,14 +468,12 @@ select {
         </div>
       </div>
     </div>
+    <div class="bw-gradient" id="bw-gradient"><div class="bw-marker" id="bw-marker"></div></div>
     <div class="sliders">
       <div class="slider-row"><label for="bw-t">Position (A &rarr; B)</label><input type="range" id="bw-t" min="0" max="100" step="1" value="50"/><span class="val" id="bw-tv">50%</span></div>
       <div class="slider-row"><label for="bw-sat">Saturation offset</label><input type="range" id="bw-sat" min="-100" max="100" step="1" value="0"/><span class="val" id="bw-satv">0</span></div>
       <div class="slider-row"><label for="bw-light">Lightness offset</label><input type="range" id="bw-light" min="-100" max="100" step="1" value="0"/><span class="val" id="bw-lightv">0</span></div>
     </div>
-    <div class="bw-gradient" id="bw-gradient"><div class="bw-marker" id="bw-marker"></div></div>
-    <div class="bar" id="bw-bar"></div>
-    <div class="css-line" id="bw-css" title="Click to copy">#XXXXXX</div>
   </div>
 
   <div class="footer-actions">
@@ -599,6 +620,46 @@ function applyPipeline(rgb, ms, ml, br, ct, bg, blend, opacity) {
 }
 
 const $ = id => document.getElementById(id);
+function setVal(id, txt) {
+  const el = $(id);
+  if (el && document.activeElement !== el) el.textContent = txt;
+}
+function applyEditableValues() {
+  document.querySelectorAll('.val[id]').forEach(el => {
+    el.setAttribute('contenteditable', 'true');
+    el.setAttribute('inputmode', 'numeric');
+    el.setAttribute('spellcheck', 'false');
+    el.setAttribute('tabindex', '0');
+  });
+  document.addEventListener('focusin', e => {
+    if (!e.target.matches || !e.target.matches('.val[contenteditable]')) return;
+    requestAnimationFrame(() => {
+      const range = document.createRange();
+      range.selectNodeContents(e.target);
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+    });
+  });
+  document.addEventListener('keydown', e => {
+    if (!e.target.matches || !e.target.matches('.val[contenteditable]')) return;
+    if (e.key === 'Enter' || e.key === 'Escape') {
+      e.preventDefault();
+      e.target.blur();
+    }
+  });
+  document.addEventListener('focusout', e => {
+    if (!e.target.matches || !e.target.matches('.val[contenteditable]')) return;
+    const slider = $(e.target.id.replace(/v$/, ''));
+    if (!slider || slider.type !== 'range') return;
+    const m = e.target.textContent.match(/-?\d+(?:\.\d+)?/);
+    if (m) {
+      const v = clamp(parseFloat(m[0]), +slider.min, +slider.max);
+      slider.value = v;
+    }
+    slider.dispatchEvent(new Event('input', { bubbles: true }));
+  });
+}
 const lastHsl = {
   a: { h: 249, s: 100, l: 64 },
   b: { h: 210, s: 100, l: 66 },
@@ -656,15 +717,15 @@ function render() {
   const bgRgb = hexToRgb($('d-bg').value) || { r: 34, g: 36, b: 42 };
   const blend = $('d-blend').value;
   const op = +$('d-op').value;
-  $('t1v').textContent = $('t1').value + '%';
-  $('t2v').textContent = $('t2').value + '%';
-  $('satv').textContent = (so >= 0 ? '+' : '') + so;
-  $('light-brightv').textContent = (lbright >= 0 ? '+' : '') + lbright;
-  $('d-satv').textContent = (dms >= 0 ? '+' : '') + dms;
-  $('d-lightv').textContent = (dml >= 0 ? '+' : '') + dml;
-  $('d-brightv').textContent = (db >= 0 ? '+' : '') + db;
-  $('d-contrastv').textContent = (dc >= 0 ? '+' : '') + dc;
-  $('d-opv').textContent = op + '%';
+  setVal('t1v', $('t1').value + '%');
+  setVal('t2v', $('t2').value + '%');
+  setVal('satv', (so >= 0 ? '+' : '') + so);
+  setVal('light-brightv', (lbright >= 0 ? '+' : '') + lbright);
+  setVal('d-satv', (dms >= 0 ? '+' : '') + dms);
+  setVal('d-lightv', (dml >= 0 ? '+' : '') + dml);
+  setVal('d-brightv', (db >= 0 ? '+' : '') + db);
+  setVal('d-contrastv', (dc >= 0 ? '+' : '') + dc);
+  setVal('d-opv', op + '%');
   $('dark-wrap').style.background = rgbToHex(bgRgb);
   const s1r = interp(A, B, t1);
   const s2r = interp(B, C, t2);
@@ -831,9 +892,9 @@ function renderBetween() {
   const t = +$('bw-t').value / 100;
   const so = +$('bw-sat').value;
   const lo = +$('bw-light').value;
-  $('bw-tv').textContent = $('bw-t').value + '%';
-  $('bw-satv').textContent = (so >= 0 ? '+' : '') + so;
-  $('bw-lightv').textContent = (lo >= 0 ? '+' : '') + lo;
+  setVal('bw-tv', $('bw-t').value + '%');
+  setVal('bw-satv', (so >= 0 ? '+' : '') + so);
+  setVal('bw-lightv', (lo >= 0 ? '+' : '') + lo);
   const mid = interp(Ahsl, Bhsl, t);
   mid.s = clamp(mid.s + so, 0, 100);
   mid.l = clamp(mid.l + lo, 0, 100);
@@ -842,9 +903,8 @@ function renderBetween() {
   const bHex = rgbToHex(B);
   $('bw-gradient').style.background = 'linear-gradient(to right, ' + aHex + ', ' + bHex + ')';
   $('bw-marker').style.left = (t * 100) + '%';
-  $('bw-bar').style.background = hex;
-  $('bw-css').textContent = hex;
-  $('bw-css').onclick = () => copy(hex, $('bw-css'));
+  $('bw-result').value = hex;
+  $('bw-result-swatch').style.background = hex;
   $('bw-a-picker').style.background = aHex;
   $('bw-b-picker').style.background = bHex;
 }
@@ -945,6 +1005,19 @@ $('share').addEventListener('click', () => {
   );
 });
 
+$('bw-result').addEventListener('focus', e => e.target.select());
+$('bw-result').addEventListener('click', e => e.target.select());
+$('bw-result-swatch').addEventListener('click', () => {
+  const hex = $('bw-result').value;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(hex);
+    const orig = $('bw-result').value;
+    $('bw-result').value = 'copied';
+    setTimeout(() => { $('bw-result').value = orig; }, 700);
+  }
+});
+
+applyEditableValues();
 loadFromUrl();
 render();
 renderBetween();
