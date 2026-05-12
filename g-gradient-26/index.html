@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>g-gradient-26</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  color-scheme: light dark;
+  --bg: #fafaf9;
+  --bg-secondary: #f1f0ed;
+  --bg-tertiary: #e9e8e4;
+  --surface: #ffffff;
+  --text-primary: #1a1a1a;
+  --text-secondary: #6f6e6a;
+  --text-tertiary: #a3a29d;
+  --border: rgba(0, 0, 0, 0.08);
+  --border-strong: rgba(0, 0, 0, 0.18);
+  --accent: #5b79ff;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0f0f10;
+    --bg-secondary: #18181a;
+    --bg-tertiary: #222225;
+    --surface: #161617;
+    --text-primary: #f0efed;
+    --text-secondary: #9a9a96;
+    --text-tertiary: #6a6a66;
+    --border: rgba(255, 255, 255, 0.08);
+    --border-strong: rgba(255, 255, 255, 0.18);
+  }
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg);
+  color: var(--text-primary);
+  font-size: 14px;
+  line-height: 1.5;
+  font-feature-settings: 'ss01', 'cv11';
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+.container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 0.5px solid var(--border);
+  gap: 1rem;
+}
+.title { font-size: 20px; font-weight: 500; margin: 0 0 0.15rem; letter-spacing: -0.01em; }
+.subtitle { font-size: 13px; color: var(--text-secondary); margin: 0; }
+.btn {
+  font-family: 'Geist Mono', monospace;
+  font-size: 12px;
+  padding: 0.45rem 0.85rem;
+  border: 0.5px solid var(--border-strong);
+  background: transparent;
+  color: var(--text-primary);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+.btn:hover { background: var(--bg-secondary); }
+.btn:active { transform: scale(0.98); }
+.btn-row { display: flex; gap: 0.5rem; }
+
+.section { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.75rem; }
+.section-header {
+  font-size: 13px;
+  font-weight: 500;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.section-header .tag {
+  font-family: 'Geist Mono', monospace;
+  font-size: 10px;
+  color: var(--text-tertiary);
+  font-weight: 400;
+}
+
+.hex-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem; margin-bottom: 1.5rem; }
+.hex-field { display: flex; flex-direction: column; gap: 0.3rem; }
+.hex-field label { font-size: 12px; color: var(--text-secondary); }
+.hex-field input {
+  font-family: 'Geist Mono', monospace;
+  font-size: 13px;
+  padding: 0.55rem 0.7rem;
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--text-primary);
+  text-transform: uppercase;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.hex-field input:focus { border-color: var(--border-strong); }
+
+.sliders { display: flex; flex-direction: column; gap: 0.55rem; }
+.slider-row { display: grid; grid-template-columns: 220px 1fr 60px; align-items: center; gap: 0.75rem; }
+.slider-row label { font-size: 13px; color: var(--text-primary); }
+.slider-row .val {
+  font-family: 'Geist Mono', monospace;
+  font-size: 12px;
+  color: var(--text-secondary);
+  text-align: right;
+}
+input[type=range] {
+  width: 100%;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+.bg-row { display: flex; align-items: center; gap: 8px; }
+.bg-row input[type=text] {
+  font-family: 'Geist Mono', monospace;
+  font-size: 13px;
+  padding: 0.45rem 0.6rem;
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--text-primary);
+  text-transform: uppercase;
+  width: 110px;
+  outline: none;
+}
+.bg-row input[type=color] {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius-md);
+  background: transparent;
+  cursor: pointer;
+}
+select {
+  font-family: 'Geist', sans-serif;
+  font-size: 13px;
+  padding: 0.45rem 0.6rem;
+  border: 0.5px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--text-primary);
+  width: 100%;
+  cursor: pointer;
+  outline: none;
+}
+
+.swatches { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.5rem; }
+.swatch {
+  aspect-ratio: 1/1;
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  cursor: pointer;
+  text-align: center;
+  transition: transform 0.1s ease;
+  user-select: none;
+}
+.swatch:hover { transform: translateY(-2px); }
+.swatch .name { font-family: 'Geist', sans-serif; font-size: 11px; font-weight: 500; margin-bottom: 4px; opacity: 0.9; }
+.swatch .hex { font-family: 'Geist Mono', monospace; font-size: 12px; font-weight: 500; }
+.swatch .hsl { font-family: 'Geist Mono', monospace; font-size: 10px; opacity: 0.75; margin-top: 3px; }
+
+.bar { height: 48px; border-radius: var(--radius-md); }
+.css-line {
+  font-family: 'Geist Mono', monospace;
+  font-size: 11px;
+  padding: 0.6rem 0.75rem;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  cursor: pointer;
+  word-break: break-all;
+  line-height: 1.5;
+  transition: color 0.15s;
+}
+.css-line:hover { color: var(--text-primary); }
+
+.dark-wrap {
+  padding: 0.75rem;
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.divider { height: 0.5px; background: var(--border); margin: 0.5rem 0; }
+
+.footer-actions {
+  margin-top: 2.5rem;
+  padding-top: 1.25rem;
+  border-top: 0.5px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+.footer-note {
+  font-size: 11px;
+  color: var(--text-tertiary);
+}
+
+@media (max-width: 600px) {
+  .slider-row { grid-template-columns: 1fr; gap: 0.25rem; }
+  .slider-row label { font-size: 12px; }
+  .slider-row .val { text-align: left; }
+  .hex-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div>
+      <h1 class="title">g-gradient-26</h1>
+      <p class="subtitle">Three-stop gradient with light and dark mode variants</p>
+    </div>
+    <div class="btn-row">
+      <button class="btn" id="share">Copy link</button>
+      <button class="btn" id="reset">Reset</button>
+    </div>
+  </div>
+
+  <div class="hex-grid">
+    <div class="hex-field"><label>Start</label><input type="text" id="hex-a" value="#6349FF" maxlength="7"/></div>
+    <div class="hex-field"><label>Mid</label><input type="text" id="hex-b" value="#53A9FF" maxlength="7"/></div>
+    <div class="hex-field"><label>End</label><input type="text" id="hex-c" value="#A7DE61" maxlength="7"/></div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">Full colour</div>
+    <div class="sliders">
+      <div class="slider-row"><label for="t1">Stop 1: start &rarr; mid</label><input type="range" id="t1" min="0" max="100" step="1" value="10"/><span class="val" id="t1v">10%</span></div>
+      <div class="slider-row"><label for="t2">Stop 2: mid &rarr; end</label><input type="range" id="t2" min="0" max="100" step="1" value="90"/><span class="val" id="t2v">90%</span></div>
+      <div class="slider-row"><label for="sat">Saturation offset (stops 1+2)</label><input type="range" id="sat" min="-100" max="100" step="1" value="0"/><span class="val" id="satv">0</span></div>
+    </div>
+    <div class="swatches" id="full-sw"></div>
+    <div class="bar" id="full-bar"></div>
+    <div class="css-line" id="full-css" title="Click to copy">linear-gradient(...)</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section">
+    <div class="section-header">Light mode <span class="tag">lifts each full colour stop toward white</span></div>
+    <div class="sliders">
+      <div class="slider-row"><label for="light-bright">Brightness</label><input type="range" id="light-bright" min="-50" max="50" step="1" value="24"/><span class="val" id="light-brightv">+24</span></div>
+    </div>
+    <div class="swatches" id="light-sw"></div>
+    <div class="bar" id="light-bar"></div>
+    <div class="css-line" id="light-css" title="Click to copy">linear-gradient(...)</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section">
+    <div class="section-header">Dark mode <span class="tag">Hue/Sat + Brightness/Contrast + blend on background</span></div>
+    <div class="sliders">
+      <div class="slider-row"><label for="d-sat">Master saturation</label><input type="range" id="d-sat" min="-100" max="100" step="1" value="-20"/><span class="val" id="d-satv">-20</span></div>
+      <div class="slider-row"><label for="d-light">Master lightness</label><input type="range" id="d-light" min="-100" max="100" step="1" value="-35"/><span class="val" id="d-lightv">-35</span></div>
+      <div class="slider-row"><label for="d-bright">Brightness</label><input type="range" id="d-bright" min="-100" max="100" step="1" value="30"/><span class="val" id="d-brightv">+30</span></div>
+      <div class="slider-row"><label for="d-contrast">Contrast</label><input type="range" id="d-contrast" min="-100" max="100" step="1" value="10"/><span class="val" id="d-contrastv">+10</span></div>
+      <div class="slider-row">
+        <label for="d-bg">Background color</label>
+        <div class="bg-row">
+          <input type="text" id="d-bg" value="#22242A" maxlength="7"/>
+          <input type="color" id="d-bg-picker" value="#22242A"/>
+        </div>
+        <span class="val"></span>
+      </div>
+      <div class="slider-row">
+        <label for="d-blend">Blend mode</label>
+        <select id="d-blend"><option value="normal">Normal</option><option value="cdodge" selected>Classic Color Dodge</option></select>
+        <span class="val"></span>
+      </div>
+      <div class="slider-row"><label for="d-op">Colour opacity</label><input type="range" id="d-op" min="0" max="100" step="1" value="90"/><span class="val" id="d-opv">90%</span></div>
+    </div>
+    <div class="dark-wrap" id="dark-wrap">
+      <div class="swatches" id="dark-sw"></div>
+      <div class="bar" id="dark-bar"></div>
+    </div>
+    <div class="css-line" id="dark-css" title="Click to copy">linear-gradient(...)</div>
+  </div>
+
+  <div class="footer-actions">
+    <span class="footer-note">Click any swatch, CSS line, or "Copy link" to copy. Reset restores defaults.</span>
+  </div>
+</div>
+
+<script>
+const DEFAULTS = {
+  a: '#6349FF', b: '#53A9FF', c: '#A7DE61',
+  t1: 10, t2: 90, sat: 0,
+  lightBright: 24,
+  dSat: -20, dLight: -35, dBright: 30, dContrast: 10,
+  dBg: '#22242A', dBlend: 'cdodge', dOp: 90
+};
+
+function hexToRgb(hex) {
+  if (!hex) return null;
+  hex = String(hex).trim().replace(/^#/, '');
+  if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+  if (!/^[0-9a-fA-F]{6}$/.test(hex)) return null;
+  const n = parseInt(hex, 16);
+  return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 };
+}
+function rgbToHsl(rgb) {
+  let { r, g, b } = rgb;
+  r /= 255; g /= 255; b /= 255;
+  const mx = Math.max(r, g, b), mn = Math.min(r, g, b);
+  let h, s, l = (mx + mn) / 2;
+  if (mx === mn) { h = 0; s = 0; }
+  else {
+    const d = mx - mn;
+    s = l > 0.5 ? d / (2 - mx - mn) : d / (mx + mn);
+    if (mx === r) h = (g - b) / d + (g < b ? 6 : 0);
+    else if (mx === g) h = (b - r) / d + 2;
+    else h = (r - g) / d + 4;
+    h *= 60;
+  }
+  return { h, s: s * 100, l: l * 100 };
+}
+function hslToRgb(hsl) {
+  let { h, s, l } = hsl;
+  h = ((h % 360) + 360) % 360;
+  s = Math.max(0, Math.min(100, s)) / 100;
+  l = Math.max(0, Math.min(100, l)) / 100;
+  if (s === 0) { const v = Math.round(l * 255); return { r: v, g: v, b: v }; }
+  const c = (1 - Math.abs(2 * l - 1)) * s;
+  const hp = h / 60;
+  const x = c * (1 - Math.abs((hp % 2) - 1));
+  let r1, g1, b1;
+  if (hp < 1) { r1 = c; g1 = x; b1 = 0; }
+  else if (hp < 2) { r1 = x; g1 = c; b1 = 0; }
+  else if (hp < 3) { r1 = 0; g1 = c; b1 = x; }
+  else if (hp < 4) { r1 = 0; g1 = x; b1 = c; }
+  else if (hp < 5) { r1 = x; g1 = 0; b1 = c; }
+  else { r1 = c; g1 = 0; b1 = x; }
+  const m = l - c / 2;
+  return { r: Math.round((r1 + m) * 255), g: Math.round((g1 + m) * 255), b: Math.round((b1 + m) * 255) };
+}
+function rgbToHex(rgb) {
+  return '#' + [rgb.r, rgb.g, rgb.b].map(v => v.toString(16).padStart(2, '0').toUpperCase()).join('');
+}
+function lerp(a, b, t) { return a + (b - a) * t; }
+function lerpHue(a, b, t) {
+  let d = b - a;
+  if (d > 180) d -= 360;
+  else if (d < -180) d += 360;
+  return ((a + d * t) % 360 + 360) % 360;
+}
+function clamp(v, mn, mx) { return Math.max(mn, Math.min(mx, v)); }
+function interp(a, b, t) {
+  return { h: lerpHue(a.h, b.h, t), s: lerp(a.s, b.s, t), l: lerp(a.l, b.l, t) };
+}
+function liftL(c, lo) { return { h: c.h, s: c.s, l: clamp(c.l + lo, 0, 100) }; }
+function applyPipeline(rgb, ms, ml, br, ct, bg, blend, opacity) {
+  let hsl = rgbToHsl(rgb);
+  if (ms < 0) hsl.s = hsl.s * (1 + ms / 100);
+  else hsl.s = hsl.s + (100 - hsl.s) * (ms / 100);
+  hsl.s = clamp(hsl.s, 0, 100);
+  hsl.l = clamp(hsl.l + ml, 0, 100);
+  let layer = hslToRgb(hsl);
+  if (br !== 0) {
+    const f = Math.abs(br) / 100 * 0.4;
+    if (br > 0) {
+      layer = { r: layer.r + (255 - layer.r) * f, g: layer.g + (255 - layer.g) * f, b: layer.b + (255 - layer.b) * f };
+    } else {
+      layer = { r: layer.r * (1 - f), g: layer.g * (1 - f), b: layer.b * (1 - f) };
+    }
+  }
+  if (ct !== 0) {
+    const cf = 1 + ct / 100;
+    layer = { r: (layer.r - 128) * cf + 128, g: (layer.g - 128) * cf + 128, b: (layer.b - 128) * cf + 128 };
+  }
+  layer = { r: clamp(layer.r, 0, 255), g: clamp(layer.g, 0, 255), b: clamp(layer.b, 0, 255) };
+  let blended;
+  if (blend === 'cdodge') {
+    blended = {
+      r: Math.min(255, bg.r / Math.max(0.001, 1 - layer.r / 255)),
+      g: Math.min(255, bg.g / Math.max(0.001, 1 - layer.g / 255)),
+      b: Math.min(255, bg.b / Math.max(0.001, 1 - layer.b / 255))
+    };
+  } else {
+    blended = { r: layer.r, g: layer.g, b: layer.b };
+  }
+  const op = opacity / 100;
+  const fin = {
+    r: bg.r * (1 - op) + blended.r * op,
+    g: bg.g * (1 - op) + blended.g * op,
+    b: bg.b * (1 - op) + blended.b * op
+  };
+  return { r: clamp(Math.round(fin.r), 0, 255), g: clamp(Math.round(fin.g), 0, 255), b: clamp(Math.round(fin.b), 0, 255) };
+}
+
+const $ = id => document.getElementById(id);
+const lastHsl = {
+  a: { h: 249, s: 100, l: 64 },
+  b: { h: 210, s: 100, l: 66 },
+  c: { h: 86, s: 65, l: 63 }
+};
+function read(el, key) {
+  const rgb = hexToRgb(el.value);
+  if (rgb) lastHsl[key] = rgbToHsl(rgb);
+  return lastHsl[key];
+}
+function flash(el, txt) {
+  const orig = el.textContent;
+  el.textContent = txt;
+  setTimeout(() => { el.textContent = orig; }, 700);
+}
+function copy(text, el) {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(() => flash(el, 'copied')).catch(() => flash(el, 'copy failed'));
+  } else { flash(el, 'copy failed'); }
+}
+function renderRow(stops, swId, barId, cssId, t1, t2) {
+  const sw = $(swId);
+  sw.innerHTML = '';
+  stops.forEach(s => {
+    const rgb = hexToRgb(s.hex);
+    const lum = (0.299 * rgb.r + 0.587 * rgb.g + 0.114 * rgb.b) / 255;
+    const fg = lum > 0.62 ? 'rgba(0,0,0,0.85)' : 'rgba(255,255,255,0.96)';
+    const d = document.createElement('div');
+    d.className = 'swatch';
+    d.style.background = s.hex;
+    d.style.color = fg;
+    d.innerHTML = '<div class="name">' + s.n + '</div><div class="hex">' + s.hex + '</div><div class="hsl">' + Math.round(s.hsl.h) + '&deg; ' + Math.round(s.hsl.s) + '% ' + Math.round(s.hsl.l) + '%</div>';
+    d.onclick = () => copy(s.hex, d.querySelector('.hex'));
+    sw.appendChild(d);
+  });
+  const p1 = t1 * 50;
+  const p2 = 50 + t2 * 50;
+  const css = 'linear-gradient(to right, ' + stops[0].hex + ' 0%, ' + stops[1].hex + ' ' + p1.toFixed(1) + '%, ' + stops[2].hex + ' 50%, ' + stops[3].hex + ' ' + p2.toFixed(1) + '%, ' + stops[4].hex + ' 100%)';
+  $(barId).style.background = css;
+  $(cssId).textContent = css;
+  $(cssId).onclick = () => copy(css, $(cssId));
+}
+function render() {
+  const A = read($('hex-a'), 'a');
+  const B = read($('hex-b'), 'b');
+  const C = read($('hex-c'), 'c');
+  const t1 = +$('t1').value / 100;
+  const t2 = +$('t2').value / 100;
+  const so = +$('sat').value;
+  const lbright = +$('light-bright').value;
+  const dms = +$('d-sat').value;
+  const dml = +$('d-light').value;
+  const db = +$('d-bright').value;
+  const dc = +$('d-contrast').value;
+  const bgRgb = hexToRgb($('d-bg').value) || { r: 34, g: 36, b: 42 };
+  const blend = $('d-blend').value;
+  const op = +$('d-op').value;
+  $('t1v').textContent = $('t1').value + '%';
+  $('t2v').textContent = $('t2').value + '%';
+  $('satv').textContent = (so >= 0 ? '+' : '') + so;
+  $('light-brightv').textContent = (lbright >= 0 ? '+' : '') + lbright;
+  $('d-satv').textContent = (dms >= 0 ? '+' : '') + dms;
+  $('d-lightv').textContent = (dml >= 0 ? '+' : '') + dml;
+  $('d-brightv').textContent = (db >= 0 ? '+' : '') + db;
+  $('d-contrastv').textContent = (dc >= 0 ? '+' : '') + dc;
+  $('d-opv').textContent = op + '%';
+  $('dark-wrap').style.background = rgbToHex(bgRgb);
+  const s1r = interp(A, B, t1);
+  const s2r = interp(B, C, t2);
+  const s1 = { h: s1r.h, s: clamp(s1r.s + so, 0, 100), l: s1r.l };
+  const s2 = { h: s2r.h, s: clamp(s2r.s + so, 0, 100), l: s2r.l };
+  const fullStops = [
+    { n: 'Start', hsl: A },
+    { n: 'Stop 1', hsl: s1 },
+    { n: 'Mid', hsl: B },
+    { n: 'Stop 2', hsl: s2 },
+    { n: 'End', hsl: C }
+  ].map(o => ({ ...o, hex: rgbToHex(hslToRgb(o.hsl)) }));
+  renderRow(fullStops, 'full-sw', 'full-bar', 'full-css', t1, t2);
+  const lightStops = fullStops.map(s => {
+    const lifted = liftL(s.hsl, lbright);
+    return { n: s.n, hsl: lifted, hex: rgbToHex(hslToRgb(lifted)) };
+  });
+  renderRow(lightStops, 'light-sw', 'light-bar', 'light-css', t1, t2);
+  const darkStops = fullStops.map(s => {
+    const rgb = hexToRgb(s.hex);
+    const dRgb = applyPipeline(rgb, dms, dml, db, dc, bgRgb, blend, op);
+    return { n: s.n, hex: rgbToHex(dRgb), hsl: rgbToHsl(dRgb) };
+  });
+  renderRow(darkStops, 'dark-sw', 'dark-bar', 'dark-css', t1, t2);
+  updateUrl();
+}
+function syncBg(fromText) {
+  if (fromText) {
+    const rgb = hexToRgb($('d-bg').value);
+    if (rgb) $('d-bg-picker').value = rgbToHex(rgb);
+  } else {
+    $('d-bg').value = $('d-bg-picker').value.toUpperCase();
+  }
+  render();
+}
+
+function applyDefaults() {
+  $('hex-a').value = DEFAULTS.a;
+  $('hex-b').value = DEFAULTS.b;
+  $('hex-c').value = DEFAULTS.c;
+  $('t1').value = DEFAULTS.t1;
+  $('t2').value = DEFAULTS.t2;
+  $('sat').value = DEFAULTS.sat;
+  $('light-bright').value = DEFAULTS.lightBright;
+  $('d-sat').value = DEFAULTS.dSat;
+  $('d-light').value = DEFAULTS.dLight;
+  $('d-bright').value = DEFAULTS.dBright;
+  $('d-contrast').value = DEFAULTS.dContrast;
+  $('d-bg').value = DEFAULTS.dBg;
+  $('d-bg-picker').value = DEFAULTS.dBg;
+  $('d-blend').value = DEFAULTS.dBlend;
+  $('d-op').value = DEFAULTS.dOp;
+}
+
+function updateUrl() {
+  const params = new URLSearchParams();
+  params.set('a', $('hex-a').value.replace('#', ''));
+  params.set('b', $('hex-b').value.replace('#', ''));
+  params.set('c', $('hex-c').value.replace('#', ''));
+  params.set('t1', $('t1').value);
+  params.set('t2', $('t2').value);
+  params.set('sat', $('sat').value);
+  params.set('lb', $('light-bright').value);
+  params.set('ds', $('d-sat').value);
+  params.set('dl', $('d-light').value);
+  params.set('db', $('d-bright').value);
+  params.set('dc', $('d-contrast').value);
+  params.set('bg', $('d-bg').value.replace('#', ''));
+  params.set('bl', $('d-blend').value);
+  params.set('op', $('d-op').value);
+  history.replaceState(null, '', '#' + params.toString());
+}
+function loadFromUrl() {
+  if (!location.hash) return;
+  const params = new URLSearchParams(location.hash.slice(1));
+  const set = (id, key, prefix) => { if (params.has(key)) $(id).value = (prefix || '') + params.get(key); };
+  set('hex-a', 'a', '#');
+  set('hex-b', 'b', '#');
+  set('hex-c', 'c', '#');
+  set('t1', 't1');
+  set('t2', 't2');
+  set('sat', 'sat');
+  set('light-bright', 'lb');
+  set('d-sat', 'ds');
+  set('d-light', 'dl');
+  set('d-bright', 'db');
+  set('d-contrast', 'dc');
+  set('d-bg', 'bg', '#');
+  set('d-blend', 'bl');
+  set('d-op', 'op');
+  if (params.has('bg')) $('d-bg-picker').value = '#' + params.get('bg');
+}
+
+['hex-a', 'hex-b', 'hex-c', 't1', 't2', 'sat', 'light-bright', 'd-sat', 'd-light', 'd-bright', 'd-contrast', 'd-blend', 'd-op'].forEach(id => {
+  $(id).addEventListener('input', render);
+  $(id).addEventListener('change', render);
+});
+$('d-bg').addEventListener('input', () => syncBg(true));
+$('d-bg-picker').addEventListener('input', () => syncBg(false));
+
+$('reset').addEventListener('click', () => {
+  applyDefaults();
+  render();
+  flash($('reset'), 'reset');
+});
+$('share').addEventListener('click', () => {
+  copy(location.href, $('share'));
+});
+
+loadFromUrl();
+render();
+</script>
+</body>
+</html>
