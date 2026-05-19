@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3D Soccer Field</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #555555; font-family: 'Geist', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+  #info {
+    position: absolute; top: 12px; left: 12px;
+    background: rgba(0,0,0,0.65); color: #fff;
+    padding: 8px 12px; border-radius: 6px; font-size: 12px;
+    line-height: 1.5; pointer-events: none; user-select: none;
+  }
+  .controls {
+    position: absolute; top: 12px; right: 12px;
+    display: flex; flex-direction: column; gap: 8px;
+    align-items: flex-end;
+  }
+  .row { display: flex; gap: 8px; align-items: center; }
+  button, label.btn {
+    padding: 8px 14px; background: #222; color: #fff;
+    border: none; border-radius: 6px; cursor: pointer; font-size: 12px;
+    font-family: inherit;
+  }
+  button:hover, label.btn:hover { background: #444; }
+  button:disabled { background: #1a1a1a; color: #666; cursor: not-allowed; }
+  select {
+    padding: 8px 10px; background: #222; color: #fff;
+    border: none; border-radius: 6px; font-size: 12px; font-family: inherit;
+  }
+  .overlay-panel {
+    background: rgba(0,0,0,0.65); color: #fff;
+    padding: 10px 12px; border-radius: 6px;
+    display: flex; flex-direction: column; gap: 8px;
+    font-size: 12px; min-width: 240px;
+  }
+  .overlay-panel .row { justify-content: space-between; }
+  .overlay-panel input[type="range"] { flex: 1; accent-color: #fff; }
+  .overlay-panel .filename {
+    font-size: 11px; color: #aaa; max-width: 160px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  #fileInput { display: none; }
+</style>
+</head>
+<body>
+<div id="info">
+  Drag to orbit. Scroll to zoom. Right-click drag to pan.
+</div>
+<div class="controls">
+  <div class="row">
+    <select id="preset">
+      <option value="default">View: Default</option>
+      <option value="top">View: Top-down</option>
+      <option value="broadcast">View: Broadcast</option>
+      <option value="corner">View: Corner</option>
+      <option value="goal">View: Behind Goal</option>
+    </select>
+    <select id="lens">
+      <option value="24">Lens: Wide (24mm)</option>
+      <option value="50" selected>Lens: Normal (50mm)</option>
+      <option value="85">Lens: Tele (85mm)</option>
+    </select>
+    <button id="screenshot">Download PNG</button>
+  </div>
+  <div class="overlay-panel">
+    <div class="row">
+      <label class="btn" for="fileInput">Load image</label>
+      <span class="filename" id="filename">no image</span>
+      <button id="clearImage" disabled>Clear</button>
+    </div>
+    <div class="row">
+      <span>Opacity</span>
+      <input type="range" id="opacity" min="0" max="100" value="50">
+      <span id="opacityVal" style="width: 32px; text-align: right;">50%</span>
+    </div>
+    <input type="file" id="fileInput" accept="image/*">
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+// =========================
+// Field dimensions (m). 5:2 ratio (170 x 68).
+// FIFA markings preserved at real-world spec, centered.
+// =========================
+const FIELD_L = 170;            // length (goal line to goal line)
+const FIELD_W = 68;             // width  (touchline to touchline)
+const GOAL_AREA_W = 18.32;
+const GOAL_AREA_D = 5.5;
+const PEN_AREA_W = 40.32;
+const PEN_AREA_D = 16.5;
+const PEN_SPOT_DIST = 11;
+const CENTER_R = 9.15;
+const PEN_ARC_R = 9.15;
+const CORNER_R = 1;
+const GOAL_W = 7.32;
+const GOAL_H = 2.44;
+const GOAL_D = 2;               // net depth at base
+const LINE_W = 0.12;            // line width
+const MARGIN = 5;               // grass surround beyond touchlines
+
+// =========================
+// Build field markings as a canvas texture
+// =========================
+function makeFieldTexture() {
+  const ppm = 16; // pixels per meter
+  const totalW = FIELD_L + MARGIN * 2;
+  const totalH = FIELD_W + MARGIN * 2;
+  const c = document.createElement('canvas');
+  c.width = totalW * ppm;
+  c.height = totalH * ppm;
+  const ctx = c.getContext('2d');
+
+  // Surround (slightly darker grey)
+  ctx.fillStyle = '#6d6d6d';
+  ctx.fillRect(0, 0, c.width, c.height);
+
+  // Mowing stripes (perpendicular to length), subtle grey alternation
+  const stripeCount = 13;
+  const stripeH = (FIELD_W / stripeCount) * ppm;
+  for (let i = 0; i < stripeCount; i++) {
+    ctx.fillStyle = i % 2 === 0 ? '#9a9a9a' : '#888888';
+    ctx.fillRect(MARGIN * ppm, MARGIN * ppm + i * stripeH, FIELD_L * ppm, stripeH);
+  }
+
+  // Lines
+  ctx.strokeStyle = '#ffffff';
+  ctx.lineWidth = LINE_W * ppm;
+  ctx.lineCap = 'butt';
+
+  // helper: field coord -> canvas px
+  const m = (v) => (MARGIN + v) * ppm;
+
+  // Outer boundary
+  ctx.strokeRect(m(0), m(0), FIELD_L * ppm, FIELD_W * ppm);
+
+  // Halfway line
+  ctx.beginPath();
+  ctx.moveTo(m(FIELD_L / 2), m(0));
+  ctx.lineTo(m(FIELD_L / 2), m(FIELD_W));
+  ctx.stroke();
+
+  // Center circle
+  ctx.beginPath();
+  ctx.arc(m(FIELD_L / 2), m(FIELD_W / 2), CENTER_R * ppm, 0, Math.PI * 2);
+  ctx.stroke();
+
+  // Center spot
+  ctx.fillStyle = '#ffffff';
+  ctx.beginPath();
+  ctx.arc(m(FIELD_L / 2), m(FIELD_W / 2), 0.18 * ppm, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Penalty arc angle (visible portion outside penalty area)
+  const arcHalfAngle = Math.acos((PEN_AREA_D - PEN_SPOT_DIST) / PEN_ARC_R);
+
+  // --- Left half (x = 0 side)
+  ctx.strokeRect(m(0), m((FIELD_W - PEN_AREA_W) / 2), PEN_AREA_D * ppm, PEN_AREA_W * ppm);
+  ctx.strokeRect(m(0), m((FIELD_W - GOAL_AREA_W) / 2), GOAL_AREA_D * ppm, GOAL_AREA_W * ppm);
+  ctx.beginPath();
+  ctx.arc(m(PEN_SPOT_DIST), m(FIELD_W / 2), 0.18 * ppm, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(m(PEN_SPOT_DIST), m(FIELD_W / 2), PEN_ARC_R * ppm, -arcHalfAngle, arcHalfAngle);
+  ctx.stroke();
+
+  // --- Right half (x = FIELD_L side)
+  ctx.strokeRect(m(FIELD_L - PEN_AREA_D), m((FIELD_W - PEN_AREA_W) / 2), PEN_AREA_D * ppm, PEN_AREA_W * ppm);
+  ctx.strokeRect(m(FIELD_L - GOAL_AREA_D), m((FIELD_W - GOAL_AREA_W) / 2), GOAL_AREA_D * ppm, GOAL_AREA_W * ppm);
+  ctx.beginPath();
+  ctx.arc(m(FIELD_L - PEN_SPOT_DIST), m(FIELD_W / 2), 0.18 * ppm, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(m(FIELD_L - PEN_SPOT_DIST), m(FIELD_W / 2), PEN_ARC_R * ppm,
+          Math.PI - arcHalfAngle, Math.PI + arcHalfAngle);
+  ctx.stroke();
+
+  // Corner arcs
+  const corners = [
+    [0, 0, 0, Math.PI / 2],
+    [FIELD_L, 0, Math.PI / 2, Math.PI],
+    [FIELD_L, FIELD_W, Math.PI, Math.PI * 1.5],
+    [0, FIELD_W, Math.PI * 1.5, Math.PI * 2],
+  ];
+  for (const [cx, cy, a1, a2] of corners) {
+    ctx.beginPath();
+    ctx.arc(m(cx), m(cy), CORNER_R * ppm, a1, a2);
+    ctx.stroke();
+  }
+
+  const tex = new THREE.CanvasTexture(c);
+  tex.anisotropy = 16;
+  tex.minFilter = THREE.LinearMipmapLinearFilter;
+  return tex;
+}
+
+// =========================
+// Scene
+// =========================
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x555555);
+
+const camera = new THREE.PerspectiveCamera(27, window.innerWidth / window.innerHeight, 0.1, 2000);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(window.devicePixelRatio);
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+document.body.appendChild(renderer.domElement);
+
+const controls = new THREE.OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.08;
+controls.minDistance = 8;
+controls.maxDistance = 800;
+controls.maxPolarAngle = Math.PI / 2 - 0.02;
+controls.target.set(0, 0, 0);
+
+// Lights
+scene.add(new THREE.AmbientLight(0xffffff, 0.55));
+const sun = new THREE.DirectionalLight(0xffffff, 0.85);
+sun.position.set(60, 120, 40);
+sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+sun.shadow.camera.left = -120;
+sun.shadow.camera.right = 120;
+sun.shadow.camera.top = 80;
+sun.shadow.camera.bottom = -80;
+sun.shadow.camera.near = 1;
+sun.shadow.camera.far = 350;
+sun.shadow.bias = -0.0005;
+scene.add(sun);
+
+// =========================
+// Field surface
+// =========================
+const fieldGeo = new THREE.PlaneGeometry(FIELD_L + MARGIN * 2, FIELD_W + MARGIN * 2);
+const fieldMat = new THREE.MeshLambertMaterial({ map: makeFieldTexture() });
+const field = new THREE.Mesh(fieldGeo, fieldMat);
+field.rotation.x = -Math.PI / 2;
+field.receiveShadow = true;
+scene.add(field);
+
+// =========================
+// Image overlay plane (sits just above the field).
+// Matches field outer dimensions so a 5:2 image aligns to touchlines.
+// =========================
+const overlayMat = new THREE.MeshBasicMaterial({
+  transparent: true, opacity: 0.5, depthWrite: false, visible: false,
+});
+const overlayGeo = new THREE.PlaneGeometry(FIELD_L, FIELD_W);
+const overlay = new THREE.Mesh(overlayGeo, overlayMat);
+overlay.rotation.x = -Math.PI / 2;
+overlay.position.y = 0.02;
+scene.add(overlay);
+
+// =========================
+// Goals + nets
+// =========================
+function makeGoal(goalX, netDir) {
+  const g = new THREE.Group();
+  const postR = 0.06;
+  const mat = new THREE.MeshLambertMaterial({ color: 0xffffff });
+
+  const postGeo = new THREE.CylinderGeometry(postR, postR, GOAL_H, 16);
+  for (const z of [-GOAL_W / 2, GOAL_W / 2]) {
+    const post = new THREE.Mesh(postGeo, mat);
+    post.position.set(goalX, GOAL_H / 2, z);
+    post.castShadow = true;
+    g.add(post);
+  }
+
+  const bar = new THREE.Mesh(
+    new THREE.CylinderGeometry(postR, postR, GOAL_W, 16),
+    mat
+  );
+  bar.position.set(goalX, GOAL_H, 0);
+  bar.rotation.x = Math.PI / 2;
+  bar.castShadow = true;
+  g.add(bar);
+
+  const backX = goalX + netDir * GOAL_D;
+  const netTopBackY = 0.4;
+
+  const netLineMat = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.55 });
+  const gridSize = 0.22;
+
+  function gridPanel(p1, p2, p3, p4) {
+    const divsU = Math.max(2, Math.round(p1.distanceTo(p2) / gridSize));
+    const divsV = Math.max(2, Math.round(p1.distanceTo(p4) / gridSize));
+    const positions = [];
+    for (let i = 0; i <= divsV; i++) {
+      const t = i / divsV;
+      const a = new THREE.Vector3().lerpVectors(p1, p4, t);
+      const b = new THREE.Vector3().lerpVectors(p2, p3, t);
+      positions.push(a.x, a.y, a.z, b.x, b.y, b.z);
+    }
+    for (let i = 0; i <= divsU; i++) {
+      const t = i / divsU;
+      const a = new THREE.Vector3().lerpVectors(p1, p2, t);
+      const b = new THREE.Vector3().lerpVectors(p4, p3, t);
+      positions.push(a.x, a.y, a.z, b.x, b.y, b.z);
+    }
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+    return new THREE.LineSegments(geo, netLineMat);
+  }
+
+  const w2 = GOAL_W / 2;
+  g.add(gridPanel(
+    new THREE.Vector3(backX, netTopBackY, -w2),
+    new THREE.Vector3(backX, netTopBackY, w2),
+    new THREE.Vector3(backX, 0, w2),
+    new THREE.Vector3(backX, 0, -w2),
+  ));
+  g.add(gridPanel(
+    new THREE.Vector3(goalX, GOAL_H, -w2),
+    new THREE.Vector3(goalX, GOAL_H, w2),
+    new THREE.Vector3(backX, netTopBackY, w2),
+    new THREE.Vector3(backX, netTopBackY, -w2),
+  ));
+  g.add(gridPanel(
+    new THREE.Vector3(goalX, GOAL_H, -w2),
+    new THREE.Vector3(backX, netTopBackY, -w2),
+    new THREE.Vector3(backX, 0, -w2),
+    new THREE.Vector3(goalX, 0, -w2),
+  ));
+  g.add(gridPanel(
+    new THREE.Vector3(goalX, GOAL_H, w2),
+    new THREE.Vector3(backX, netTopBackY, w2),
+    new THREE.Vector3(backX, 0, w2),
+    new THREE.Vector3(goalX, 0, w2),
+  ));
+
+  return g;
+}
+
+scene.add(makeGoal(-FIELD_L / 2, -1));
+scene.add(makeGoal( FIELD_L / 2,  1));
+
+// =========================
+// Corner flags
+// =========================
+function makeFlag(x, z) {
+  const g = new THREE.Group();
+  const pole = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.025, 0.025, 1.5, 8),
+    new THREE.MeshLambertMaterial({ color: 0xeeeeee })
+  );
+  pole.position.set(x, 0.75, z);
+  pole.castShadow = true;
+  g.add(pole);
+
+  const flag = new THREE.Mesh(
+    new THREE.PlaneGeometry(0.4, 0.25),
+    new THREE.MeshLambertMaterial({ color: 0x222222, side: THREE.DoubleSide })
+  );
+  const sx = x > 0 ? -1 : 1;
+  flag.position.set(x + sx * 0.2, 1.35, z);
+  g.add(flag);
+  return g;
+}
+
+[[-1, -1], [1, -1], [1, 1], [-1, 1]].forEach(([sx, sz]) => {
+  scene.add(makeFlag(sx * FIELD_L / 2, sz * FIELD_W / 2));
+});
+
+// =========================
+// View presets (scaled for 170m field length)
+// =========================
+const presets = {
+  default:   { pos: [140, 110, 150], target: [0, 0, 0] },
+  top:       { pos: [0, 240, 0.3],   target: [0, 0, 0] },
+  broadcast: { pos: [0, 70, 150],    target: [0, 0, 0] },
+  corner:    { pos: [150, 50, 90],   target: [0, 0, 0] },
+  goal:      { pos: [-FIELD_L/2 - 35, 8, 0], target: [0, 1, 0] },
+};
+
+function applyPreset(name) {
+  const p = presets[name];
+  if (!p) return;
+  camera.position.set(...p.pos);
+  controls.target.set(...p.target);
+  controls.update();
+}
+applyPreset('default');
+
+document.getElementById('preset').addEventListener('change', (e) => {
+  applyPreset(e.target.value);
+});
+
+// =========================
+// Lens (FOV) presets, full-frame 35mm equivalents
+// =========================
+function applyLens(focalMm) {
+  const sensorH = 24;
+  const newFov = 2 * Math.atan(sensorH / (2 * focalMm)) * 180 / Math.PI;
+  const oldFov = camera.fov;
+
+  const offset = new THREE.Vector3().subVectors(camera.position, controls.target);
+  const oldDist = offset.length();
+  const newDist = oldDist * Math.tan((oldFov / 2) * Math.PI / 180) / Math.tan((newFov / 2) * Math.PI / 180);
+
+  camera.fov = newFov;
+  camera.updateProjectionMatrix();
+  offset.setLength(THREE.MathUtils.clamp(newDist, controls.minDistance, controls.maxDistance));
+  camera.position.copy(controls.target).add(offset);
+  controls.update();
+}
+
+document.getElementById('lens').addEventListener('change', (e) => {
+  applyLens(parseFloat(e.target.value));
+});
+
+// =========================
+// Image overlay controls
+// =========================
+const fileInput = document.getElementById('fileInput');
+const filenameEl = document.getElementById('filename');
+const clearBtn = document.getElementById('clearImage');
+const opacitySlider = document.getElementById('opacity');
+const opacityVal = document.getElementById('opacityVal');
+
+fileInput.addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const url = URL.createObjectURL(file);
+  const loader = new THREE.TextureLoader();
+  loader.load(url, (tex) => {
+    tex.anisotropy = 16;
+    tex.minFilter = THREE.LinearMipmapLinearFilter;
+    if (overlayMat.map) overlayMat.map.dispose();
+    overlayMat.map = tex;
+    overlayMat.visible = true;
+    overlayMat.needsUpdate = true;
+    filenameEl.textContent = file.name;
+    filenameEl.title = file.name;
+    clearBtn.disabled = false;
+    URL.revokeObjectURL(url);
+  });
+});
+
+clearBtn.addEventListener('click', () => {
+  if (overlayMat.map) overlayMat.map.dispose();
+  overlayMat.map = null;
+  overlayMat.visible = false;
+  overlayMat.needsUpdate = true;
+  filenameEl.textContent = 'no image';
+  filenameEl.title = '';
+  clearBtn.disabled = true;
+  fileInput.value = '';
+});
+
+opacitySlider.addEventListener('input', (e) => {
+  const v = parseInt(e.target.value, 10);
+  overlayMat.opacity = v / 100;
+  opacityVal.textContent = v + '%';
+});
+
+// =========================
+// Screenshot
+// =========================
+document.getElementById('screenshot').addEventListener('click', () => {
+  renderer.render(scene, camera);
+  const link = document.createElement('a');
+  link.download = `soccer-field-${Date.now()}.png`;
+  link.href = renderer.domElement.toDataURL('image/png');
+  link.click();
+});
+
+// =========================
+// Resize + loop
+// =========================
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+(function animate() {
+  requestAnimationFrame(animate);
+  controls.update();
+  renderer.render(scene, camera);
+})();
+</script>
+</body>
+</html>

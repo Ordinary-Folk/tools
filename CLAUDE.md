@@ -6,6 +6,7 @@ Internal design tools for Ordinary Folk, hosted via GitHub Pages.
 
 - Landing: https://ordinary-folk.github.io/tools/
 - g-gradient-26: https://ordinary-folk.github.io/tools/g-gradient-26/
+- soccer-field-3d: https://ordinary-folk.github.io/tools/soccer-field-3d/
 
 ## Structure
 
@@ -21,6 +22,7 @@ Each tool lives in its own subfolder with an `index.html` entry point. The root 
 ## Current tools
 
 - `g-gradient-26/` Three-stop gradient playground with full colour, light mode, and dark mode tiers. Dark mode pipeline simulates AE Hue/Saturation + Brightness/Contrast effects with Classic Color Dodge blending onto a background. State is encoded in URL hash params so configurations are shareable via the "Copy link" button.
+- `soccer-field-3d/` Three.js scene of a soccer field at 5:2 ratio (170m x 68m outer, FIFA-spec markings preserved). View presets, lens (FOV) presets, PNG export. Includes an image-overlay plane sized to the field outline with file picker, opacity slider, and clear button, useful for comparing a 5:2 design to pitch geometry.
 
 ## Style preferences for this repo
 
