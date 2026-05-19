@@ -22,7 +22,7 @@ Each tool lives in its own subfolder with an `index.html` entry point. The root 
 ## Current tools
 
 - `g-gradient-26/` Three-stop gradient playground with full colour, light mode, and dark mode tiers. Dark mode pipeline simulates AE Hue/Saturation + Brightness/Contrast effects with Classic Color Dodge blending onto a background. State is encoded in URL hash params so configurations are shareable via the "Copy link" button.
-- `soccer-field-3d/` Three.js scene of a soccer field at 5:2 ratio (170m x 68m outer, FIFA-spec markings preserved). View presets, lens (FOV) presets, PNG export. Includes an image-overlay plane sized to the field outline with file picker, opacity slider, and clear button, useful for comparing a 5:2 design to pitch geometry.
+- `soccer-field-3d/` Three.js scene of a FIFA-spec soccer field (105m x 68m). View presets, lens (FOV) presets, PNG export. Two preview toggles: "View in 5:2" letterboxes the 3D render to a centered, responsive 5:2 crop box; "Preview logo" overlays a loaded image (file picker) at the same 5:2 box with an opacity slider, for previewing how a 5:2 graphic composites over the field. Screenshot composites the logo onto the render.
 
 ## Style preferences for this repo
 

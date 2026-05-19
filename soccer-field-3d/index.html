@@ -9,48 +9,97 @@
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&display=swap" rel="stylesheet">
 <style>
   html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #555555; font-family: 'Geist', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+  body.crop-5-2 { background: #1a1a1a; }
+
+  /* The 3D canvas wrapper. Defaults to fullscreen; when cropped, becomes
+     the largest 5:2 box that fits the viewport, centered. */
+  #canvas-wrap {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+  }
+  body.crop-5-2 #canvas-wrap {
+    inset: auto;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    aspect-ratio: 5 / 2;
+    width: min(100vw, 250vh);
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.08);
+  }
+  #canvas-wrap canvas { display: block; }
+
+  /* Logo overlay always tracks the same 5:2 box, regardless of crop state. */
+  #logo-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    aspect-ratio: 5 / 2;
+    width: min(100vw, 250vh);
+    object-fit: fill;
+    pointer-events: none;
+    display: none;
+    opacity: 0.5;
+  }
+  body.show-logo #logo-overlay { display: block; }
+
   #info {
-    position: absolute; top: 12px; left: 12px;
+    position: absolute; bottom: 12px; left: 12px;
     background: rgba(0,0,0,0.65); color: #fff;
-    padding: 8px 12px; border-radius: 6px; font-size: 12px;
+    padding: 6px 10px; border-radius: 6px; font-size: 11px;
     line-height: 1.5; pointer-events: none; user-select: none;
   }
+
   .controls {
     position: absolute; top: 12px; right: 12px;
     display: flex; flex-direction: column; gap: 8px;
-    align-items: flex-end;
+    align-items: stretch;
+    z-index: 10;
   }
   .row { display: flex; gap: 8px; align-items: center; }
+
   button, label.btn {
     padding: 8px 14px; background: #222; color: #fff;
     border: none; border-radius: 6px; cursor: pointer; font-size: 12px;
     font-family: inherit;
   }
-  button:hover, label.btn:hover { background: #444; }
-  button:disabled { background: #1a1a1a; color: #666; cursor: not-allowed; }
+  button:hover, label.btn:hover { background: #333; }
+  button:disabled { background: #1a1a1a; color: #555; cursor: not-allowed; }
   select {
     padding: 8px 10px; background: #222; color: #fff;
     border: none; border-radius: 6px; font-size: 12px; font-family: inherit;
   }
-  .overlay-panel {
+  .panel {
     background: rgba(0,0,0,0.65); color: #fff;
     padding: 10px 12px; border-radius: 6px;
     display: flex; flex-direction: column; gap: 8px;
-    font-size: 12px; min-width: 240px;
+    font-size: 12px;
+    min-width: 260px;
   }
-  .overlay-panel .row { justify-content: space-between; }
-  .overlay-panel input[type="range"] { flex: 1; accent-color: #fff; }
-  .overlay-panel .filename {
-    font-size: 11px; color: #aaa; max-width: 160px;
+  .panel .label { font-size: 11px; color: #aaa; text-transform: uppercase; letter-spacing: 0.06em; }
+  .panel .filename {
+    font-size: 11px; color: #aaa;
+    flex: 1;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
+  .toggle { display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none; }
+  .toggle input { margin: 0; accent-color: #5b79ff; cursor: pointer; }
+  .toggle.disabled { opacity: 0.4; cursor: not-allowed; }
+  .toggle.disabled input { cursor: not-allowed; }
+  input[type="range"] { flex: 1; accent-color: #fff; }
   #fileInput { display: none; }
+  .opacity-val { width: 32px; text-align: right; font-variant-numeric: tabular-nums; }
 </style>
 </head>
 <body>
+<div id="canvas-wrap"></div>
+<img id="logo-overlay" alt="" />
+
 <div id="info">
   Drag to orbit. Scroll to zoom. Right-click drag to pan.
 </div>
+
 <div class="controls">
   <div class="row">
     <select id="preset">
@@ -65,18 +114,31 @@
       <option value="50" selected>Lens: Normal (50mm)</option>
       <option value="85">Lens: Tele (85mm)</option>
     </select>
-    <button id="screenshot">Download PNG</button>
   </div>
-  <div class="overlay-panel">
+  <button id="screenshot">Download PNG</button>
+
+  <div class="panel">
+    <label class="toggle">
+      <input type="checkbox" id="crop52">
+      <span>View in 5:2</span>
+    </label>
+  </div>
+
+  <div class="panel">
+    <span class="label">Logo overlay</span>
     <div class="row">
       <label class="btn" for="fileInput">Load image</label>
-      <span class="filename" id="filename">no image</span>
       <button id="clearImage" disabled>Clear</button>
     </div>
+    <span class="filename" id="filename">no image loaded</span>
+    <label class="toggle disabled" id="showLogoLabel">
+      <input type="checkbox" id="showLogo" disabled>
+      <span>Preview logo</span>
+    </label>
     <div class="row">
-      <span>Opacity</span>
-      <input type="range" id="opacity" min="0" max="100" value="50">
-      <span id="opacityVal" style="width: 32px; text-align: right;">50%</span>
+      <span style="color:#aaa">Opacity</span>
+      <input type="range" id="opacity" min="0" max="100" value="50" disabled>
+      <span class="opacity-val" id="opacityVal">50%</span>
     </div>
     <input type="file" id="fileInput" accept="image/*">
   </div>
@@ -86,11 +148,10 @@
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 <script>
 // =========================
-// Field dimensions (m). 5:2 ratio (170 x 68).
-// FIFA markings preserved at real-world spec, centered.
+// FIFA pitch dimensions (m)
 // =========================
-const FIELD_L = 170;            // length (goal line to goal line)
-const FIELD_W = 68;             // width  (touchline to touchline)
+const FIELD_L = 105;
+const FIELD_W = 68;
 const GOAL_AREA_W = 18.32;
 const GOAL_AREA_D = 5.5;
 const PEN_AREA_W = 40.32;
@@ -101,15 +162,15 @@ const PEN_ARC_R = 9.15;
 const CORNER_R = 1;
 const GOAL_W = 7.32;
 const GOAL_H = 2.44;
-const GOAL_D = 2;               // net depth at base
-const LINE_W = 0.12;            // line width
-const MARGIN = 5;               // grass surround beyond touchlines
+const GOAL_D = 2;
+const LINE_W = 0.12;
+const MARGIN = 5;
 
 // =========================
 // Build field markings as a canvas texture
 // =========================
 function makeFieldTexture() {
-  const ppm = 16; // pixels per meter
+  const ppm = 20;
   const totalW = FIELD_L + MARGIN * 2;
   const totalH = FIELD_W + MARGIN * 2;
   const c = document.createElement('canvas');
@@ -117,11 +178,9 @@ function makeFieldTexture() {
   c.height = totalH * ppm;
   const ctx = c.getContext('2d');
 
-  // Surround (slightly darker grey)
   ctx.fillStyle = '#6d6d6d';
   ctx.fillRect(0, 0, c.width, c.height);
 
-  // Mowing stripes (perpendicular to length), subtle grey alternation
   const stripeCount = 13;
   const stripeH = (FIELD_W / stripeCount) * ppm;
   for (let i = 0; i < stripeCount; i++) {
@@ -129,38 +188,30 @@ function makeFieldTexture() {
     ctx.fillRect(MARGIN * ppm, MARGIN * ppm + i * stripeH, FIELD_L * ppm, stripeH);
   }
 
-  // Lines
   ctx.strokeStyle = '#ffffff';
   ctx.lineWidth = LINE_W * ppm;
   ctx.lineCap = 'butt';
 
-  // helper: field coord -> canvas px
   const m = (v) => (MARGIN + v) * ppm;
 
-  // Outer boundary
   ctx.strokeRect(m(0), m(0), FIELD_L * ppm, FIELD_W * ppm);
 
-  // Halfway line
   ctx.beginPath();
   ctx.moveTo(m(FIELD_L / 2), m(0));
   ctx.lineTo(m(FIELD_L / 2), m(FIELD_W));
   ctx.stroke();
 
-  // Center circle
   ctx.beginPath();
   ctx.arc(m(FIELD_L / 2), m(FIELD_W / 2), CENTER_R * ppm, 0, Math.PI * 2);
   ctx.stroke();
 
-  // Center spot
   ctx.fillStyle = '#ffffff';
   ctx.beginPath();
   ctx.arc(m(FIELD_L / 2), m(FIELD_W / 2), 0.18 * ppm, 0, Math.PI * 2);
   ctx.fill();
 
-  // Penalty arc angle (visible portion outside penalty area)
   const arcHalfAngle = Math.acos((PEN_AREA_D - PEN_SPOT_DIST) / PEN_ARC_R);
 
-  // --- Left half (x = 0 side)
   ctx.strokeRect(m(0), m((FIELD_W - PEN_AREA_W) / 2), PEN_AREA_D * ppm, PEN_AREA_W * ppm);
   ctx.strokeRect(m(0), m((FIELD_W - GOAL_AREA_W) / 2), GOAL_AREA_D * ppm, GOAL_AREA_W * ppm);
   ctx.beginPath();
@@ -170,7 +221,6 @@ function makeFieldTexture() {
   ctx.arc(m(PEN_SPOT_DIST), m(FIELD_W / 2), PEN_ARC_R * ppm, -arcHalfAngle, arcHalfAngle);
   ctx.stroke();
 
-  // --- Right half (x = FIELD_L side)
   ctx.strokeRect(m(FIELD_L - PEN_AREA_D), m((FIELD_W - PEN_AREA_W) / 2), PEN_AREA_D * ppm, PEN_AREA_W * ppm);
   ctx.strokeRect(m(FIELD_L - GOAL_AREA_D), m((FIELD_W - GOAL_AREA_W) / 2), GOAL_AREA_D * ppm, GOAL_AREA_W * ppm);
   ctx.beginPath();
@@ -181,7 +231,6 @@ function makeFieldTexture() {
           Math.PI - arcHalfAngle, Math.PI + arcHalfAngle);
   ctx.stroke();
 
-  // Corner arcs
   const corners = [
     [0, 0, 0, Math.PI / 2],
     [FIELD_L, 0, Math.PI / 2, Math.PI],
@@ -206,35 +255,34 @@ function makeFieldTexture() {
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x555555);
 
-const camera = new THREE.PerspectiveCamera(27, window.innerWidth / window.innerHeight, 0.1, 2000);
+const camera = new THREE.PerspectiveCamera(27, 1, 0.1, 1000);
 
 const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
 renderer.setPixelRatio(window.devicePixelRatio);
-renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-document.body.appendChild(renderer.domElement);
+const canvasWrap = document.getElementById('canvas-wrap');
+canvasWrap.appendChild(renderer.domElement);
 
 const controls = new THREE.OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.dampingFactor = 0.08;
 controls.minDistance = 8;
-controls.maxDistance = 800;
+controls.maxDistance = 500;
 controls.maxPolarAngle = Math.PI / 2 - 0.02;
 controls.target.set(0, 0, 0);
 
-// Lights
 scene.add(new THREE.AmbientLight(0xffffff, 0.55));
 const sun = new THREE.DirectionalLight(0xffffff, 0.85);
-sun.position.set(60, 120, 40);
+sun.position.set(40, 90, 30);
 sun.castShadow = true;
 sun.shadow.mapSize.set(2048, 2048);
-sun.shadow.camera.left = -120;
-sun.shadow.camera.right = 120;
-sun.shadow.camera.top = 80;
-sun.shadow.camera.bottom = -80;
+sun.shadow.camera.left = -90;
+sun.shadow.camera.right = 90;
+sun.shadow.camera.top = 70;
+sun.shadow.camera.bottom = -70;
 sun.shadow.camera.near = 1;
-sun.shadow.camera.far = 350;
+sun.shadow.camera.far = 250;
 sun.shadow.bias = -0.0005;
 scene.add(sun);
 
@@ -247,19 +295,6 @@ const field = new THREE.Mesh(fieldGeo, fieldMat);
 field.rotation.x = -Math.PI / 2;
 field.receiveShadow = true;
 scene.add(field);
-
-// =========================
-// Image overlay plane (sits just above the field).
-// Matches field outer dimensions so a 5:2 image aligns to touchlines.
-// =========================
-const overlayMat = new THREE.MeshBasicMaterial({
-  transparent: true, opacity: 0.5, depthWrite: false, visible: false,
-});
-const overlayGeo = new THREE.PlaneGeometry(FIELD_L, FIELD_W);
-const overlay = new THREE.Mesh(overlayGeo, overlayMat);
-overlay.rotation.x = -Math.PI / 2;
-overlay.position.y = 0.02;
-scene.add(overlay);
 
 // =========================
 // Goals + nets
@@ -373,14 +408,14 @@ function makeFlag(x, z) {
 });
 
 // =========================
-// View presets (scaled for 170m field length)
+// View presets
 // =========================
 const presets = {
-  default:   { pos: [140, 110, 150], target: [0, 0, 0] },
-  top:       { pos: [0, 240, 0.3],   target: [0, 0, 0] },
-  broadcast: { pos: [0, 70, 150],    target: [0, 0, 0] },
-  corner:    { pos: [150, 50, 90],   target: [0, 0, 0] },
-  goal:      { pos: [-FIELD_L/2 - 35, 8, 0], target: [0, 1, 0] },
+  default:   { pos: [90, 80, 110], target: [0, 0, 0] },
+  top:       { pos: [0, 165, 0.2], target: [0, 0, 0] },
+  broadcast: { pos: [0, 50, 110],  target: [0, 0, 0] },
+  corner:    { pos: [100, 35, 75], target: [0, 0, 0] },
+  goal:      { pos: [-FIELD_L/2 - 28, 8, 0], target: [0, 1, 0] },
 };
 
 function applyPreset(name) {
@@ -420,70 +455,122 @@ document.getElementById('lens').addEventListener('change', (e) => {
 });
 
 // =========================
-// Image overlay controls
+// Renderer sizing: track the canvas wrapper, which may be fullscreen or 5:2.
+// =========================
+function fitRenderer() {
+  const w = canvasWrap.clientWidth;
+  const h = canvasWrap.clientHeight;
+  if (!w || !h) return;
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+  renderer.setSize(w, h, false);
+}
+new ResizeObserver(fitRenderer).observe(canvasWrap);
+fitRenderer();
+
+// =========================
+// 5:2 crop toggle
+// =========================
+const crop52 = document.getElementById('crop52');
+crop52.addEventListener('change', () => {
+  document.body.classList.toggle('crop-5-2', crop52.checked);
+});
+
+// =========================
+// Logo overlay controls
 // =========================
 const fileInput = document.getElementById('fileInput');
 const filenameEl = document.getElementById('filename');
 const clearBtn = document.getElementById('clearImage');
+const showLogo = document.getElementById('showLogo');
+const showLogoLabel = document.getElementById('showLogoLabel');
 const opacitySlider = document.getElementById('opacity');
 const opacityVal = document.getElementById('opacityVal');
+const logoImg = document.getElementById('logo-overlay');
+
+function setLogoEnabled(enabled) {
+  showLogo.disabled = !enabled;
+  opacitySlider.disabled = !enabled;
+  showLogoLabel.classList.toggle('disabled', !enabled);
+  clearBtn.disabled = !enabled;
+}
+
+function applyLogoVisibility() {
+  const show = showLogo.checked && !!logoImg.src;
+  document.body.classList.toggle('show-logo', show);
+}
 
 fileInput.addEventListener('change', (e) => {
   const file = e.target.files[0];
   if (!file) return;
   const url = URL.createObjectURL(file);
-  const loader = new THREE.TextureLoader();
-  loader.load(url, (tex) => {
-    tex.anisotropy = 16;
-    tex.minFilter = THREE.LinearMipmapLinearFilter;
-    if (overlayMat.map) overlayMat.map.dispose();
-    overlayMat.map = tex;
-    overlayMat.visible = true;
-    overlayMat.needsUpdate = true;
-    filenameEl.textContent = file.name;
-    filenameEl.title = file.name;
-    clearBtn.disabled = false;
-    URL.revokeObjectURL(url);
-  });
+  if (logoImg.dataset.objectUrl) URL.revokeObjectURL(logoImg.dataset.objectUrl);
+  logoImg.dataset.objectUrl = url;
+  logoImg.src = url;
+  filenameEl.textContent = file.name;
+  filenameEl.title = file.name;
+  setLogoEnabled(true);
+  showLogo.checked = true;
+  applyLogoVisibility();
 });
 
 clearBtn.addEventListener('click', () => {
-  if (overlayMat.map) overlayMat.map.dispose();
-  overlayMat.map = null;
-  overlayMat.visible = false;
-  overlayMat.needsUpdate = true;
-  filenameEl.textContent = 'no image';
+  if (logoImg.dataset.objectUrl) URL.revokeObjectURL(logoImg.dataset.objectUrl);
+  logoImg.removeAttribute('src');
+  delete logoImg.dataset.objectUrl;
+  filenameEl.textContent = 'no image loaded';
   filenameEl.title = '';
-  clearBtn.disabled = true;
+  showLogo.checked = false;
+  setLogoEnabled(false);
+  applyLogoVisibility();
   fileInput.value = '';
 });
 
+showLogo.addEventListener('change', applyLogoVisibility);
+
 opacitySlider.addEventListener('input', (e) => {
   const v = parseInt(e.target.value, 10);
-  overlayMat.opacity = v / 100;
+  logoImg.style.opacity = (v / 100).toString();
   opacityVal.textContent = v + '%';
 });
 
+setLogoEnabled(false);
+
 // =========================
-// Screenshot
+// Screenshot: composite renderer + logo overlay into a single PNG.
+// Logo is positioned to match its on-screen 5:2 box within the canvas.
 // =========================
 document.getElementById('screenshot').addEventListener('click', () => {
   renderer.render(scene, camera);
+  const cw = renderer.domElement.width;
+  const ch = renderer.domElement.height;
+
+  const out = document.createElement('canvas');
+  out.width = cw;
+  out.height = ch;
+  const ctx = out.getContext('2d');
+  ctx.drawImage(renderer.domElement, 0, 0);
+
+  const logoShown = document.body.classList.contains('show-logo') && logoImg.src;
+  if (logoShown) {
+    const lw = Math.min(cw, ch * 2.5);
+    const lh = lw / 2.5;
+    const lx = (cw - lw) / 2;
+    const ly = (ch - lh) / 2;
+    ctx.globalAlpha = parseInt(opacitySlider.value, 10) / 100;
+    ctx.drawImage(logoImg, lx, ly, lw, lh);
+    ctx.globalAlpha = 1;
+  }
+
   const link = document.createElement('a');
   link.download = `soccer-field-${Date.now()}.png`;
-  link.href = renderer.domElement.toDataURL('image/png');
+  link.href = out.toDataURL('image/png');
   link.click();
 });
 
 // =========================
-// Resize + loop
+// Loop
 // =========================
-window.addEventListener('resize', () => {
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
-});
-
 (function animate() {
   requestAnimationFrame(animate);
   controls.update();
