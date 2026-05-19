@@ -536,6 +536,25 @@ opacitySlider.addEventListener('input', (e) => {
 
 setLogoEnabled(false);
 
+// Try to load a bundled default logo from ./default-logo.png. If it loads,
+// auto-enable both the logo overlay and the 5:2 crop so the page opens with
+// the full preview composition. If the file is missing, fall back silently.
+(function tryLoadDefaultLogo() {
+  const url = './default-logo.png';
+  const test = new Image();
+  test.onload = () => {
+    logoImg.src = url;
+    filenameEl.textContent = 'default-logo.png';
+    filenameEl.title = url;
+    setLogoEnabled(true);
+    showLogo.checked = true;
+    crop52.checked = true;
+    document.body.classList.add('crop-5-2');
+    applyLogoVisibility();
+  };
+  test.src = url;
+})();
+
 // =========================
 // Screenshot: composite renderer + logo overlay into a single PNG.
 // Logo is positioned to match its on-screen 5:2 box within the canvas.
