@@ -327,10 +327,47 @@ function makeGoal(goalX, netDir) {
   bar.castShadow = true;
   g.add(bar);
 
-  const backX = goalX + netDir * GOAL_D;
-  const netTopBackY = 0.4;
+  // Back-of-goal armature: two short side poles sitting just behind the
+  // back wall of the net, with ropes running from each pole top down to
+  // the back-top corner of the net. The net is a clean rectangular box
+  // at crossbar height; the ropes are external support only.
+  const backX = goalX + netDir * GOAL_D;             // back wall of net
+  const backPoleX = goalX + netDir * (GOAL_D + 0.6); // pole just behind net
+  const BACK_POLE_H = GOAL_H + 0.3;                   // slightly above crossbar
+  const w2 = GOAL_W / 2;
 
-  const netLineMat = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.55 });
+  const backPostGeo = new THREE.CylinderGeometry(postR * 0.7, postR * 0.7, BACK_POLE_H, 16);
+  for (const z of [-w2, w2]) {
+    const backPost = new THREE.Mesh(backPostGeo, mat);
+    backPost.position.set(backPoleX, BACK_POLE_H / 2, z);
+    backPost.castShadow = true;
+    g.add(backPost);
+  }
+
+  // Ropes: from back-pole top down-and-forward to the back-top corner of
+  // the net (at crossbar height).
+  const cableMat = new THREE.MeshLambertMaterial({ color: 0xeeeeee });
+  function addCable(z) {
+    const start = new THREE.Vector3(backPoleX, BACK_POLE_H, z);
+    const end = new THREE.Vector3(backX, GOAL_H, z);
+    const dir = new THREE.Vector3().subVectors(end, start);
+    const len = dir.length();
+    const cable = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.012, 0.012, len, 8),
+      cableMat
+    );
+    cable.position.copy(start).addScaledVector(dir, 0.5);
+    cable.quaternion.setFromUnitVectors(
+      new THREE.Vector3(0, 1, 0),
+      dir.clone().normalize()
+    );
+    cable.castShadow = true;
+    g.add(cable);
+  }
+  addCable(-w2);
+  addCable(w2);
+
+  const netLineMat = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.6 });
   const gridSize = 0.22;
 
   function gridPanel(p1, p2, p3, p4) {
@@ -354,28 +391,31 @@ function makeGoal(goalX, netDir) {
     return new THREE.LineSegments(geo, netLineMat);
   }
 
-  const w2 = GOAL_W / 2;
+  // Net: clean rectangular box at GOAL_H, open at front and bottom.
+  // Back panel (vertical wall at backX).
   g.add(gridPanel(
-    new THREE.Vector3(backX, netTopBackY, -w2),
-    new THREE.Vector3(backX, netTopBackY, w2),
+    new THREE.Vector3(backX, GOAL_H, -w2),
+    new THREE.Vector3(backX, GOAL_H, w2),
     new THREE.Vector3(backX, 0, w2),
     new THREE.Vector3(backX, 0, -w2),
   ));
+  // Top panel (horizontal at GOAL_H).
   g.add(gridPanel(
     new THREE.Vector3(goalX, GOAL_H, -w2),
     new THREE.Vector3(goalX, GOAL_H, w2),
-    new THREE.Vector3(backX, netTopBackY, w2),
-    new THREE.Vector3(backX, netTopBackY, -w2),
+    new THREE.Vector3(backX, GOAL_H, w2),
+    new THREE.Vector3(backX, GOAL_H, -w2),
   ));
+  // Side panels (vertical rectangles).
   g.add(gridPanel(
     new THREE.Vector3(goalX, GOAL_H, -w2),
-    new THREE.Vector3(backX, netTopBackY, -w2),
+    new THREE.Vector3(backX, GOAL_H, -w2),
     new THREE.Vector3(backX, 0, -w2),
     new THREE.Vector3(goalX, 0, -w2),
   ));
   g.add(gridPanel(
     new THREE.Vector3(goalX, GOAL_H, w2),
-    new THREE.Vector3(backX, netTopBackY, w2),
+    new THREE.Vector3(backX, GOAL_H, w2),
     new THREE.Vector3(backX, 0, w2),
     new THREE.Vector3(goalX, 0, w2),
   ));
