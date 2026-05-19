@@ -53,9 +53,13 @@
 
   .controls {
     position: absolute; top: 12px; right: 12px;
+    display: flex; flex-direction: row; gap: 8px;
+    align-items: flex-start;
+    z-index: 10;
+  }
+  .control-stack {
     display: flex; flex-direction: column; gap: 8px;
     align-items: stretch;
-    z-index: 10;
   }
   .row { display: flex; gap: 8px; align-items: center; }
 
@@ -101,29 +105,6 @@
 </div>
 
 <div class="controls">
-  <div class="row">
-    <select id="preset">
-      <option value="default">View: Default</option>
-      <option value="top">View: Top-down</option>
-      <option value="broadcast">View: Broadcast</option>
-      <option value="corner">View: Corner</option>
-      <option value="goal">View: Behind Goal</option>
-    </select>
-    <select id="lens">
-      <option value="24">Lens: Wide (24mm)</option>
-      <option value="50" selected>Lens: Normal (50mm)</option>
-      <option value="85">Lens: Tele (85mm)</option>
-    </select>
-  </div>
-  <button id="screenshot">Download PNG</button>
-
-  <div class="panel">
-    <label class="toggle">
-      <input type="checkbox" id="crop52">
-      <span>View in 5:2</span>
-    </label>
-  </div>
-
   <div class="panel">
     <span class="label">Logo overlay</span>
     <div class="row">
@@ -141,6 +122,31 @@
       <span class="opacity-val" id="opacityVal">50%</span>
     </div>
     <input type="file" id="fileInput" accept="image/*">
+  </div>
+
+  <div class="control-stack">
+    <div class="row">
+      <select id="preset">
+        <option value="default">View: Default</option>
+        <option value="top">View: Top-down</option>
+        <option value="broadcast">View: Broadcast</option>
+        <option value="corner">View: Corner</option>
+        <option value="goal">View: Behind Goal</option>
+      </select>
+      <select id="lens">
+        <option value="24">Lens: Wide (24mm)</option>
+        <option value="50" selected>Lens: Normal (50mm)</option>
+        <option value="85">Lens: Tele (85mm)</option>
+      </select>
+    </div>
+    <button id="screenshot">Download PNG</button>
+
+    <div class="panel">
+      <label class="toggle">
+        <input type="checkbox" id="crop52">
+        <span>View in 5:2</span>
+      </label>
+    </div>
   </div>
 </div>
 
