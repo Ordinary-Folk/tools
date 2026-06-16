@@ -3,17 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ordinary Folk tools</title>
+<title>Ordinary Folk Tools</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
   color-scheme: light dark;
   --bg: #fafaf9;
   --text: #1a1a1a;
   --muted: #6f6e6a;
+  --card: #ffffff;
+  --card-hover: #f4f4f2;
   --border: rgba(0, 0, 0, 0.08);
+  --tile: #2b2b2e;
+  --tile-text: #f5f5f3;
   --accent: #5b79ff;
 }
 @media (prefers-color-scheme: dark) {
@@ -21,7 +25,11 @@
     --bg: #0f0f10;
     --text: #f0efed;
     --muted: #9a9a96;
+    --card: #18181a;
+    --card-hover: #202023;
     --border: rgba(255, 255, 255, 0.08);
+    --tile: #2b2b2e;
+    --tile-text: #f5f5f3;
   }
 }
 * { box-sizing: border-box; }
@@ -29,48 +37,98 @@ body {
   font-family: 'Geist', -apple-system, sans-serif;
   background: var(--bg);
   color: var(--text);
-  max-width: 560px;
-  margin: 4rem auto;
-  padding: 0 1.5rem;
-  line-height: 1.6;
+  margin: 0;
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
 }
-h1 { font-weight: 500; font-size: 22px; margin: 0 0 0.25rem; letter-spacing: -0.01em; }
-.tagline { color: var(--muted); margin: 0 0 2.5rem; font-size: 14px; }
-.section-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 0.5rem; }
-ul { list-style: none; padding: 0; margin: 0; }
-li {
-  padding: 0.9rem 0;
-  border-bottom: 0.5px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+.wrap { max-width: 1040px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+header {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 1rem; margin-bottom: 2.75rem;
 }
-li:last-child { border-bottom: none; }
-a {
-  color: var(--text);
+.brand { display: flex; align-items: center; gap: 0.6rem; }
+.brand img { height: 26px; width: auto; }
+h1 { font-weight: 600; font-size: 20px; margin: 0; letter-spacing: -0.01em; }
+.account { font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 0.6rem; }
+.account a { color: var(--muted); text-decoration: none; border: 0.5px solid var(--border); padding: 0.3rem 0.7rem; border-radius: 7px; transition: color 0.15s, border-color 0.15s; }
+.account a:hover { color: var(--text); border-color: var(--muted); }
+#email { font-variant: tabular-nums; }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 1.1rem;
+}
+.card {
+  display: flex; flex-direction: column;
+  background: var(--card);
+  border: 0.5px solid var(--border);
+  border-radius: 14px;
+  padding: 1.1rem;
   text-decoration: none;
-  font-weight: 500;
-  font-size: 15px;
-  transition: color 0.15s;
+  color: inherit;
+  transition: background 0.15s, transform 0.1s, border-color 0.15s;
 }
-a:hover { color: var(--accent); }
-.desc { color: var(--muted); font-size: 13px; }
+.card:hover { background: var(--card-hover); border-color: var(--muted); }
+.card:active { transform: scale(0.99); }
+.tile {
+  width: 100%; aspect-ratio: 1 / 1;
+  background: var(--tile); color: var(--tile-text);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 0.85rem;
+}
+.tile svg { width: 38%; height: 38%; }
+.card h2 { font-size: 15px; font-weight: 500; margin: 0 0 2px; }
+.card .desc { font-size: 12.5px; color: var(--muted); }
+.card.soon { pointer-events: none; opacity: 0.55; }
+.card.soon .badge {
+  font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--muted); margin-top: 4px;
+}
 </style>
 </head>
 <body>
-<h1>Tools</h1>
-<p class="tagline">Internal utilities for Ordinary Folk.</p>
-<div class="section-label">Available</div>
-<ul>
-<li>
-  <a href="./g-gradient-26/">g-gradient-26</a>
-  <span class="desc">Three-stop gradient with light and dark mode variants</span>
-</li>
-<li>
-  <a href="./soccer-field-3d/">soccer-field-3d</a>
-  <span class="desc">FIFA-spec 3D soccer field with 5:2 crop preview and logo overlay</span>
-</li>
-</ul>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <img src="https://pub-56e21cb169af4746be142655f1882554.r2.dev/tools/of-logo.svg" alt="Ordinary Folk">
+      <h1>Tools</h1>
+    </div>
+    <div class="account">
+      <span id="email"></span>
+      <a href="/cdn-cgi/access/logout">Log out</a>
+    </div>
+  </header>
+
+  <div class="grid">
+    <a class="card" href="/review/">
+      <div class="tile">
+        <!-- film / review -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 4v16M17 4v16M3 9h4M3 15h4M17 9h4M17 15h4"/></svg>
+      </div>
+      <h2>OF Review</h2>
+      <span class="desc">Frame-accurate video review &amp; comments</span>
+    </a>
+
+    <div class="card soon">
+      <div class="tile">
+        <!-- calendar / schedule -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4M8 14h.01M12 14h.01M16 14h.01M8 17h.01M12 17h.01"/></svg>
+      </div>
+      <h2>Master Schedule</h2>
+      <span class="desc">Production schedule</span>
+      <span class="badge">Coming soon</span>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Show the signed-in OF account (provided by Cloudflare Access, same-origin).
+  fetch('/cdn-cgi/access/get-identity')
+    .then((r) => (r.ok ? r.json() : null))
+    .then((d) => { if (d && d.email) document.getElementById('email').textContent = d.email; })
+    .catch(() => {});
+</script>
 </body>
 </html>
