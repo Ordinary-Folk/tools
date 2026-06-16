@@ -6,7 +6,10 @@ project). Individual tools live in their own folders/repos and are proxied in.
 
 - **Live:** https://tools.ordinary.co  (landing grid of tools)
 - **First tool:** https://tools.ordinary.co/review  (OF Review)
-- **Repo:** `github.com/Ordinary-Folk/tools` · **Pages project:** `of-tools`
+- **Pages project:** `of-tools` · **Source of truth:** this Dropbox folder.
+  `github.com/Ordinary-Folk/tools` is a **backup snapshot only** — it is NOT
+  connected to deploys and does not auto-sync. To publish changes you must run
+  the wrangler deploy below (or ask Jorge to); pushing to GitHub does nothing.
 
 > New here / migrating an app? Read **MIGRATING.md** for the step-by-step.
 
