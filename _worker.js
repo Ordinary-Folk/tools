@@ -24,7 +24,7 @@
 const APPS = {
   '/review': { origin: 'https://of-review-hub.pages.dev', strip: true },
   '/project-tracker': { origin: 'https://of-project-tracker.vercel.app', strip: false },
-  // '/schedule': { origin: 'https://<stefan-deploys-here>', strip: false },
+  '/schedule': { origin: 'https://of-master-schedule.vercel.app', strip: false },
 }
 
 // For reference only - these are enforced as Access *bypass* policies in the
