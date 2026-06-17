@@ -23,12 +23,21 @@
 //                    subfolder). The path is forwarded unchanged.
 const APPS = {
   '/review': { origin: 'https://of-review-hub.pages.dev', strip: true },
+  '/project-tracker': { origin: 'https://of-project-tracker.vercel.app', strip: false },
   // '/schedule': { origin: 'https://<stefan-deploys-here>', strip: false },
 }
 
 // For reference only - these are enforced as Access *bypass* policies in the
 // Zero Trust dashboard so non-OF clients can open share links without a login.
-// const PUBLIC_PATHS = ['/review/v/*']
+// const PUBLIC_PATHS = [
+//   '/review/v/*',
+//   // Project Tracker public board-review links (Next.js app under /project-tracker):
+//   // the page, its data endpoint, and its JS/CSS chunks all need bypassing or a
+//   // logged-out client gets a blank page (the _next/* analog of /review/assets).
+//   '/project-tracker/review/*',
+//   '/project-tracker/api/review/*',
+//   '/project-tracker/_next/*',
+// ]
 
 export default {
   async fetch(request, env) {
