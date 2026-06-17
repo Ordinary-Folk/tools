@@ -25,6 +25,13 @@ const APPS = {
   '/review': { origin: 'https://of-review-hub.pages.dev', strip: true },
   '/project-tracker': { origin: 'https://of-project-tracker.vercel.app', strip: false },
   '/schedule': { origin: 'https://of-master-schedule.vercel.app', strip: false },
+  // Time Tracker is a Vite SPA built with base '/time-tracker/' (VITE_BASE_PATH),
+  // deployed at the Vercel project root (which also serves api/sso/session). So
+  // strip:true, like /review: the hub drops the prefix and the origin sees
+  // /assets/x, / (SPA fallback) and /api/sso/session. This is the dedicated hub
+  // build (base /time-tracker/); the standalone time-tracker-web-six.vercel.app
+  // (base /) stays for the Chrome extension + Mac app direct links.
+  '/time-tracker': { origin: 'https://of-time-tracker-hub.vercel.app', strip: true },
 }
 
 // For reference only - these are enforced as Access *bypass* policies in the
