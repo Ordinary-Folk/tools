@@ -25,6 +25,7 @@ project). Individual tools live in their own folders/repos and are proxied in.
                   static assets here            reverse-proxy by path prefix
                   (landing page,                /review  → of-review-hub.pages.dev
                    single-file tools)           /schedule → <stefan's origin>
+                                                /time-tracker → of-time-tracker-hub.vercel.app
 ```
 
 - **Hosting:** Cloudflare Pages, "advanced mode". `_worker.js` is the router.
@@ -84,6 +85,28 @@ pointing at that tool's mint endpoint, and keep the tool's secrets in its own
 worker. (A tool with no login of its own can skip all this and just read the
 Access identity from `/cdn-cgi/access/get-identity`.)
 
+## SSO variant: Time Tracker (real Supabase session)
+
+Time Tracker (`/time-tracker`, `strip: true`) has real per-user RLS (Postgres
+policies read `auth.jwt()->>'email'`), so trusting the Access email client-side is
+not enough; it needs a genuine Supabase session whose JWT carries that email.
+Instead of the Firebase worker bridge above, the mint lives inside the tool as a
+Vercel function (no `_worker.js` `__sso` branch needed):
+
+1. App (`useAuth`) calls same-origin `GET /time-tracker/api/sso/session?have=<currentEmail>`
+   (gated, so it carries `Cf-Access-Jwt-Assertion`).
+2. The function verifies the Access JWT, then with the Supabase service-role key
+   ensures the auth user exists, generates a magic-link token, and exchanges it
+   for a real session (`generateLink` + `verifyOtp`).
+3. It returns `{ access_token, refresh_token }` and the app calls
+   `supabase.auth.setSession`. The `?have=` param lets the function skip minting
+   when the existing session already belongs to the Access user (a stale-session
+   guard for shared browsers; mismatches get re-minted).
+
+Sign-out clears the Supabase session AND redirects to `/cdn-cgi/access/logout` so
+the hub login is cleared too, not just the app session. The service-role key lives
+in the tool's own Vercel project env (`SUPABASE_SERVICE_ROLE_KEY`), never here.
+
 ## Deploy the hub
 
 ```bash
@@ -115,6 +138,12 @@ Access / Pages-domain changes via API, use the token in `.dev.vars`
 - OF Review app build: `of-review-hub` (`of-review-hub.pages.dev`, served under
   `/review`); standalone legacy build still at `of-review.pages.dev` (untouched)
 - OF Review API: `of-review-worker.ordinary-folk-hosting.workers.dev`
+- Time Tracker hub build: `of-time-tracker-hub` (`of-time-tracker-hub.vercel.app`,
+  served under `/time-tracker`, Vite base `/time-tracker/`, also serves the
+  `/api/sso/session` mint function). Standalone `time-tracker-web-six.vercel.app`
+  (base `/`) is kept for the Chrome extension + Mac app direct links.
+- Time Tracker repo: `Ordinary-Folk/of-time-tracker`; shares Supabase project
+  `gpzizkqnwiqdwqkyukcp` (same DB as OF Schedule)
 - Access team: `ordinaryfolk.cloudflareaccess.com`; hub app AUD:
   `5bff407839e790119d8676e372b3b612c00ea2958271d51e7e8c045cff997fbc`
 
