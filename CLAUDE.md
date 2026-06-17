@@ -6,10 +6,14 @@ project). Individual tools live in their own folders/repos and are proxied in.
 
 - **Live:** https://tools.ordinary.co  (landing grid of tools)
 - **First tool:** https://tools.ordinary.co/review  (OF Review)
-- **Pages project:** `of-tools` · **Source of truth:** this Dropbox folder.
-  `github.com/Ordinary-Folk/tools` is a **backup snapshot only** — it is NOT
-  connected to deploys and does not auto-sync. To publish changes you must run
-  the wrangler deploy below (or ask Jorge to); pushing to GitHub does nothing.
+- **Pages project:** `of-tools` · **Source of truth:** the GitHub repo
+  `github.com/Ordinary-Folk/tools`. Clone it to a non-Dropbox path (e.g.
+  `~/Dev/of/tools`) and work there; commit + push so collaborators get your
+  edits. (The old Dropbox copy was the source of truth until it was archived on
+  2026-06-17.) GitHub is NOT connected to deploys and does not auto-sync, so
+  pushing does not deploy — to publish, run the wrangler deploy below (or ask
+  Jorge). Secret: `.dev.vars` (Cloudflare API token) is gitignored; a fresh clone
+  needs it copied in.
 
 > New here / migrating an app? Read **MIGRATING.md** for the step-by-step.
 
