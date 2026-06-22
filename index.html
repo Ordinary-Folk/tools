@@ -86,6 +86,39 @@ h1 { font-weight: 600; font-size: 20px; margin: 0; letter-spacing: -0.01em; }
   font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em;
   color: var(--muted); margin-top: 4px;
 }
+
+/* Mobile: drop the big square tiles. Each card becomes a compact, stacked
+   row — small icon on the left, title + description on the right. */
+@media (max-width: 600px) {
+  .wrap { padding: 1.75rem 1rem 3rem; }
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 0.7rem;
+  }
+  .card {
+    display: grid;
+    grid-template-columns: 52px 1fr;
+    grid-template-areas:
+      "tile title"
+      "tile desc";
+    column-gap: 0.9rem;
+    align-items: center;
+    padding: 0.85rem 1rem;
+    border-radius: 12px;
+  }
+  .tile {
+    grid-area: tile;
+    width: 52px; height: 52px;
+    aspect-ratio: auto;
+    margin-bottom: 0;
+    align-self: center;
+    border-radius: 11px;
+  }
+  .tile svg { width: 46%; height: 46%; }
+  .card h2 { grid-area: title; align-self: end; }
+  .card .desc { grid-area: desc; align-self: start; line-height: 1.35; }
+  .card.soon .badge { grid-area: desc; align-self: start; margin-top: 0; }
+}
 </style>
 </head>
 <body>
