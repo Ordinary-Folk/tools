@@ -6,10 +6,22 @@ project). Individual tools live in their own folders/repos and are proxied in.
 
 - **Live:** https://tools.ordinary.co  (landing grid of tools)
 - **First tool:** https://tools.ordinary.co/review  (OF Review)
-- **Pages project:** `of-tools` · **Source of truth:** this Dropbox folder.
-  `github.com/Ordinary-Folk/tools` is a **backup snapshot only** — it is NOT
-  connected to deploys and does not auto-sync. To publish changes you must run
-  the wrangler deploy below (or ask Jorge to); pushing to GitHub does nothing.
+- **Pages project:** `of-tools` · **Source of truth:** the GitHub repo
+  `github.com/Ordinary-Folk/tools`. Unlike the Vercel apps, **pushing here does
+  NOT deploy** — GitHub isn't wired to the Pages build; publish with the wrangler
+  deploy below (or ask Jorge). The Cloudflare API token lives in `.dev.vars`
+  (gitignored).
+
+> **Source control & multi-editor workflow (Jorge + Stefan).** This repo lives in the `Ordinary-Folk` GitHub org. **GitHub is how we sync — never Dropbox.** Work from a clone on a NON-Dropbox path (a shared Dropbox folder corrupts `.git` and makes conflict copies instead of merging).
+>
+> Every session:
+> 1. `git checkout main && git pull` — start from the latest.
+> 2. Branch your work: `git checkout -b <name>`.
+> 3. Commit and push the branch as you go (`git push -u origin <name>`) so the other person can see it.
+> 4. Before merging to main: **give the other person a heads-up**, then `git checkout main && git pull` once more so you merge on top of their latest.
+> 5. Merge, push main. Depending on the app, **a push to main may auto-deploy to production** — treat merging as shipping (see the deploy section below).
+>
+> Secrets (`.env*`, `worker/.dev.vars`, `.wrangler`) are gitignored — they live only on disk and in the Cloudflare / Firebase / Supabase consoles. A fresh clone needs them copied in.
 
 > New here / migrating an app? Read **MIGRATING.md** for the step-by-step.
 
