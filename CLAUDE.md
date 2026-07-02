@@ -79,6 +79,12 @@ apps (managed in Zero Trust → Access controls → Applications):
 The most-specific path wins, so the public paths stay open while everything else
 requires login.
 
+**Session length:** the gate app's session is **730h (1 month)** — bumped from
+the 24h default on 2026-07-02 because daily re-logins were annoying. If people
+start getting login prompts more often than ~monthly, check the app's Session
+Duration in Zero Trust before suspecting anything else. (Note: deploys never
+log anyone out — Access cookies are independent of Pages deployments.)
+
 ## Single sign-on into a tool (the Firebase pattern)
 
 Because the app UI is behind Access, the hub already knows who the user is. A
