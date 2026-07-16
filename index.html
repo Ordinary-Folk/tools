@@ -8,32 +8,34 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/icons/icon-32.png">
 <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-title" content="OF Tools">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#F2F0EB">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#131313">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
   color-scheme: light dark;
-  --bg: #fafaf9;
-  --text: #1a1a1a;
-  --muted: #6f6e6a;
+  --bg: #F2F0EB;
+  --text: #121212;
+  --muted: #6E6C66;
   --card: #ffffff;
-  --card-hover: #f4f4f2;
-  --border: rgba(0, 0, 0, 0.08);
-  --tile: #2b2b2e;
-  --tile-text: #f5f5f3;
-  --accent: #5b79ff;
+  --card-hover: #FAF9F5;
+  --border: rgba(0, 0, 0, 0.07);
+  /* tool tile colors (brand pixel icons) */
+  --tile-review: #4353F0;
+  --tile-tracker: #47703F;
+  --tile-schedule: #F4562A;
+  --tile-time: #B4A55E;
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #0f0f10;
-    --text: #f0efed;
-    --muted: #9a9a96;
-    --card: #18181a;
-    --card-hover: #202023;
-    --border: rgba(255, 255, 255, 0.08);
-    --tile: #2b2b2e;
-    --tile-text: #f5f5f3;
+    --bg: #131313;
+    --text: #F2F1EE;
+    --muted: #98968F;
+    --card: #202021;
+    --card-hover: #28282a;
+    --border: rgba(255, 255, 255, 0.07);
   }
 }
 * { box-sizing: border-box; }
@@ -50,8 +52,8 @@ header {
   display: flex; align-items: center; justify-content: space-between;
   gap: 1rem; margin-bottom: 2.75rem;
 }
-.brand { display: flex; align-items: center; gap: 0.6rem; }
-.brand img { height: 26px; width: auto; }
+.brand { display: flex; align-items: center; gap: 0.65rem; color: var(--text); }
+.brand svg { height: 22px; width: auto; display: block; }
 h1 { font-weight: 600; font-size: 20px; margin: 0; letter-spacing: -0.01em; }
 .account { font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 0.6rem; }
 .account a { color: var(--muted); text-decoration: none; border: 0.5px solid var(--border); padding: 0.3rem 0.7rem; border-radius: 7px; transition: color 0.15s, border-color 0.15s; }
@@ -77,12 +79,16 @@ h1 { font-weight: 600; font-size: 20px; margin: 0; letter-spacing: -0.01em; }
 .card:active { transform: scale(0.99); }
 .tile {
   width: 100%; aspect-ratio: 1 / 1;
-  background: var(--tile); color: var(--tile-text);
   border-radius: 10px;
   display: flex; align-items: center; justify-content: center;
   margin-bottom: 0.85rem;
+  overflow: hidden;
 }
-.tile svg { width: 38%; height: 38%; }
+.tile svg { width: 100%; height: 100%; display: block; }
+.tile-review { background: var(--tile-review); }
+.tile-tracker { background: var(--tile-tracker); }
+.tile-schedule { background: var(--tile-schedule); }
+.tile-time { background: var(--tile-time); }
 .card h2 { font-size: 15px; font-weight: 500; margin: 0 0 2px; }
 .card .desc { font-size: 12.5px; color: var(--muted); }
 .card.soon { pointer-events: none; opacity: 0.55; }
@@ -118,7 +124,6 @@ h1 { font-weight: 600; font-size: 20px; margin: 0; letter-spacing: -0.01em; }
     align-self: center;
     border-radius: 11px;
   }
-  .tile svg { width: 46%; height: 46%; }
   .card h2 { grid-area: title; align-self: end; }
   .card .desc { grid-area: desc; align-self: start; line-height: 1.35; }
   .card.soon .badge { grid-area: desc; align-self: start; margin-top: 0; }
@@ -129,7 +134,12 @@ h1 { font-weight: 600; font-size: 20px; margin: 0; letter-spacing: -0.01em; }
 <div class="wrap">
   <header>
     <div class="brand">
-      <img src="https://pub-56e21cb169af4746be142655f1882554.r2.dev/tools/of-logo.svg" alt="Ordinary Folk">
+      <!-- OF mark (ring O + F + dot), inherits currentColor -->
+      <svg viewBox="0 0 684.04 344.08" fill="currentColor" aria-label="Ordinary Folk">
+        <path d="M172.04,0C77.03,0,0,77.03,0,172.04s77.03,172.04,172.04,172.04,172.04-77.03,172.04-172.04S267.06,0,172.04,0ZM172.04,269.7c-52.77,0-95.56-42.78-95.56-95.56s42.79-95.56,95.56-95.56,95.56,42.79,95.56,95.56-42.78,95.56-95.56,95.56Z"/>
+        <path d="M595.51,155.23c-23.7,0-42.92,19.21-42.92,42.92s19.22,42.92,42.92,42.92,42.92-19.21,42.92-42.92-19.22-42.92-42.92-42.92Z"/>
+        <polygon points="506.98 13.3 430.5 13.3 430.5 85.39 430.5 330.71 506.98 330.71 506.98 85.39 684.04 85.39 684.04 13.3 506.98 13.3"/>
+      </svg>
       <h1>Tools</h1>
     </div>
     <div class="account">
@@ -140,36 +150,36 @@ h1 { font-weight: 600; font-size: 20px; margin: 0; letter-spacing: -0.01em; }
 
   <div class="grid">
     <a class="card" href="/review/">
-      <div class="tile">
-        <!-- film / review -->
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 4v16M17 4v16M3 9h4M3 15h4M17 9h4M17 15h4"/></svg>
+      <div class="tile tile-review">
+        <!-- pixel magnifying glass -->
+        <svg viewBox="0 0 16 16" shape-rendering="crispEdges" fill="#111111"><path d="M5 3h3v1H5zM4 4h1v1H4zM8 4h1v1H8zM3 5h1v1H3zM9 5h1v1H9zM3 6h1v1H3zM9 6h1v1H9zM3 7h1v1H3zM9 7h1v1H9zM4 8h1v1H4zM8 8h1v1H8zM5 9h3v1H5zM9 9h2v1H9zM9 10h3v1H9zM10 11h3v1H10zM11 12h2v1H11z"/></svg>
       </div>
       <h2>OF Review</h2>
       <span class="desc">Frame-accurate video review &amp; comments</span>
     </a>
 
     <a class="card" href="/project-tracker/">
-      <div class="tile">
-        <!-- grid / shot tracker -->
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg>
+      <div class="tile tile-tracker">
+        <!-- pixel overlapping squares -->
+        <svg viewBox="0 0 16 16" shape-rendering="crispEdges" fill="#111111"><path d="M3 3h7v1H3zM3 4h7v1H3zM3 5h7v1H3zM3 6h7v1H3zM3 7h7v1H3zM11 7h3v1H11zM3 8h7v1H3zM13 8h1v1H13zM3 9h7v1H3zM13 9h1v1H13zM13 10h1v1H13zM7 11h1v1H7zM13 11h1v1H13zM7 12h1v1H7zM13 12h1v1H13zM7 13h7v1H7z"/></svg>
       </div>
       <h2>Project Tracker</h2>
       <span class="desc">Shot tracking through design &amp; animation</span>
     </a>
 
     <a class="card" href="/schedule/">
-      <div class="tile">
-        <!-- calendar / schedule -->
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4M8 14h.01M12 14h.01M16 14h.01M8 17h.01M12 17h.01"/></svg>
+      <div class="tile tile-schedule">
+        <!-- pixel document -->
+        <svg viewBox="0 0 16 16" shape-rendering="crispEdges" fill="#111111"><path d="M6 3h7v1H6zM5 4h2v1H5zM12 4h1v1H12zM4 5h3v1H4zM12 5h1v1H12zM4 6h1v1H4zM12 6h1v1H12zM4 7h1v1H4zM6 7h5v1H6zM12 7h1v1H12zM4 8h1v1H4zM6 8h5v1H6zM12 8h1v1H12zM4 9h1v1H4zM12 9h1v1H12zM4 10h1v1H4zM6 10h5v1H6zM12 10h1v1H12zM4 11h1v1H4zM6 11h5v1H6zM12 11h1v1H12zM4 12h1v1H4zM12 12h1v1H12zM4 13h9v1H4z"/></svg>
       </div>
       <h2>Master Schedule</h2>
       <span class="desc">Production schedule</span>
     </a>
 
     <a class="card" href="/time-tracker/">
-      <div class="tile">
-        <!-- stopwatch / time tracker -->
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="14" r="8"/><path d="M12 14V9.5M9 3h6M12 3v3M18.5 7.5l-1.4 1.4"/></svg>
+      <div class="tile tile-time">
+        <!-- pixel clock -->
+        <svg viewBox="0 0 16 16" shape-rendering="crispEdges" fill="#111111"><path d="M5 2h5v1H5zM4 3h1v1H4zM10 3h1v1H10zM3 4h1v1H3zM7 4h1v1H7zM11 4h1v1H11zM2 5h1v1H2zM7 5h1v1H7zM12 5h1v1H12zM2 6h1v1H2zM7 6h1v1H7zM12 6h1v1H12zM2 7h1v1H2zM7 7h4v1H7zM12 7h1v1H12zM2 8h1v1H2zM12 8h1v1H12zM2 9h1v1H2zM12 9h1v1H12zM3 10h1v1H3zM11 10h1v1H11zM4 11h1v1H4zM10 11h1v1H10zM5 12h5v1H5z"/></svg>
       </div>
       <h2>Time Tracker</h2>
       <span class="desc">Track time across projects</span>
