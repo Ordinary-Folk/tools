@@ -27,6 +27,7 @@
   --tile-tracker: #47703F;
   --tile-schedule: #F4562A;
   --tile-time: #B4A55E;
+  --tile-admin: #6E56CF;
 }
 @media (prefers-color-scheme: dark) {
   :root {
@@ -89,6 +90,7 @@ h1 { font-weight: 600; font-size: 20px; margin: 0; letter-spacing: -0.01em; }
 .tile-tracker { background: var(--tile-tracker); }
 .tile-schedule { background: var(--tile-schedule); }
 .tile-time { background: var(--tile-time); }
+.tile-admin { background: var(--tile-admin); }
 .card h2 { font-size: 15px; font-weight: 500; margin: 0 0 2px; }
 .card .desc { font-size: 12.5px; color: var(--muted); }
 .card.soon { pointer-events: none; opacity: 0.55; }
@@ -184,14 +186,33 @@ h1 { font-weight: 600; font-size: 20px; margin: 0; letter-spacing: -0.01em; }
       <h2>Time Tracker</h2>
       <span class="desc">Track time across projects</span>
     </a>
+
+    <!-- Admin: hidden by default; revealed by the script below only for the
+         admin emails. The app itself (of-admin.vercel.app) also self-gates. -->
+    <a class="card" id="admin-card" href="https://of-admin.vercel.app" style="display:none">
+      <div class="tile tile-admin">
+        <!-- pixel padlock -->
+        <svg viewBox="0 0 16 16" shape-rendering="crispEdges" fill="#111111"><path d="M6 4h4v1H6zM6 5h1v1H6zM9 5h1v1H9zM6 6h1v1H6zM9 6h1v1H9zM5 7h6v1H5zM5 8h6v1H5zM5 9h2v1H5zM9 9h2v1H9zM5 10h2v1H5zM9 10h2v1H9zM5 11h6v1H5zM5 12h6v1H5z"/></svg>
+      </div>
+      <h2>OF Admin</h2>
+      <span class="desc">Studio master database</span>
+    </a>
   </div>
 </div>
 
 <script>
   // Show the signed-in OF account (provided by Cloudflare Access, same-origin).
+  // Only these accounts see the OF Admin tile (cosmetic — the app self-gates too).
+  const ADMINS = ['stefan@ordinaryfolk.co', 'mona@ordinaryfolk.co', 'jorge@ordinaryfolk.co'];
   fetch('/cdn-cgi/access/get-identity')
     .then((r) => (r.ok ? r.json() : null))
-    .then((d) => { if (d && d.email) document.getElementById('email').textContent = d.email; })
+    .then((d) => {
+      if (!d || !d.email) return;
+      document.getElementById('email').textContent = d.email;
+      if (ADMINS.includes(d.email.toLowerCase())) {
+        document.getElementById('admin-card').style.display = '';
+      }
+    })
     .catch(() => {});
 </script>
 </body>
