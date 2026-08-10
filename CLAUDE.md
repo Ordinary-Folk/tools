@@ -133,6 +133,7 @@ export CLOUDFLARE_ACCOUNT_ID=ef803ddd03bdba02130ed576873a4187
 # stage so .git/CLAUDE.md/docs aren't published:
 rm -rf /tmp/of-tools-deploy && mkdir -p /tmp/of-tools-deploy
 cp index.html _worker.js /tmp/of-tools-deploy/
+cp -R icons fonts /tmp/of-tools-deploy/
 npx wrangler@latest pages deploy /tmp/of-tools-deploy --project-name of-tools --branch main
 ```
 
@@ -167,4 +168,8 @@ Access / Pages-domain changes via API, use the token in `.dev.vars`
 
 ## Style
 
-- No em dashes. Geist + Geist Mono. Direct, concise, Slack-native tone.
+- No em dashes. Direct, concise, Slack-native tone.
+- OF Review design system (light adaptation): cool-neutral paper, Inter + DM Sans
+  (self-hosted in `fonts/`), system mono for paths/codes, radius 0, single blue
+  accent reserved for actions. Tile colors are identity only (rebrand
+  secondaries + ink for Admin).

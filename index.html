@@ -8,81 +8,120 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/icons/icon-32.png">
 <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-title" content="OF Tools">
-<meta name="theme-color" media="(prefers-color-scheme: light)" content="#F2F0EB">
-<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#131313">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#F5F6F8">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0F1114">
 <style>
+@font-face { font-family: 'Inter'; font-style: normal; font-weight: 400; font-display: swap; src: url('/fonts/inter-400.woff2') format('woff2'); }
+@font-face { font-family: 'Inter'; font-style: normal; font-weight: 500; font-display: swap; src: url('/fonts/inter-500.woff2') format('woff2'); }
+@font-face { font-family: 'Inter'; font-style: normal; font-weight: 600; font-display: swap; src: url('/fonts/inter-600.woff2') format('woff2'); }
+@font-face { font-family: 'Inter'; font-style: normal; font-weight: 700; font-display: swap; src: url('/fonts/inter-700.woff2') format('woff2'); }
+@font-face { font-family: 'DM Sans'; font-style: normal; font-weight: 500; font-display: swap; src: url('/fonts/dm-sans-500.woff2') format('woff2'); }
+@font-face { font-family: 'DM Sans'; font-style: normal; font-weight: 600; font-display: swap; src: url('/fonts/dm-sans-600.woff2') format('woff2'); }
+@font-face { font-family: 'DM Sans'; font-style: normal; font-weight: 700; font-display: swap; src: url('/fonts/dm-sans-700.woff2') format('woff2'); }
+
 :root {
   color-scheme: light dark;
-  --bg: #F2F0EB;
-  --text: #121212;
-  --muted: #6E6C66;
-  --card: #ffffff;
-  --card-hover: #FAF9F5;
-  --border: rgba(0, 0, 0, 0.07);
-  /* tool tile colors (brand pixel icons) */
-  --tile-review: #4353F0;
-  --tile-tracker: #47703F;
-  --tile-schedule: #F4562A;
-  --tile-time: #B4A55E;
-  --tile-admin: #6E56CF;
+  --bg: #F5F6F8;
+  --card: #FFFFFF;
+  --card-hover: #F5F6F8;
+  --text: #14161A;
+  --muted: #6F7681;
+  --faint: #9AA1AB;
+  --border: #E2E5EA;
+  --border-strong: #C8CDD5;
+  --accent: #2563EB; /* actions and links only; decorative use is off-limits */
+  --mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  /* tool tile colors: identity, not UI color (rebrand secondaries + ink) */
+  --tile-review: #FB6D36;
+  --tile-tracker: #85AEB2;
+  --tile-schedule: #DDA8F5;
+  --tile-time: #AFA278;
+  --tile-admin: #14161A;
+  --tile-admin-glyph: #F5F6F8;
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #131313;
-    --text: #F2F1EE;
-    --muted: #98968F;
-    --card: #202021;
-    --card-hover: #28282a;
-    --border: rgba(255, 255, 255, 0.07);
+    --bg: #0F1114;
+    --card: #16191D;
+    --card-hover: #1C2027;
+    --text: #EDEFF3;
+    --muted: #9AA1AB;
+    --faint: #6F7681;
+    --border: #272B31;
+    --border-strong: #3A3F47;
+    --tile-admin: #EDEFF3;
+    --tile-admin-glyph: #14161A;
   }
 }
 * { box-sizing: border-box; }
 body {
-  font-family: 'Geist', -apple-system, sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   background: var(--bg);
   color: var(--text);
   margin: 0;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
 }
-.wrap { max-width: 1040px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+
 header {
   display: flex; align-items: center; justify-content: space-between;
-  gap: 1rem; margin-bottom: 2.75rem;
+  gap: 1rem;
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 20px;
 }
-.brand { display: flex; align-items: center; gap: 0.65rem; color: var(--text); }
-.brand svg { height: 22px; width: auto; display: block; }
-h1 { font-weight: 600; font-size: 20px; margin: 0; letter-spacing: -0.01em; }
-.account { font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 0.6rem; }
-.account a { color: var(--muted); text-decoration: none; border: 0.5px solid var(--border); padding: 0.3rem 0.7rem; border-radius: 7px; transition: color 0.15s, border-color 0.15s; }
-.account a:hover { color: var(--text); border-color: var(--muted); }
-#email { font-variant: tabular-nums; }
+.brand { display: flex; align-items: center; gap: 10px; color: var(--text); }
+.brand svg { height: 16px; width: auto; display: block; }
+.brand span { font-size: 14px; font-weight: 600; }
+.account { display: flex; align-items: center; gap: 12px; }
+#email, .email-mobile {
+  font-family: var(--mono); font-size: 12px; color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.account a {
+  color: var(--text); text-decoration: none;
+  font-size: 12px; font-weight: 500;
+  border: 1px solid var(--border); background: var(--card);
+  padding: 5px 10px;
+  transition: border-color 120ms ease, background 120ms ease;
+}
+.account a:hover { border-color: var(--border-strong); background: var(--bg); }
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
-  gap: 1.1rem;
+main { padding: 24px 20px 32px; }
+.wrap {
+  max-width: 768px; margin: 0 auto;
+  display: flex; flex-direction: column; gap: 14px;
+}
+
+.title-row { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
+h1 {
+  margin: 0;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 30px; font-weight: 700; letter-spacing: -0.01em;
+}
+#count {
+  font-family: var(--mono); font-size: 12px; color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.email-mobile { display: none; }
+
+.list {
+  background: var(--card);
+  border: 1px solid var(--border);
+  display: flex; flex-direction: column;
 }
 .card {
-  display: flex; flex-direction: column;
-  background: var(--card);
-  border: 0.5px solid var(--border);
-  border-radius: 14px;
-  padding: 1.1rem;
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
   text-decoration: none;
-  color: inherit;
-  transition: background 0.15s, transform 0.1s, border-color 0.15s;
+  transition: background 120ms ease;
 }
-.card:hover { background: var(--card-hover); border-color: var(--muted); }
-.card:active { transform: scale(0.99); }
+.card:last-child { border-bottom: 0; }
+.card:hover { background: var(--card-hover); }
 .tile {
-  width: 100%; aspect-ratio: 1 / 1;
-  border-radius: 10px;
-  display: flex; align-items: center; justify-content: center;
-  margin-bottom: 0.85rem;
+  width: 36px; height: 36px; flex: none;
   overflow: hidden;
 }
 .tile svg { width: 100%; height: 100%; display: block; }
@@ -91,126 +130,171 @@ h1 { font-weight: 600; font-size: 20px; margin: 0; letter-spacing: -0.01em; }
 .tile-schedule { background: var(--tile-schedule); }
 .tile-time { background: var(--tile-time); }
 .tile-admin { background: var(--tile-admin); }
-.card h2 { font-size: 15px; font-weight: 500; margin: 0 0 2px; }
-.card .desc { font-size: 12.5px; color: var(--muted); }
-.card.soon { pointer-events: none; opacity: 0.55; }
-.card.soon .badge {
-  font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em;
-  color: var(--muted); margin-top: 4px;
+.tile-admin svg { fill: var(--tile-admin-glyph); }
+.card .text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.card .name-row { display: flex; align-items: center; gap: 8px; }
+.card h2 { font-size: 14px; font-weight: 600; line-height: 1.3; margin: 0; }
+.card .desc {
+  font-size: 12px; color: var(--muted); line-height: 1.35;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.card .path { font-family: var(--mono); font-size: 11px; color: var(--faint); }
+.card .chev { width: 14px; height: 14px; flex: none; display: block; stroke: var(--faint); }
+.tag {
+  font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  padding: 1px 5px;
 }
 
-/* Mobile: drop the big square tiles. Each card becomes a compact, stacked
-   row — small icon on the left, title + description on the right. */
+.footnote { margin: 0; font-size: 12px; color: var(--faint); line-height: 1.5; }
+
+.card:focus-visible, .account a:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--card), 0 0 0 4px var(--accent);
+}
+@media (prefers-reduced-motion: reduce) {
+  .card, .account a { transition: none; }
+}
+
 @media (max-width: 600px) {
-  .wrap { padding: 1.75rem 1rem 3rem; }
-  .grid {
-    grid-template-columns: 1fr;
-    gap: 0.7rem;
-  }
-  .card {
-    display: grid;
-    grid-template-columns: 52px 1fr;
-    grid-template-areas:
-      "tile title"
-      "tile desc";
-    column-gap: 0.9rem;
-    align-items: center;
-    padding: 0.85rem 1rem;
-    border-radius: 12px;
-  }
-  .tile {
-    grid-area: tile;
-    width: 52px; height: 52px;
-    aspect-ratio: auto;
-    margin-bottom: 0;
-    align-self: center;
-    border-radius: 11px;
-  }
-  .card h2 { grid-area: title; align-self: end; }
-  .card .desc { grid-area: desc; align-self: start; line-height: 1.35; }
-  .card.soon .badge { grid-area: desc; align-self: start; margin-top: 0; }
+  header { padding: 12px 16px; }
+  .brand svg { height: 15px; }
+  #email { display: none; }
+  .account a { padding: 7px 10px; }
+  main { padding: 20px 16px 28px; }
+  .title-row { flex-direction: column; align-items: stretch; gap: 2px; }
+  h1 { font-size: 26px; }
+  #count { display: none; }
+  .email-mobile { display: block; }
+  .card { min-height: 44px; }
+  .tile { width: 40px; height: 40px; }
+  .card .desc { white-space: normal; }
+  .card .path { display: none; }
+  .card .chev { width: 16px; height: 16px; }
+  .footnote-more { display: none; }
 }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <div class="brand">
-      <!-- OF mark (ring O + F + dot), inherits currentColor -->
-      <svg viewBox="0 0 684.04 344.08" fill="currentColor" aria-label="Ordinary Folk">
-        <path d="M172.04,0C77.03,0,0,77.03,0,172.04s77.03,172.04,172.04,172.04,172.04-77.03,172.04-172.04S267.06,0,172.04,0ZM172.04,269.7c-52.77,0-95.56-42.78-95.56-95.56s42.79-95.56,95.56-95.56,95.56,42.79,95.56,95.56-42.78,95.56-95.56,95.56Z"/>
-        <path d="M595.51,155.23c-23.7,0-42.92,19.21-42.92,42.92s19.22,42.92,42.92,42.92,42.92-19.21,42.92-42.92-19.22-42.92-42.92-42.92Z"/>
-        <polygon points="506.98 13.3 430.5 13.3 430.5 85.39 430.5 330.71 506.98 330.71 506.98 85.39 684.04 85.39 684.04 13.3 506.98 13.3"/>
-      </svg>
-      <h1>Tools</h1>
-    </div>
-    <div class="account">
-      <span id="email"></span>
-      <a href="/cdn-cgi/access/logout">Log out</a>
-    </div>
-  </header>
-
-  <div class="grid">
-    <a class="card" href="/review/">
-      <div class="tile tile-review">
-        <!-- pixel magnifying glass -->
-        <svg viewBox="0 0 16 16" shape-rendering="crispEdges" fill="#111111"><path d="M5 3h3v1H5zM4 4h1v1H4zM8 4h1v1H8zM3 5h1v1H3zM9 5h1v1H9zM3 6h1v1H3zM9 6h1v1H9zM3 7h1v1H3zM9 7h1v1H9zM4 8h1v1H4zM8 8h1v1H8zM5 9h3v1H5zM9 9h2v1H9zM9 10h3v1H9zM10 11h3v1H10zM11 12h2v1H11z"/></svg>
-      </div>
-      <h2>OF Review</h2>
-      <span class="desc">Frame-accurate video review &amp; comments</span>
-    </a>
-
-    <a class="card" href="/project-tracker/">
-      <div class="tile tile-tracker">
-        <!-- pixel overlapping squares -->
-        <svg viewBox="0 0 16 16" shape-rendering="crispEdges" fill="#111111"><path d="M3 3h7v1H3zM3 4h7v1H3zM3 5h7v1H3zM3 6h7v1H3zM3 7h7v1H3zM11 7h3v1H11zM3 8h7v1H3zM13 8h1v1H13zM3 9h7v1H3zM13 9h1v1H13zM13 10h1v1H13zM7 11h1v1H7zM13 11h1v1H13zM7 12h1v1H7zM13 12h1v1H13zM7 13h7v1H7z"/></svg>
-      </div>
-      <h2>Project Tracker</h2>
-      <span class="desc">Shot tracking through design &amp; animation</span>
-    </a>
-
-    <a class="card" href="/schedule/">
-      <div class="tile tile-schedule">
-        <!-- pixel document -->
-        <svg viewBox="0 0 16 16" shape-rendering="crispEdges" fill="#111111"><path d="M6 3h7v1H6zM5 4h2v1H5zM12 4h1v1H12zM4 5h3v1H4zM12 5h1v1H12zM4 6h1v1H4zM12 6h1v1H12zM4 7h1v1H4zM6 7h5v1H6zM12 7h1v1H12zM4 8h1v1H4zM6 8h5v1H6zM12 8h1v1H12zM4 9h1v1H4zM12 9h1v1H12zM4 10h1v1H4zM6 10h5v1H6zM12 10h1v1H12zM4 11h1v1H4zM6 11h5v1H6zM12 11h1v1H12zM4 12h1v1H4zM12 12h1v1H12zM4 13h9v1H4z"/></svg>
-      </div>
-      <h2>Master Schedule</h2>
-      <span class="desc">Production schedule</span>
-    </a>
-
-    <a class="card" href="/time-tracker/">
-      <div class="tile tile-time">
-        <!-- pixel clock -->
-        <svg viewBox="0 0 16 16" shape-rendering="crispEdges" fill="#111111"><path d="M5 2h5v1H5zM4 3h1v1H4zM10 3h1v1H10zM3 4h1v1H3zM7 4h1v1H7zM11 4h1v1H11zM2 5h1v1H2zM7 5h1v1H7zM12 5h1v1H12zM2 6h1v1H2zM7 6h1v1H7zM12 6h1v1H12zM2 7h1v1H2zM7 7h4v1H7zM12 7h1v1H12zM2 8h1v1H2zM12 8h1v1H12zM2 9h1v1H2zM12 9h1v1H12zM3 10h1v1H3zM11 10h1v1H11zM4 11h1v1H4zM10 11h1v1H10zM5 12h5v1H5z"/></svg>
-      </div>
-      <h2>Time Tracker</h2>
-      <span class="desc">Track time across projects</span>
-    </a>
-
-    <!-- Admin: hidden by default; revealed by the script below only for the
-         admin emails. The app itself (of-admin.vercel.app) also self-gates. -->
-    <a class="card" id="admin-card" href="https://of-admin.vercel.app" style="display:none">
-      <div class="tile tile-admin">
-        <!-- pixel padlock -->
-        <svg viewBox="0 0 16 16" shape-rendering="crispEdges" fill="#111111"><path d="M6 4h4v1H6zM6 5h1v1H6zM9 5h1v1H9zM6 6h1v1H6zM9 6h1v1H9zM5 7h6v1H5zM5 8h6v1H5zM5 9h2v1H5zM9 9h2v1H9zM5 10h2v1H5zM9 10h2v1H9zM5 11h6v1H5zM5 12h6v1H5z"/></svg>
-      </div>
-      <h2>OF Admin</h2>
-      <span class="desc">Studio master database</span>
-    </a>
+<header>
+  <div class="brand">
+    <!-- OF mark (ring O + F + dot), inherits currentColor -->
+    <svg viewBox="0 0 684.04 344.08" fill="currentColor" aria-label="Ordinary Folk">
+      <path d="M172.04,0C77.03,0,0,77.03,0,172.04s77.03,172.04,172.04,172.04,172.04-77.03,172.04-172.04S267.06,0,172.04,0ZM172.04,269.7c-52.77,0-95.56-42.78-95.56-95.56s42.79-95.56,95.56-95.56,95.56,42.79,95.56,95.56-42.78,95.56-95.56,95.56Z"/>
+      <path d="M595.51,155.23c-23.7,0-42.92,19.21-42.92,42.92s19.22,42.92,42.92,42.92,42.92-19.21,42.92-42.92-19.22-42.92-42.92-42.92Z"/>
+      <polygon points="506.98 13.3 430.5 13.3 430.5 85.39 430.5 330.71 506.98 330.71 506.98 85.39 684.04 85.39 684.04 13.3 506.98 13.3"/>
+    </svg>
+    <span>Tools</span>
   </div>
-</div>
+  <div class="account">
+    <span id="email"></span>
+    <a href="/cdn-cgi/access/logout">Sign out</a>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="title-row">
+      <h1>Tools</h1>
+      <span id="count"></span>
+      <span class="email-mobile" id="email-mobile"></span>
+    </div>
+
+    <nav class="list">
+      <a class="card" href="/review/">
+        <span class="tile tile-review">
+          <!-- pixel magnifying glass -->
+          <svg viewBox="0 0 16 16" shape-rendering="crispEdges" fill="#14161A"><path d="M5 3h3v1H5zM4 4h1v1H4zM8 4h1v1H8zM3 5h1v1H3zM9 5h1v1H9zM3 6h1v1H3zM9 6h1v1H9zM3 7h1v1H3zM9 7h1v1H9zM4 8h1v1H4zM8 8h1v1H8zM5 9h3v1H5zM9 9h2v1H9zM9 10h3v1H9zM10 11h3v1H10zM11 12h2v1H11z"/></svg>
+        </span>
+        <span class="text">
+          <h2>OF Review</h2>
+          <span class="desc">Frame-accurate video review and comments</span>
+        </span>
+        <span class="path">/review</span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+      </a>
+
+      <a class="card" href="/project-tracker/">
+        <span class="tile tile-tracker">
+          <!-- pixel overlapping squares -->
+          <svg viewBox="0 0 16 16" shape-rendering="crispEdges" fill="#14161A"><path d="M3 3h7v1H3zM3 4h7v1H3zM3 5h7v1H3zM3 6h7v1H3zM3 7h7v1H3zM11 7h3v1H11zM3 8h7v1H3zM13 8h1v1H13zM3 9h7v1H3zM13 9h1v1H13zM13 10h1v1H13zM7 11h1v1H7zM13 11h1v1H13zM7 12h1v1H7zM13 12h1v1H13zM7 13h7v1H7z"/></svg>
+        </span>
+        <span class="text">
+          <h2>Project Tracker</h2>
+          <span class="desc">Shot tracking through design and animation</span>
+        </span>
+        <span class="path">/project-tracker</span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+      </a>
+
+      <a class="card" href="/schedule/">
+        <span class="tile tile-schedule">
+          <!-- pixel document -->
+          <svg viewBox="0 0 16 16" shape-rendering="crispEdges" fill="#14161A"><path d="M6 3h7v1H6zM5 4h2v1H5zM12 4h1v1H12zM4 5h3v1H4zM12 5h1v1H12zM4 6h1v1H4zM12 6h1v1H12zM4 7h1v1H4zM6 7h5v1H6zM12 7h1v1H12zM4 8h1v1H4zM6 8h5v1H6zM12 8h1v1H12zM4 9h1v1H4zM12 9h1v1H12zM4 10h1v1H4zM6 10h5v1H6zM12 10h1v1H12zM4 11h1v1H4zM6 11h5v1H6zM12 11h1v1H12zM4 12h1v1H4zM12 12h1v1H12zM4 13h9v1H4z"/></svg>
+        </span>
+        <span class="text">
+          <h2>Master Schedule</h2>
+          <span class="desc">Production schedule</span>
+        </span>
+        <span class="path">/schedule</span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+      </a>
+
+      <a class="card" href="/time-tracker/">
+        <span class="tile tile-time">
+          <!-- pixel clock -->
+          <svg viewBox="0 0 16 16" shape-rendering="crispEdges" fill="#14161A"><path d="M5 2h5v1H5zM4 3h1v1H4zM10 3h1v1H10zM3 4h1v1H3zM7 4h1v1H7zM11 4h1v1H11zM2 5h1v1H2zM7 5h1v1H7zM12 5h1v1H12zM2 6h1v1H2zM7 6h1v1H7zM12 6h1v1H12zM2 7h1v1H2zM7 7h4v1H7zM12 7h1v1H12zM2 8h1v1H2zM12 8h1v1H12zM2 9h1v1H2zM12 9h1v1H12zM3 10h1v1H3zM11 10h1v1H11zM4 11h1v1H4zM10 11h1v1H10zM5 12h5v1H5z"/></svg>
+        </span>
+        <span class="text">
+          <h2>Time Tracker</h2>
+          <span class="desc">Track time across projects</span>
+        </span>
+        <span class="path">/time-tracker</span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+      </a>
+
+      <!-- Admin: hidden by default; revealed by the script below only for the
+           admin emails. The app itself (of-admin.vercel.app) also self-gates. -->
+      <a class="card" id="admin-card" href="https://of-admin.vercel.app" style="display:none">
+        <span class="tile tile-admin">
+          <!-- pixel padlock -->
+          <svg viewBox="0 0 16 16" shape-rendering="crispEdges" fill="#F5F6F8"><path d="M6 4h4v1H6zM6 5h1v1H6zM9 5h1v1H9zM6 6h1v1H6zM9 6h1v1H9zM5 7h6v1H5zM5 8h6v1H5zM5 9h2v1H5zM9 9h2v1H9zM5 10h2v1H5zM9 10h2v1H9zM5 11h6v1H5zM5 12h6v1H5z"/></svg>
+        </span>
+        <span class="text">
+          <span class="name-row">
+            <h2>OF Admin</h2>
+            <span class="tag">Admin only</span>
+          </span>
+          <span class="desc">Studio master database</span>
+        </span>
+        <span class="path">of-admin.vercel.app</span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+      </a>
+    </nav>
+
+    <p class="footnote">One login covers every tool.<span class="footnote-more"> Signed in through Cloudflare Access with your @ordinaryfolk.co account.</span></p>
+  </div>
+</main>
 
 <script>
   // Show the signed-in OF account (provided by Cloudflare Access, same-origin).
   // Only these accounts see the OF Admin tile (cosmetic — the app self-gates too).
   const ADMINS = ['stefan@ordinaryfolk.co', 'mona@ordinaryfolk.co', 'jorge@ordinaryfolk.co'];
+  const updateCount = () => {
+    const n = [...document.querySelectorAll('.card')].filter((c) => c.style.display !== 'none').length;
+    document.getElementById('count').textContent = n + ' tool' + (n === 1 ? '' : 's');
+  };
+  updateCount();
   fetch('/cdn-cgi/access/get-identity')
     .then((r) => (r.ok ? r.json() : null))
     .then((d) => {
       if (!d || !d.email) return;
       document.getElementById('email').textContent = d.email;
+      document.getElementById('email-mobile').textContent = d.email;
       if (ADMINS.includes(d.email.toLowerCase())) {
         document.getElementById('admin-card').style.display = '';
+        updateCount();
       }
     })
     .catch(() => {});
