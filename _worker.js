@@ -32,6 +32,13 @@ const APPS = {
   // build (base /time-tracker/); the standalone time-tracker-web-six.vercel.app
   // (base /) stays for the Chrome extension + Mac app direct links.
   '/time-tracker': { origin: 'https://of-time-tracker-hub.vercel.app', strip: true },
+  // OF Admin is a Vite SPA built with base '/admin/' (VITE_BASE_PATH), deployed
+  // at the root of its ONE Vercel project (which also serves its /api/* functions
+  // incl. api/sso/session, the Access → Supabase bridge). strip:true like
+  // /time-tracker. The same project answers on of-admin.vercel.app/admin/… via
+  // its own rewrite — the Xero/Gmail OAuth callbacks and the gmail-sync cron
+  // stay on that bare host. Access already gates /admin/ (no policy change).
+  '/admin': { origin: 'https://of-admin.vercel.app', strip: true },
 }
 
 // For reference only - these are enforced as Access *bypass* policies in the

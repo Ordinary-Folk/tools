@@ -255,8 +255,9 @@ h1 {
       </a>
 
       <!-- Admin: hidden by default; revealed by the script below only for the
-           admin emails. The app itself (of-admin.vercel.app) also self-gates. -->
-      <a class="card" id="admin-card" href="https://of-admin.vercel.app" style="display:none">
+           admin emails. Proxied at /admin/ (hub SSO, no second login); the app
+           itself also self-gates to the admin team. -->
+      <a class="card" id="admin-card" href="/admin/" style="display:none">
         <span class="tile tile-admin">
           <!-- pixel padlock -->
           <svg viewBox="0 0 16 16" shape-rendering="crispEdges" fill="#F5F6F8"><path d="M6 4h4v1H6zM6 5h1v1H6zM9 5h1v1H9zM6 6h1v1H6zM9 6h1v1H9zM5 7h6v1H5zM5 8h6v1H5zM5 9h2v1H5zM9 9h2v1H9zM5 10h2v1H5zM9 10h2v1H9zM5 11h6v1H5zM5 12h6v1H5z"/></svg>
