@@ -38,6 +38,7 @@ project). Individual tools live in their own folders/repos and are proxied in.
                   (landing page,                /review  → of-review-hub.pages.dev
                    single-file tools)           /schedule → <stefan's origin>
                                                 /time-tracker → of-time-tracker-hub.vercel.app
+                                                /admin → of-admin.vercel.app
 ```
 
 - **Hosting:** Cloudflare Pages, "advanced mode". `_worker.js` is the router.
