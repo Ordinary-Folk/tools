@@ -161,6 +161,10 @@ Access / Pages-domain changes via API, use the token in `.dev.vars`
   served under `/time-tracker`, Vite base `/time-tracker/`, also serves the
   `/api/sso/session` mint function). Standalone `time-tracker-web-six.vercel.app`
   (base `/`) is kept for the Chrome extension + Mac app direct links.
+- OF Admin: `of-admin` Vercel project (`of-admin.vercel.app`), served under
+  `/admin`, Vite base `/admin/`, serves its own `/api/sso/session` mint function.
+  The bare host also answers at `/admin/…` (Xero/Gmail OAuth callbacks + the
+  gmail-sync cron stay there). Same monorepo as the Time Tracker (`apps/admin`).
 - Time Tracker repo: `Ordinary-Folk/of-time-tracker`; shares Supabase project
   `gpzizkqnwiqdwqkyukcp` (same DB as OF Schedule)
 - Access team: `ordinaryfolk.cloudflareaccess.com`; hub app AUD:
