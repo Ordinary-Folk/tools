@@ -104,6 +104,53 @@ pointing at that tool's mint endpoint, and keep the tool's secrets in its own
 worker. (A tool with no login of its own can skip all this and just read the
 Access identity from `/cdn-cgi/access/get-identity`.)
 
+## Shared people photos (one avatar everywhere)
+
+Every tool shows an OF teammate the same way: their **Slack profile photo** in a
+circle, falling back to **initials** when they have no custom Slack photo, the
+image fails to load, or the viewer isn't OF staff. Clients/guests always get
+initials.
+
+- **Source:** `GET /__people/avatars` (same origin, gated by Access, so it
+  works from any tool page an OF user has open; a logged-out client on a public
+  review link gets a 302 and should just fall back to initials) →
+  `{ people: [{ email, name, display, photo }] }`. `name` = Slack real name,
+  `display` = Slack display name, `photo` = 72px image URL. `_worker.js`
+  `handlePeopleAvatars()` re-checks the Access JWT, then fetches the list from
+  the of-review Worker (`/hub/people-avatars`, hub secret; it holds the Slack
+  token, maps Slack emails back to OF emails through its alias table and
+  caches 6h). The browser may keep the response for an hour.
+- **Matching:** by **email** when the tool knows it; otherwise by an exact,
+  case-insensitive match on the person's Slack `name` or `display`. A name two
+  people share matches nobody (no wrong faces).
+- **Look:** circle, photo `object-cover`; fallback initials = first letters of
+  the FIRST TWO words (`Jorge R. Canedo E.` → `JR`, same as OF Review) on the
+  person's colour. Comment-style avatars use OF Review's `commenterColor`
+  (`oklch(0.62 0.16 hue)`, hue from a name hash). Presence rows (Schedule,
+  whiteboard) keep their own per-user colour as a ring, since it matches that
+  person's cursor/selection.
+
+Copy-paste client snippet (no dependencies):
+
+```ts
+let peoplePromise: Promise<{ email: string; name: string; display: string; photo: string }[]> | null = null
+export function loadOfPeople() {
+  peoplePromise ??= fetch('/__people/avatars', { credentials: 'same-origin' })
+    .then((r) => (r.ok ? r.json() : { people: [] }))
+    .then((d) => d.people ?? [])
+    .catch(() => [])
+  return peoplePromise
+}
+const norm = (s: string) => s.normalize('NFKD').replace(/[\u0300-\u036f]/g, '').trim().toLowerCase()
+export function photoFor(people: { email: string; name: string; display: string; photo: string }[], who: { email?: string | null; name?: string | null }) {
+  if (who.email) return people.find((p) => p.email === who.email!.toLowerCase())?.photo ?? null
+  const n = who.name ? norm(who.name) : ''
+  if (!n) return null
+  const hits = people.filter((p) => norm(p.name) === n || (p.display && norm(p.display) === n))
+  return hits.length === 1 ? hits[0].photo : null
+}
+```
+
 ## SSO variant: Time Tracker (real Supabase session)
 
 Time Tracker (`/time-tracker`, `strip: true`) has real per-user RLS (Postgres
