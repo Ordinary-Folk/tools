@@ -67,6 +67,14 @@ export default {
       return handleSso(request, env)
     }
 
+    // Shared OF people photos (Slack profile pictures) for every tool on the
+    // hub, so a teammate looks the same everywhere. Gated like the rest of the
+    // hostname (NOT under a bypass): signed-in OF staff get the list; clients on
+    // public review links get a 302 and their tools fall back to initials.
+    if (url.pathname === '/__people/avatars') {
+      return handlePeopleAvatars(request, env)
+    }
+
     for (const [prefix, app] of Object.entries(APPS)) {
       if (url.pathname === prefix || url.pathname.startsWith(prefix + '/')) {
         return proxyTo(request, url, app, prefix)
@@ -103,6 +111,30 @@ async function handleSso(request, env) {
   })
   const data = await res.json().catch(() => ({ error: 'mint-failed' }))
   return jsonResp(data, res.status)
+}
+
+// GET /__people/avatars → { people: [{ email, name, display, photo }] }: every OF
+// teammate with a custom Slack photo (name = Slack real name, display = Slack
+// display name). The of-review Worker holds the Slack token and caches the list
+// (6h); this route re-checks the Access JWT, fetches it with the hub secret, and
+// lets the browser keep it for an hour. Tools match a person by email when they
+// have one, else by an exact (case-insensitive) real/display name; a name two
+// people share matches nobody. See CLAUDE.md "Shared people photos".
+async function handlePeopleAvatars(request, env) {
+  const jwt = request.headers.get('Cf-Access-Jwt-Assertion')
+  if (!jwt) return jsonResp({ error: 'no-access' }, 401)
+  const claims = await verifyAccessJwt(jwt)
+  const email = String(claims?.email || '').toLowerCase()
+  if (!claims || !email.endsWith('@ordinaryfolk.co')) return jsonResp({ error: 'forbidden' }, 403)
+  if (!env.HUB_SSO_SECRET) return jsonResp({ error: 'unconfigured' }, 500)
+  const res = await fetch(`${OF_REVIEW_WORKER}/hub/people-avatars`, {
+    headers: { 'x-hub-secret': env.HUB_SSO_SECRET },
+  })
+  const data = await res.json().catch(() => null)
+  if (!res.ok || !data) return jsonResp({ error: 'unavailable' }, 502)
+  return new Response(JSON.stringify(data), {
+    headers: { 'content-type': 'application/json', 'cache-control': 'private, max-age=3600' },
+  })
 }
 
 async function verifyAccessJwt(jwt) {
