@@ -224,7 +224,23 @@ async function proxyTo(request, url, app, prefix) {
     init.body = request.body
   }
 
+  // Hashed build files (/assets/…). Right after a Pages deploy the alias can
+  // answer a brand-new file with the SPA's index.html for a few seconds. Those
+  // files are served "immutable, 1 year", so that HTML got cached (here and in
+  // browsers) and the app went blank. So: never read this proxy's cache for
+  // them (a unique query string; Pages ignores it, browsers still cache the
+  // real file for a year), and never pass HTML through for one.
+  const isAsset = /\/assets\/[^/]+\.[a-z0-9]+$/i.test(path)
+  if (isAsset && request.method === 'GET') target.searchParams.set('hub-nocache', String(Date.now()))
+
   const upstream = await fetch(target, init)
+
+  if (isAsset && (upstream.headers.get('content-type') || '').includes('text/html')) {
+    return new Response('Not found (yet)', {
+      status: 404,
+      headers: { 'content-type': 'text/plain', 'cache-control': 'no-store' },
+    })
+  }
 
   // Clone so we can return a streamed, mutable response.
   return new Response(upstream.body, {
