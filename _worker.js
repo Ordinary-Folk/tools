@@ -71,7 +71,9 @@ export default {
     // hub, so a teammate looks the same everywhere. Gated like the rest of the
     // hostname (NOT under a bypass): signed-in OF staff get the list; clients on
     // public review links get a 302 and their tools fall back to initials.
-    if (url.pathname === '/__people/avatars') {
+    // The tracker asks under its own path so the request stays inside its own
+    // Access app (staff Google + invited guests); guests get a 403 → initials.
+    if (url.pathname === '/__people/avatars' || url.pathname === '/project-tracker/__people/avatars') {
       return handlePeopleAvatars(request, env)
     }
 
@@ -88,8 +90,12 @@ export default {
 
 // --- Cloudflare Access SSO bridge ----------------------------------------
 const ACCESS_TEAM_DOMAIN = 'ordinaryfolk.cloudflareaccess.com'
-// AUD tag of the gated "OF Tools hub" Access application (tools.ordinary.co).
-const ACCESS_AUD = '5bff407839e790119d8676e372b3b612c00ea2958271d51e7e8c045cff997fbc'
+// AUD tags of the gated Access applications: "OF Tools hub" (tools.ordinary.co)
+// and "Project Tracker" (tools.ordinary.co/project-tracker, staff + invited guests).
+const ACCESS_AUDS = [
+  '5bff407839e790119d8676e372b3b612c00ea2958271d51e7e8c045cff997fbc',
+  '10fd8a305b8df2f2cd5bafc4bd89ad6de665305ebd9a504aa205c97cfa663f18',
+]
 const OF_REVIEW_WORKER = 'https://of-review-worker.ordinary-folk-hosting.workers.dev'
 
 let jwksCache = null // { keys, fetchedAt }
@@ -150,7 +156,7 @@ async function verifyAccessJwt(jwt) {
   const now = Math.floor(Date.now() / 1000)
   if (payload.iss !== `https://${ACCESS_TEAM_DOMAIN}`) return null
   const aud = Array.isArray(payload.aud) ? payload.aud : [payload.aud]
-  if (!aud.includes(ACCESS_AUD)) return null
+  if (!aud.some((a) => ACCESS_AUDS.includes(a))) return null
   if (typeof payload.exp === 'number' && payload.exp < now) return null
   const keys = await getAccessJwks()
   const jwk = keys.find((k) => k.kid === header.kid)
