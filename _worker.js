@@ -77,6 +77,15 @@ export default {
       return handlePeopleAvatars(request, env)
     }
 
+    // OF Review share links: give the page real link-preview tags (title,
+    // picture, a video-shaped player) so Notion, Slack etc. show a card and
+    // can embed the ?embed view instead of the whole page.
+    const share = url.pathname.match(/^\/review\/v\/([a-z0-9-]{1,80})\/?$/i)
+    if (share && request.method === 'GET') {
+      const res = await proxyTo(request, url, APPS['/review'], '/review')
+      return withReviewPreview(res, share[1], url)
+    }
+
     for (const [prefix, app] of Object.entries(APPS)) {
       if (url.pathname === prefix || url.pathname.startsWith(prefix + '/')) {
         return proxyTo(request, url, app, prefix)
@@ -204,6 +213,67 @@ function jsonResp(obj, status = 200) {
     status,
     headers: { 'content-type': 'application/json', 'cache-control': 'no-store' },
   })
+}
+
+// --- OF Review link previews ----------------------------------------------
+const escAttr = (v) =>
+  String(v).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+
+async function reviewMeta(slug) {
+  try {
+    const r = await fetch(`${OF_REVIEW_WORKER}/meta?slug=${encodeURIComponent(slug)}`, {
+      cf: { cacheTtl: 300, cacheEverything: true },
+    })
+    return r.ok ? await r.json() : null
+  } catch {
+    return null
+  }
+}
+
+async function withReviewPreview(res, slug, url) {
+  if (!(res.headers.get('content-type') || '').includes('text/html')) return res
+  const m = await reviewMeta(slug)
+  if (!m) return res
+  const page = `${url.origin}/review/v/${slug}`
+  const tags = [
+    ['property', 'og:site_name', 'OF Review'],
+    ['property', 'og:type', 'video.other'],
+    ['property', 'og:title', m.title],
+    ['property', 'og:description', m.description],
+    ['property', 'og:url', page],
+    ...(m.image
+      ? [
+          ['property', 'og:image', m.image],
+          ['property', 'og:image:width', '1280'],
+          ['property', 'og:image:height', '720'],
+        ]
+      : []),
+    // The embeddable player (the share page's ?embed view).
+    ['property', 'og:video:url', m.embedUrl],
+    ['property', 'og:video:secure_url', m.embedUrl],
+    ['property', 'og:video:type', 'text/html'],
+    ['property', 'og:video:width', String(m.width)],
+    ['property', 'og:video:height', String(m.height)],
+    ['name', 'twitter:card', 'player'],
+    ['name', 'twitter:title', m.title],
+    ['name', 'twitter:description', m.description],
+    ...(m.image ? [['name', 'twitter:image', m.image]] : []),
+    ['name', 'twitter:player', m.embedUrl],
+    ['name', 'twitter:player:width', String(m.width)],
+    ['name', 'twitter:player:height', String(m.height)],
+    ['name', 'description', m.description],
+  ]
+  const head =
+    tags.map(([k, n, v]) => `<meta ${k}="${n}" content="${escAttr(v)}">`).join('') +
+    `<link rel="alternate" type="application/json+oembed" href="${escAttr(
+      `${OF_REVIEW_WORKER}/oembed?format=json&url=${encodeURIComponent(page)}`,
+    )}" title="${escAttr(m.title)}">`
+  const headers = new Headers(res.headers)
+  headers.delete('content-length')
+  return new HTMLRewriter()
+    .on('title', { element: (el) => el.setInnerContent(`${m.title} · OF Review`) })
+    .on('head', { element: (el) => el.append(head, { html: true }) })
+    .transform(new Response(res.body, { status: res.status, statusText: res.statusText, headers }))
 }
 
 async function proxyTo(request, url, app, prefix) {
