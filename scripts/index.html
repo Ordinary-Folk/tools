@@ -94,6 +94,18 @@ h1 { margin: 0; font-family: 'DM Sans', sans-serif; font-size: 30px; font-weight
 .shelf .acts { display: flex; gap: 6px; }
 .hint { font-size: 12px; color: var(--faint); margin: 0; }
 
+/* loading: placeholder cards until the shelf answers, then the real ones fade in */
+.skeleton .ph { height: 92px; background: var(--card); border: 1px solid var(--border); position: relative; overflow: hidden; }
+.skeleton .ph::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, var(--card-hover), transparent); animation: shimmer 1.2s infinite; }
+@keyframes shimmer { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
+.loading-note { margin: 0; font-size: 12px; color: var(--faint); font-family: var(--mono); }
+.fade .group, .fade a.card { animation: fadein 360ms ease both; }
+.fade a.card:nth-child(1) { animation-delay: 30ms; } .fade a.card:nth-child(2) { animation-delay: 60ms; }
+.fade a.card:nth-child(3) { animation-delay: 90ms; } .fade a.card:nth-child(4) { animation-delay: 120ms; }
+.fade a.card:nth-child(5) { animation-delay: 150ms; } .fade a.card:nth-child(6) { animation-delay: 180ms; }
+.fade a.card:nth-child(7) { animation-delay: 210ms; } .fade a.card:nth-child(8) { animation-delay: 240ms; }
+@keyframes fadein { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
 /* list view: groups + card grid */
 .group { display: flex; flex-direction: column; gap: 10px; }
 .group-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-top: 10px; }
@@ -165,13 +177,13 @@ ul.notes li::before { content: '–'; position: absolute; left: 0; color: var(--
 .whatsnew-head .d { font-family: var(--mono); font-size: 11px; color: var(--faint); }
 
 /* how to */
-.howto { border: 1px solid var(--border); background: var(--card); padding: 14px 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px 24px; margin-top: 10px; }
+.howto { border: 1px solid var(--border); background: var(--card); padding: 14px 16px; display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 14px 24px; margin-top: 10px; }
 .howto h2 { grid-column: 1 / -1; margin: 0; font-family: 'DM Sans', sans-serif; font-size: 17px; font-weight: 600; }
 .howto h4 { margin: 0 0 6px; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
 .howto p, .howto li { font-size: 13px; margin: 0; }
 .howto ol { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 3px; }
 .howto code { font-family: var(--mono); font-size: 12px; }
-.howto .pack { grid-column: 1 / -1; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; border-top: 1px solid var(--border); padding-top: 12px; }
+.howto .pack { grid-column: 1 / -1; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; border-top: 1px solid var(--border); padding-top: 12px; }
 .howto .pack .icons { display: flex; gap: 4px; }
 .howto .pack .icons span { width: 20px; height: 20px; display: block; }
 .howto .pack .icons svg { width: 100%; height: 100%; display: block; }
@@ -181,7 +193,7 @@ ul.notes li::before { content: '–'; position: absolute; left: 0; color: var(--
 a.card:focus-visible, .back:focus-visible, .btn:focus-visible, .account a:focus-visible {
   outline: none; box-shadow: 0 0 0 2px var(--card), 0 0 0 4px var(--accent);
 }
-@media (prefers-reduced-motion: reduce) { a.card, .btn, .account a { transition: none; } }
+@media (prefers-reduced-motion: reduce) { a.card, .btn, .account a { transition: none; } .fade .group, .fade a.card, .skeleton .ph::after { animation: none; } }
 
 @media (max-width: 600px) {
   header { padding: 12px 16px; }
@@ -241,30 +253,31 @@ a.card:focus-visible, .back:focus-visible, .btn:focus-visible, .account a:focus-
     </div>
     <p class="hint" id="helper-hint" hidden>Open in Finder needs <b>Dropbox Finder Links</b> (listed below) running on this Mac. Copy path works everywhere.</p>
 
-    <div id="groups"></div>
+    <div id="groups" class="skeleton">
+      <p class="loading-note">Reading the shelf…</p>
+      <div class="grid" style="margin-top:10px"><div class="ph"></div><div class="ph"></div><div class="ph"></div><div class="ph"></div><div class="ph"></div><div class="ph"></div></div>
+    </div>
 
     <section class="howto" id="howto">
       <h2>How to install</h2>
       <div>
         <h4>KBar button</h4>
         <ol>
-          <li>KBar panel &gt; settings &gt; add a button, type <b>Run JSX File</b>.</li>
-          <li>Point it at the script's <b>loader</b> on the shelf (the file without a version number). The loader always runs the newest build, so updates need nothing from you.</li>
-          <li>Icon &gt; Image &gt; pick the PNG from the icon pack below. Close and reopen the KBar panel to see it.</li>
+          <li>Add a button: <b>Run JSX File</b>.</li>
+          <li>Pick the script's <b>loader</b> (the file without a version number). It always runs the newest build.</li>
+          <li>Icon &gt; Image &gt; PNG from the pack.</li>
         </ol>
       </div>
       <div>
         <h4>Dockable panel</h4>
-        <ol>
-          <li>Copy the loader into <code>Scripts/ScriptUI Panels</code> inside the After Effects app folder (needs an admin password once).</li>
-          <li>Restart AE; it then sits in the Window menu.</li>
-        </ol>
-        <h4 style="margin-top:10px">Dropbox</h4>
-        <p>Right-click the shelf folder in Finder &gt; <b>Make Available Offline</b> once, so AE never waits on a download.</p>
+        <p>Copy the loader into AE's <code>Scripts/ScriptUI Panels</code>, restart. It's in the Window menu.</p>
+      </div>
+      <div>
+        <h4>Dropbox</h4>
+        <p>Right-click the shelf folder &gt; <b>Make Available Offline</b>, once.</p>
       </div>
       <div class="pack">
         <span class="icons" id="pack-icons"></span>
-        <span style="font-size:13px">One icon per script, the same tiles as this page, in colour and mono.</span>
         <a class="btn primary" href="/scripts/icons/of-kbar-icons.zip" download>Download the KBar icon pack</a>
       </div>
     </section>
@@ -488,6 +501,7 @@ a.card:focus-visible, .back:focus-visible, .btn:focus-visible, .account a:focus-
       document.title = hit.name + ' · Scripts · Ordinary Folk Tools';
     } else {
       renderList();
+      setTimeout(() => $('#groups').classList.remove('fade'), 800);
       if (id) { const n = $('#notice'); n.innerHTML = 'No tool called <b>' + esc(id) + '</b> here.'; n.hidden = false; }
       detailEl.hidden = true; listEl.hidden = false;
       document.title = 'Scripts · Ordinary Folk Tools';
@@ -515,11 +529,21 @@ a.card:focus-visible, .back:focus-visible, .btn:focus-visible, .account a:focus-
   window.addEventListener('popstate', () => { render(); if (!routeId()) window.scrollTo(0, listScroll); });
 
   /* ---------- boot ---------- */
+  // draw as soon as the catalog + manifest are in (the Finder-helper probe can
+  // take up to 1.5 s when nothing listens; it only changes paths and a hint)
+  let drawn = false;
   Promise.all([
-    getJSON('catalog.json').then((c) => { state.catalog = c; }),
-    getJSON('manifest.json').then((m) => { state.manifest = m; }).catch((e) => { state.manifestError = e; }),
-    probeHelper(),
-  ]).then(render).catch((e) => { $('#count').textContent = 'could not load the catalog'; console.error(e); });
+    getJSON('/scripts/catalog.json').then((c) => { state.catalog = c; }),
+    getJSON('/scripts/manifest.json').then((m) => { state.manifest = m; }).catch((e) => { state.manifestError = e; }),
+  ]).then(() => { $('#groups').classList.remove('skeleton'); $('#groups').classList.add('fade'); render(); drawn = true; })
+    .catch((e) => { $('#count').textContent = 'could not load the catalog'; $('#groups').innerHTML = '<p class="loading-note">Could not load the list. Reload the page.</p>'; console.error(e); });
+  probeHelper().then(() => {
+    if (!drawn || !state.catalog) return;
+    const shelf = state.catalog.folders['ae-shelf'];
+    $('#shelf-path').textContent = absPath(shelf.path);
+    $('#helper-hint').hidden = state.helper.ok;
+    if (routeId()) render();
+  });
 
   fetch('/cdn-cgi/access/get-identity').then((r) => (r.ok ? r.json() : null)).then((d) => {
     if (!d || !d.email) return;
