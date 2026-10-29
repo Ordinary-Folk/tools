@@ -35,7 +35,7 @@ project). Individual tools live in their own folders/repos and are proxied in.
                                   _worker.js (router)
                           ┌──────────────┴───────────────┐
                   static assets here            reverse-proxy by path prefix
-                  (landing page,                /review  → of-review-hub.pages.dev
+                  (landing page, /scripts,      /review  → of-review-hub.pages.dev
                    single-file tools)           /schedule → <stefan's origin>
                                                 /time-tracker → of-time-tracker-hub.vercel.app
                                                 /admin → of-admin.vercel.app
@@ -176,18 +176,63 @@ in the tool's own Vercel project env (`SUPABASE_SERVICE_ROLE_KEY`), never here.
 ## Deploy the hub
 
 ```bash
-# from this folder. Account: Ordinary Folk Assets.
-export CLOUDFLARE_ACCOUNT_ID=ef803ddd03bdba02130ed576873a4187
-# stage so .git/CLAUDE.md/docs aren't published:
-rm -rf /tmp/of-tools-deploy && mkdir -p /tmp/of-tools-deploy
-cp index.html _worker.js /tmp/of-tools-deploy/
-cp -R icons fonts /tmp/of-tools-deploy/
-npx wrangler@latest pages deploy /tmp/of-tools-deploy --project-name of-tools --branch main
+./deploy.sh        # from this folder; stages index.html, _worker.js, icons/, fonts/, scripts/ (minus the publisher + icon builder) and runs wrangler pages deploy
 ```
 
-Logged-in account must be `jorge@ordinaryfolk.co` (`wrangler whoami`). For DNS /
-Access / Pages-domain changes via API, use the token in `.dev.vars`
-(`CLOUDFLARE_API_TOKEN`, gitignored).
+Logged-in account must be `jorge@ordinaryfolk.co` (`wrangler whoami`; the script
+unsets `CLOUDFLARE_API_TOKEN` so the token in `.dev.vars` doesn't shadow the
+login). For DNS / Access / Pages-config changes via API, use that token
+(`CLOUDFLARE_API_TOKEN`, gitignored). Secrets and bindings (R2, env) live on the
+Pages project and survive deploys.
+
+## Scripts page (`/scripts`): what is on the OF shelf
+
+`scripts/index.html` lists the AE scripts and other OF-made tools (Lapiz, Dropbox
+Finder Links, the Time Tracker Mac app, the GOOGWC tools) with the newest version
+of each, when it changed, what's new, where it lives in Dropbox (Copy path, and
+Open in Finder through the dbxlinks helper on `localhost:48620`), install steps
+and a KBar icon per script. Two sources, merged in the browser:
+
+- **`scripts/catalog.json`** (hand-written, in this repo): the folders to watch
+  (paths relative to the Dropbox root), the groups, and per tool: blurb, longer
+  text, install steps, KBar button name, which files are the loader / versioned
+  build / extras (regexes), tile colour and a 16×16 pixel glyph. Edit this to
+  change wording or add a tool. Shelf files no tool claims show up under "Also
+  in …, not described yet", so a new script is visible before anyone writes it up.
+- **`/scripts/manifest.json`** (live): what the folders actually hold right now:
+  file names, sizes, dates, versions (from the filename, an `.app`'s Info.plist, a
+  `VERSION` file or `data-…-version` in HTML) and the newest changelog entry read
+  from each script's header. Produced by the **publisher**.
+
+**Publisher** (`scripts/publisher/`): `of-scripts-catalog.py` runs on one OF Mac
+with the team Dropbox synced (Jorge's). `install.sh` puts it at
+`~/.local/bin/of-scripts-catalog` with a launchd agent
+(`com.ordinaryfolk.scripts-catalog`: fires when a watched folder changes, every
+6 h, and at login; log `~/Library/Logs/of-scripts-catalog.log`; config + state in
+`~/Library/Application Support/Ordinary Folk/Scripts Catalog/`). It fetches the
+catalog from `of-tools.pages.dev` (the watch list comes from there), scans, and
+POSTs the manifest to `/scripts/__publish` on the **pages.dev host** (Access does
+not gate it) with `X-Hub-Secret` = the Pages secret `SCRIPTS_PUBLISH_SECRET`
+(`set-hub-secret.sh` copies the Mac's `publish-secret` file onto the project).
+The worker stores it in the **R2 bucket `of-tools-data`**, bound as `TOOLS_DATA`
+(production + preview; bound through the Pages API, no wrangler.toml here).
+`GET /scripts/manifest.json` answers only on `tools.ordinary.co` (already behind
+Access) or localhost, or anywhere with the secret header (the publisher's
+self-check). Unchanged shelf = no publish, but it republishes every 6 h so
+"shelf checked" stays honest. Re-run `install.sh` after adding a folder to the
+catalog so launchd watches it too. Dry run: `of-scripts-catalog --dry-run`.
+
+**Icons:** `python3 scripts/icons/build.py` regenerates `scripts/icons/*.svg|png`
+(colour tile + mono) and `of-kbar-icons.zip` from the catalog glyphs; run it after
+touching a glyph and commit the output. The page draws the same glyphs inline.
+
+**Adding a script:** put it on the shelf with the usual loader + versioned file;
+add a catalog entry (copy a sibling, draw a glyph); run the icon builder; deploy.
+Until the catalog entry exists the file already shows under "Also in …".
+
+**Local dev:** `npx wrangler pages dev . --r2 TOOLS_DATA --binding SCRIPTS_PUBLISH_SECRET=local-dev-secret --port 8788`
+then publish into the local R2 with
+`python3 scripts/publisher/of-scripts-catalog.py --catalog-url file://$PWD/scripts/catalog.json --publish-url http://127.0.0.1:8788/scripts/__publish --secret-file <file holding local-dev-secret> --force`.
 
 ## Adding a tool — short version
 
@@ -215,6 +260,9 @@ Access / Pages-domain changes via API, use the token in `.dev.vars`
   gmail-sync cron stay there). Same monorepo as the Time Tracker (`apps/admin`).
 - Time Tracker repo: `Ordinary-Folk/of-time-tracker`; shares Supabase project
   `gpzizkqnwiqdwqkyukcp` (same DB as OF Schedule)
+- Scripts manifest: R2 bucket `of-tools-data` (binding `TOOLS_DATA`), Pages
+  secret `SCRIPTS_PUBLISH_SECRET`, publisher on Jorge's Mac (launchd
+  `com.ordinaryfolk.scripts-catalog`)
 - Access team: `ordinaryfolk.cloudflareaccess.com`; hub app AUD:
   `5bff407839e790119d8676e372b3b612c00ea2958271d51e7e8c045cff997fbc`
 

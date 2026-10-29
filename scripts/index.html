@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scripts · Ordinary Folk Tools</title>
+<link rel="icon" type="image/svg+xml" href="/icons/icon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/icons/icon-32.png">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#F5F6F8">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0F1114">
+<style>
+@font-face { font-family: 'Inter'; font-style: normal; font-weight: 400; font-display: swap; src: url('/fonts/inter-400.woff2') format('woff2'); }
+@font-face { font-family: 'Inter'; font-style: normal; font-weight: 500; font-display: swap; src: url('/fonts/inter-500.woff2') format('woff2'); }
+@font-face { font-family: 'Inter'; font-style: normal; font-weight: 600; font-display: swap; src: url('/fonts/inter-600.woff2') format('woff2'); }
+@font-face { font-family: 'Inter'; font-style: normal; font-weight: 700; font-display: swap; src: url('/fonts/inter-700.woff2') format('woff2'); }
+@font-face { font-family: 'DM Sans'; font-style: normal; font-weight: 500; font-display: swap; src: url('/fonts/dm-sans-500.woff2') format('woff2'); }
+@font-face { font-family: 'DM Sans'; font-style: normal; font-weight: 600; font-display: swap; src: url('/fonts/dm-sans-600.woff2') format('woff2'); }
+@font-face { font-family: 'DM Sans'; font-style: normal; font-weight: 700; font-display: swap; src: url('/fonts/dm-sans-700.woff2') format('woff2'); }
+
+:root {
+  color-scheme: light dark;
+  --bg: #F5F6F8;
+  --card: #FFFFFF;
+  --card-hover: #F5F6F8;
+  --text: #14161A;
+  --muted: #6F7681;
+  --faint: #9AA1AB;
+  --border: #E2E5EA;
+  --border-strong: #C8CDD5;
+  --accent: #2563EB; /* actions and links only */
+  --mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  --ink: #14161A;
+  --ink-glyph: #F5F6F8;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0F1114;
+    --card: #16191D;
+    --card-hover: #1C2027;
+    --text: #EDEFF3;
+    --muted: #9AA1AB;
+    --faint: #6F7681;
+    --border: #272B31;
+    --border-strong: #3A3F47;
+    --ink: #EDEFF3;
+    --ink-glyph: #14161A;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg); color: var(--text); margin: 0; line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--accent); }
+
+header {
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  background: var(--card); border-bottom: 1px solid var(--border); padding: 12px 20px;
+}
+.brand { display: flex; align-items: center; gap: 10px; color: var(--text); text-decoration: none; }
+.brand svg { height: 16px; width: auto; display: block; }
+.brand span { font-size: 14px; font-weight: 600; }
+.brand .crumb { color: var(--faint); font-weight: 500; }
+.account { display: flex; align-items: center; gap: 12px; }
+#email, .email-mobile { font-family: var(--mono); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.account a, .btn {
+  color: var(--text); text-decoration: none; font: 500 12px/1.3 'Inter', sans-serif;
+  border: 1px solid var(--border); background: var(--card); padding: 5px 10px; cursor: pointer;
+  transition: border-color 120ms ease, background 120ms ease;
+}
+.account a:hover, .btn:hover { border-color: var(--border-strong); background: var(--bg); }
+.btn.primary { border-color: var(--accent); color: var(--accent); }
+.btn.primary:hover { background: var(--accent); color: #fff; }
+.btn:disabled { color: var(--faint); cursor: default; }
+
+main { padding: 24px 20px 40px; }
+.wrap { max-width: 768px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
+.title-row { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
+h1 { margin: 0; font-family: 'DM Sans', sans-serif; font-size: 30px; font-weight: 700; letter-spacing: -0.01em; }
+#count { font-family: var(--mono); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; text-align: right; }
+.email-mobile { display: none; }
+.lede { margin: -6px 0 0; font-size: 14px; color: var(--muted); max-width: 60ch; }
+
+.notice { font-size: 13px; color: var(--muted); border: 1px solid var(--border); background: var(--card); padding: 10px 12px; }
+.notice b { color: var(--text); font-weight: 600; }
+
+/* recently updated strip */
+.strip { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.strip .label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-right: 4px; }
+.chip {
+  display: inline-flex; align-items: center; gap: 6px; text-decoration: none; color: var(--text);
+  font-size: 12px; border: 1px solid var(--border); background: var(--card); padding: 3px 8px 3px 4px;
+}
+.chip:hover { border-color: var(--border-strong); }
+.chip .mini { width: 16px; height: 16px; flex: none; }
+.chip .mini svg { width: 100%; height: 100%; display: block; }
+.chip .v { font-family: var(--mono); color: var(--muted); }
+.chip .d { color: var(--faint); }
+
+/* shelf path row */
+.shelf { border: 1px solid var(--border); background: var(--card); padding: 10px 12px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.shelf .k { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+.shelf code { font-family: var(--mono); font-size: 12px; color: var(--text); flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.shelf .acts { display: flex; gap: 6px; }
+.hint { font-size: 12px; color: var(--faint); margin: 0; }
+
+/* groups + rows */
+.group { display: flex; flex-direction: column; gap: 8px; }
+.group-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-top: 10px; }
+.group-head h2 { margin: 0; font-family: 'DM Sans', sans-serif; font-size: 17px; font-weight: 600; }
+.group-head .n { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.group-note { margin: -4px 0 0; font-size: 12px; color: var(--muted); }
+.list { background: var(--card); border: 1px solid var(--border); display: flex; flex-direction: column; }
+details.row { border-bottom: 1px solid var(--border); }
+details.row:last-child { border-bottom: 0; }
+summary {
+  list-style: none; display: flex; align-items: center; gap: 12px; padding: 12px; cursor: pointer;
+  transition: background 120ms ease;
+}
+summary::-webkit-details-marker { display: none; }
+summary:hover { background: var(--card-hover); }
+.tile { width: 36px; height: 36px; flex: none; overflow: hidden; }
+.tile svg { width: 100%; height: 100%; display: block; }
+.text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.name-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.name-row h3 { font-size: 14px; font-weight: 600; line-height: 1.3; margin: 0; }
+.pill { font-family: var(--mono); font-size: 11px; color: var(--muted); border: 1px solid var(--border); padding: 0 5px; line-height: 1.5; }
+.badge { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; padding: 1px 5px; border: 1px solid var(--text); color: var(--text); }
+.badge.new { background: var(--text); color: var(--bg); }
+.badge.off { border-color: var(--border); color: var(--faint); }
+.desc { font-size: 12px; color: var(--muted); line-height: 1.35; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.when { font-family: var(--mono); font-size: 11px; color: var(--faint); white-space: nowrap; }
+.chev { width: 14px; height: 14px; flex: none; display: block; stroke: var(--faint); transition: transform 120ms ease; }
+details[open] > summary .chev { transform: rotate(90deg); }
+details[open] > summary { background: var(--card-hover); }
+
+.body { padding: 4px 12px 16px 60px; display: flex; flex-direction: column; gap: 12px; font-size: 13px; }
+.body h4 { margin: 0 0 4px; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+.body p { margin: 0; }
+.body .more { color: var(--text); max-width: 64ch; }
+.meta { font-size: 12px; color: var(--muted); }
+.meta span + span::before { content: ' · '; color: var(--faint); }
+ul.files, ol.steps, ul.notes { margin: 0; padding: 0; list-style: none; }
+ul.files li { display: flex; align-items: center; gap: 10px; padding: 6px 0; border-top: 1px solid var(--border); flex-wrap: wrap; }
+ul.files li:first-child { border-top: 0; }
+.fname { font-family: var(--mono); font-size: 12px; color: var(--text); word-break: break-all; }
+.flabel { font-size: 11px; color: var(--muted); flex: 1; min-width: 8ch; }
+.flabel .v { font-family: var(--mono); }
+.acts { display: flex; gap: 6px; margin-left: auto; }
+.acts .btn { padding: 3px 8px; font-size: 11px; }
+ol.steps { counter-reset: s; display: flex; flex-direction: column; gap: 4px; }
+ol.steps li { counter-increment: s; padding-left: 22px; position: relative; color: var(--text); }
+ol.steps li::before { content: counter(s); position: absolute; left: 0; top: 0; font-family: var(--mono); font-size: 11px; color: var(--faint); }
+ol.steps code, .kbar code { font-family: var(--mono); font-size: 12px; }
+.kbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.kbar .mini { width: 24px; height: 24px; flex: none; }
+.kbar .mini svg { width: 100%; height: 100%; display: block; }
+.kbar .dl { font-size: 12px; color: var(--muted); }
+.kbar .dl a { margin-left: 6px; }
+ul.notes { display: flex; flex-direction: column; gap: 3px; }
+ul.notes li { padding-left: 14px; position: relative; color: var(--text); }
+ul.notes li::before { content: '–'; position: absolute; left: 0; color: var(--faint); }
+.whatsnew-head { display: flex; align-items: baseline; gap: 8px; }
+.whatsnew-head .v { font-family: var(--mono); font-size: 12px; }
+.whatsnew-head .d { font-family: var(--mono); font-size: 11px; color: var(--faint); }
+.also { font-size: 12px; color: var(--muted); margin: 0; }
+.also code { font-family: var(--mono); font-size: 11px; color: var(--text); }
+.also .v { font-family: var(--mono); }
+
+/* how to */
+.howto { border: 1px solid var(--border); background: var(--card); padding: 14px 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px 24px; margin-top: 10px; }
+.howto h2 { grid-column: 1 / -1; margin: 0; font-family: 'DM Sans', sans-serif; font-size: 17px; font-weight: 600; }
+.howto h4 { margin: 0 0 6px; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+.howto p, .howto li { font-size: 13px; margin: 0; }
+.howto ol { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 3px; }
+.howto code { font-family: var(--mono); font-size: 12px; }
+.howto .pack { grid-column: 1 / -1; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; border-top: 1px solid var(--border); padding-top: 12px; }
+.howto .pack .icons { display: flex; gap: 4px; }
+.howto .pack .icons span { width: 20px; height: 20px; display: block; }
+.howto .pack .icons svg { width: 100%; height: 100%; display: block; }
+
+.footnote { margin: 0; font-size: 12px; color: var(--faint); line-height: 1.5; }
+
+summary:focus-visible, .btn:focus-visible, .account a:focus-visible, .chip:focus-visible {
+  outline: none; box-shadow: 0 0 0 2px var(--card), 0 0 0 4px var(--accent);
+}
+@media (prefers-reduced-motion: reduce) { summary, .btn, .chev, .account a { transition: none; } }
+
+@media (max-width: 600px) {
+  header { padding: 12px 16px; }
+  .brand svg { height: 15px; }
+  #email { display: none; }
+  .account a { padding: 7px 10px; }
+  main { padding: 20px 16px 32px; }
+  .title-row { flex-direction: column; align-items: stretch; gap: 2px; }
+  h1 { font-size: 26px; }
+  #count { text-align: left; }
+  .email-mobile { display: block; }
+  summary { min-height: 44px; }
+  .tile { width: 40px; height: 40px; }
+  .desc { white-space: normal; }
+  .when { display: none; }
+  .chev { width: 16px; height: 16px; }
+  .body { padding-left: 12px; }
+  ul.files li .acts { margin-left: 0; width: 100%; }
+  .howto { grid-template-columns: 1fr; }
+  .shelf code { white-space: normal; word-break: break-all; }
+}
+</style>
+</head>
+<body>
+<header>
+  <a class="brand" href="/" aria-label="Ordinary Folk Tools home">
+    <svg viewBox="0 0 684.04 344.08" fill="currentColor" aria-hidden="true">
+      <path d="M172.04,0C77.03,0,0,77.03,0,172.04s77.03,172.04,172.04,172.04,172.04-77.03,172.04-172.04S267.06,0,172.04,0ZM172.04,269.7c-52.77,0-95.56-42.78-95.56-95.56s42.79-95.56,95.56-95.56,95.56,42.79,95.56,95.56-42.78,95.56-95.56,95.56Z"/>
+      <path d="M595.51,155.23c-23.7,0-42.92,19.21-42.92,42.92s19.22,42.92,42.92,42.92,42.92-19.21,42.92-42.92-19.22-42.92-42.92-42.92Z"/>
+      <polygon points="506.98 13.3 430.5 13.3 430.5 85.39 430.5 330.71 506.98 330.71 506.98 85.39 684.04 85.39 684.04 13.3 506.98 13.3"/>
+    </svg>
+    <span>Tools</span><span class="crumb">/ Scripts</span>
+  </a>
+  <div class="account">
+    <span id="email"></span>
+    <a href="/cdn-cgi/access/logout">Sign out</a>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="title-row">
+      <h1>Scripts</h1>
+      <span id="count">loading…</span>
+      <span class="email-mobile" id="email-mobile"></span>
+    </div>
+    <p class="lede">After Effects scripts and the other tools we make, each with its newest version and where it lives in the OF Dropbox. The shelf is watched, so new scripts and updates show up here on their own.</p>
+
+    <div id="notice" class="notice" hidden></div>
+    <div id="strip" class="strip" hidden></div>
+
+    <div class="shelf" id="shelf">
+      <span class="k">Shelf</span>
+      <code id="shelf-path"></code>
+      <span class="acts">
+        <button class="btn" data-copy-rel="">Copy path</button>
+        <a class="btn" data-open-rel="" href="#">Open in Finder</a>
+      </span>
+    </div>
+    <p class="hint" id="helper-hint" hidden>Open in Finder needs <b>Dropbox Finder Links</b> (listed below) running on this Mac. Copy path works everywhere.</p>
+
+    <div id="groups"></div>
+
+    <section class="howto" id="howto">
+      <h2>How to install</h2>
+      <div>
+        <h4>KBar button</h4>
+        <ol>
+          <li>KBar panel &gt; settings &gt; add a button, type <b>Run JSX File</b>.</li>
+          <li>Point it at the script's <b>loader</b> on the shelf (the file without a version number). The loader always runs the newest build, so updates need nothing from you.</li>
+          <li>Icon &gt; Image &gt; pick the PNG from the icon pack below. Close and reopen the KBar panel to see it.</li>
+        </ol>
+      </div>
+      <div>
+        <h4>Dockable panel</h4>
+        <ol>
+          <li>Copy the loader into <code>Scripts/ScriptUI Panels</code> inside the After Effects app folder (needs an admin password once).</li>
+          <li>Restart AE; it then sits in the Window menu.</li>
+        </ol>
+        <h4 style="margin-top:10px">Dropbox</h4>
+        <p>Right-click the shelf folder in Finder &gt; <b>Make Available Offline</b> once, so AE never waits on a download.</p>
+      </div>
+      <div class="pack">
+        <span class="icons" id="pack-icons"></span>
+        <span style="font-size:13px">One icon per script, the same tiles as this page, in colour and mono.</span>
+        <a class="btn primary" href="icons/of-kbar-icons.zip" download>Download the KBar icon pack</a>
+      </div>
+    </section>
+
+    <p class="footnote"><span id="checked"></span> Versions and dates come straight from the Dropbox folders; blurbs are written by hand in the hub repo (<code>scripts/catalog.json</code>).</p>
+  </div>
+</main>
+
+<script>
+(function () {
+  'use strict';
+  const HELPER = 'http://localhost:48620';
+  const HOME_ROOT = '~/Ordinary Folk Dropbox';
+  const state = { catalog: null, manifest: null, helper: { ok: false, root: null }, manifestError: null };
+
+  /* ---------- helpers ---------- */
+  const $ = (s, el) => (el || document).querySelector(s);
+  const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const cmpVer = (a, b) => {
+    const pa = String(a || '0').split('.').map((n) => parseInt(n, 10) || 0);
+    const pb = String(b || '0').split('.').map((n) => parseInt(n, 10) || 0);
+    for (let i = 0; i < Math.max(pa.length, pb.length); i++) { const d = (pa[i] || 0) - (pb[i] || 0); if (d) return d; }
+    return 0;
+  };
+  const sameYear = (d) => d.getFullYear() === new Date().getFullYear();
+  // a date-only string (changelog dates) is a local calendar day, not UTC midnight
+  const parseDate = (v) => (/^\d{4}-\d{2}-\d{2}$/.test(v) ? new Date(+v.slice(0, 4), +v.slice(5, 7) - 1, +v.slice(8, 10)) : new Date(v));
+  const fmtDate = (v) => { const d = parseDate(v); return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: sameYear(d) ? undefined : 'numeric' }); };
+  const ago = (iso) => {
+    const m = Math.round((Date.now() - new Date(iso)) / 60000);
+    if (m < 1) return 'just now';
+    if (m < 60) return m + ' min ago';
+    const h = Math.round(m / 60);
+    if (h < 24) return h + ' h ago';
+    const d = Math.round(h / 24);
+    if (d === 1) return 'yesterday';
+    if (d < 30) return d + ' days ago';
+    return fmtDate(iso);
+  };
+  const glyphSvg = (glyph, bg, fg) => {
+    let d = '';
+    glyph.forEach((row, y) => {
+      let x = 0;
+      while (x < 16) {
+        if (row[x] === '#') { const x0 = x; while (x < 16 && row[x] === '#') x++; d += 'M' + x0 + ' ' + y + 'h' + (x - x0) + 'v1h-' + (x - x0) + 'z'; } else x++;
+      }
+    });
+    return '<svg viewBox="0 0 16 16" shape-rendering="crispEdges" aria-hidden="true">' + (bg ? '<rect width="16" height="16" fill="' + bg + '"/>' : '') + '<path d="' + d + '" fill="' + fg + '"/></svg>';
+  };
+  const tileSvg = (tool) => {
+    const tiles = state.catalog.tile;
+    if (tool.tile === 'ink') return glyphSvg(tool.glyph, 'var(--ink)', 'var(--ink-glyph)');
+    return glyphSvg(tool.glyph, tiles[tool.tile] || tiles.khaki, '#14161A');
+  };
+  const absPath = (rel) => (state.helper.root || HOME_ROOT) + '/' + rel;
+  const openUrl = (rel) => HELPER + '/open?p=' + encodeURIComponent(rel);
+  async function getJSON(url) {
+    const r = await fetch(url, { cache: 'no-store' });
+    if (!r.ok) throw new Error(url + ' ' + r.status);
+    return r.json();
+  }
+  function probeHelper() {
+    const c = new AbortController();
+    const t = setTimeout(() => c.abort(), 1500);
+    return fetch(HELPER + '/health', { signal: c.signal, mode: 'cors' })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => { if (d) state.helper = { ok: true, root: d.root || null, version: d.version }; })
+      .catch(() => {})
+      .finally(() => clearTimeout(t));
+  }
+  function copyText(text, btn) {
+    const done = () => { const old = btn.textContent; btn.textContent = 'Copied'; btn.disabled = true; setTimeout(() => { btn.textContent = old; btn.disabled = false; }, 1200); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, () => fallback());
+    else fallback();
+    function fallback() { const ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); done(); } catch (e) {} ta.remove(); }
+  }
+
+  /* ---------- matching the catalog against the manifest ---------- */
+  function matchTool(tool, entries) {
+    const f = tool.files || {};
+    const used = new Set();
+    const files = [];
+    let latest = null, version = null;
+    const pick = (re) => {
+      const c = entries.filter((e) => e.kind !== 'dir' && re.test(e.name)).map((e) => ({ e, v: e.name.match(re).slice(1).filter(Boolean).join('.') }));
+      c.sort((a, b) => cmpVer(b.v, a.v));
+      c.forEach((x) => used.add(x.e.name));
+      return c;
+    };
+    if (f.versioned) {
+      const c = pick(new RegExp(f.versioned, 'i'));
+      if (c.length) { latest = c[0].e; version = c[0].v; files.push({ label: 'Latest build', entry: latest, version }); }
+    }
+    if (f.each) {
+      const re = new RegExp(f.each, 'i');
+      entries.filter((e) => e.kind !== 'dir' && re.test(e.name)).forEach((e) => { const m = e.name.match(re); files.push({ label: m[1], entry: e, version: m[2] }); used.add(e.name); });
+      if (files.length) latest = files.slice().sort((a, b) => new Date(b.entry.mtime) - new Date(a.entry.mtime))[0].entry;
+    }
+    if (f.bundle) {
+      const e = entries.find((x) => x.name === f.bundle);
+      if (e) { latest = e; version = e.version || null; files.push({ label: 'App', entry: e, version }); used.add(e.name); }
+    }
+    if (f.versionFile) {
+      const e = entries.find((x) => x.name === f.versionFile);
+      if (e) { version = e.version || e.text || null; used.add(e.name); if (!latest) latest = e; }
+    }
+    if (f.entry) {
+      const e = entries.find((x) => x.name === f.entry);
+      if (e) { files.unshift({ label: f.versioned ? 'Loader, point KBar here' : 'Entry', entry: e }); used.add(e.name); if (!latest) latest = e; }
+      else files.unshift({ label: 'Entry', missing: f.entry });
+    }
+    (f.extras || []).forEach((x) => {
+      let e = null, v = null;
+      if (x.name) { e = entries.find((y) => y.name === x.name); if (e) used.add(e.name); }
+      else if (x.match) { const c = pick(new RegExp(x.match, 'i')); if (c.length) { e = c[0].e; v = c[0].v; } }
+      if (e) files.push({ label: x.label, entry: e, version: v || e.version || null });
+    });
+    // the build's date, not the loader's or the installer's: a loader added later must not read as an update
+    const updated = (f.each ? files.filter((x) => x.entry).map((x) => x.entry.mtime).sort().pop() : null)
+      || (latest && latest.mtime) || files.filter((x) => x.entry).map((x) => x.entry.mtime).sort().pop() || null;
+    return { files, latest, version, updated, changelog: (latest && latest.changelog) || null, used, missing: !files.some((x) => x.entry) };
+  }
+
+  /* ---------- rendering ---------- */
+  function fileRow(rel, name, label, version, mtime, kind) {
+    const p = name ? rel + '/' + name : rel;
+    const meta = [label, version ? '<span class="v">v' + esc(version) + '</span>' : '', mtime ? fmtDate(mtime) : ''].filter(Boolean).join(' · ');
+    return '<li><span class="fname">' + esc(name || rel.split('/').pop()) + '</span><span class="flabel">' + meta + '</span>' +
+      '<span class="acts"><button class="btn" data-copy-rel="' + esc(p) + '">Copy path</button>' +
+      '<a class="btn" data-open-rel="' + esc(p) + '" href="' + esc(openUrl(p)) + '" target="_blank" rel="noopener">' + (kind === 'dir' ? 'Open in Finder' : 'Show in Finder') + '</a></span></li>';
+  }
+  function renderTool(tool, folder, m) {
+    const rel = folder.path;
+    const days = m.updated ? (Date.now() - new Date(m.updated)) / 864e5 : null;
+    let badge = '';
+    if (m.missing && state.manifest) badge = '<span class="badge off">Not on the shelf</span>';
+    else if (days !== null && days <= 14) badge = /^(1\.0\.0|0\.1\.0)$/.test(m.version || '') ? '<span class="badge new">New</span>' : '<span class="badge">Updated</span>';
+    const pill = m.version ? '<span class="pill">v' + esc(m.version) + '</span>' : '';
+    const when = m.updated ? '<span class="when" title="' + esc(new Date(m.updated).toString()) + '">' + esc(fmtDate(m.updated)) + '</span>' : '';
+    const files = m.files.map((x) => (x.entry ? fileRow(rel, x.entry.name, x.label, x.version, x.entry.mtime, x.entry.kind) : '<li><span class="fname">' + esc(x.missing) + '</span><span class="flabel">' + esc(x.label) + ' · missing from the shelf right now</span></li>')).join('');
+    const kbar = tool.kbar ? '<div><h4>KBar</h4><div class="kbar"><span class="mini">' + tileSvg(tool) + '</span><span>Button <b>' + esc(tool.kbar.button) + '</b> · Run JSX File · <code>' + esc(tool.files.entry || '') + '</code>' + (tool.kbar.note ? ' · ' + esc(tool.kbar.note) : '') + '</span>' +
+      '<span class="dl">Icon:<a href="icons/' + tool.id + '.png" download>PNG</a><a href="icons/' + tool.id + '.svg" download>SVG</a><a href="icons/' + tool.id + '-mono.png" download>mono</a></span></div></div>' : '';
+    const cl = m.changelog;
+    const whatsnew = cl ? '<div><h4>What\'s new</h4><div class="whatsnew-head"><span class="v">v' + esc(cl.version) + (cl.part ? ' (' + esc(cl.part) + ')' : '') + '</span>' + (cl.date ? '<span class="d">' + esc(fmtDate(cl.date)) + '</span>' : '') + '</div>' +
+      (cl.notes && cl.notes.length ? '<ul class="notes">' + cl.notes.map((n) => '<li>' + esc(n) + '</li>').join('') + '</ul>' : '') + '</div>' : '';
+    const meta = '<p class="meta"><span>' + esc(tool.app) + '</span><span>' + esc(tool.platforms) + '</span>' + (m.updated ? '<span>updated ' + esc(ago(m.updated)) + '</span>' : '') + '</p>';
+    return '<details class="row" id="tool-' + esc(tool.id) + '"><summary>' +
+      '<span class="tile">' + tileSvg(tool) + '</span>' +
+      '<span class="text"><span class="name-row"><h3>' + esc(tool.name) + '</h3>' + pill + badge + '</span><span class="desc">' + esc(tool.blurb) + '</span></span>' +
+      when + '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></summary>' +
+      '<div class="body">' + meta + '<p class="more">' + esc(tool.more) + '</p>' +
+      '<div><h4>Files</h4><ul class="files">' + fileRow(rel, '', folder.label || 'Folder', null, null, 'dir') + files + '</ul></div>' +
+      (tool.install && tool.install.length ? '<div><h4>Install</h4><ol class="steps">' + tool.install.map((s) => '<li>' + esc(s) + '</li>').join('') + '</ol></div>' : '') +
+      kbar + whatsnew + '</div></details>';
+  }
+  function render() {
+    const cat = state.catalog, man = state.manifest;
+    const folders = cat.folders;
+    const entriesOf = (fid) => (man && man.folders[fid] && man.folders[fid].entries) || [];
+    const matched = cat.tools.map((t) => ({ tool: t, m: matchTool(t, entriesOf(t.folder)) }));
+    const usedByFolder = {};
+    matched.forEach(({ tool, m }) => { (usedByFolder[tool.folder] = usedByFolder[tool.folder] || new Set()); m.used.forEach((n) => usedByFolder[tool.folder].add(n)); });
+
+    const shelf = folders['ae-shelf'];
+    $('#shelf-path').textContent = absPath(shelf.path);
+    $('#shelf [data-copy-rel]').setAttribute('data-copy-rel', shelf.path);
+    const openA = $('#shelf [data-open-rel]'); openA.setAttribute('data-open-rel', shelf.path); openA.href = openUrl(shelf.path); openA.target = '_blank'; openA.rel = 'noopener';
+    $('#helper-hint').hidden = state.helper.ok;
+
+    const notice = $('#notice');
+    if (!man) { notice.innerHTML = '<b>Live shelf data is not published yet.</b> The list below is the catalog; versions and dates appear once the publisher has run.'; notice.hidden = false; }
+    else notice.hidden = true;
+
+    const recent = matched.filter((x) => x.m.updated).sort((a, b) => new Date(b.m.updated) - new Date(a.m.updated)).slice(0, 4);
+    const strip = $('#strip');
+    if (recent.length) {
+      strip.innerHTML = '<span class="label">Recently updated</span>' + recent.map(({ tool, m }) => '<a class="chip" href="#tool-' + esc(tool.id) + '"><span class="mini">' + tileSvg(tool) + '</span>' + esc(tool.name) + (m.version ? ' <span class="v">v' + esc(m.version) + '</span>' : '') + ' <span class="d">' + esc(fmtDate(m.updated)) + '</span></a>').join('');
+      strip.hidden = false;
+    }
+
+    const groupsEl = $('#groups');
+    groupsEl.innerHTML = cat.groups.map((g) => {
+      const rows = matched.filter((x) => x.tool.group === g.id);
+      if (!rows.length) return '';
+      const fids = [...new Set(rows.map((x) => x.tool.folder))];
+      const also = fids.map((fid) => {
+        const extra = entriesOf(fid).filter((e) => e.kind !== 'dir' && !(usedByFolder[fid] && usedByFolder[fid].has(e.name)) && !/^(readme|claude)\.md$/i.test(e.name) && !/^icon\r?$/i.test(e.name) && !/\.(md|txt)$/i.test(e.name) && !/^dropbox-app-key/.test(e.name) && !/^(install|uninstall)\.sh$/.test(e.name));
+        if (!extra.length) return '';
+        return '<p class="also">Also in ' + esc(folders[fid].label) + ', not described yet: ' + extra.map((e) => '<code>' + esc(e.name) + '</code>' + (e.version && !new RegExp(e.version.replace(/\./g, '[.-]')).test(e.name) ? ' <span class="v">v' + esc(e.version) + '</span>' : '') + ' (' + esc(fmtDate(e.mtime)) + ')').join(', ') + '.</p>';
+      }).join('');
+      return '<section class="group"><div class="group-head"><h2>' + esc(g.title) + '</h2><span class="n">' + rows.length + '</span></div>' + (g.note ? '<p class="group-note">' + esc(g.note) + '</p>' : '') +
+        '<div class="list">' + rows.map(({ tool, m }) => renderTool(tool, folders[tool.folder], m)).join('') + '</div>' + also + '</section>';
+    }).join('');
+
+    $('#count').textContent = cat.tools.length + ' tools' + (man ? ' · shelf checked ' + ago(man.generated) : '');
+    $('#checked').textContent = man ? 'Shelf last read ' + new Date(man.generated).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) + (man.host ? ' on ' + man.host : '') + '.' : '';
+    $('#pack-icons').innerHTML = cat.tools.filter((t) => t.kbar).map((t) => '<span>' + tileSvg(t) + '</span>').join('');
+
+    document.body.addEventListener('click', (ev) => {
+      const b = ev.target.closest('[data-copy-rel]');
+      if (b) { ev.preventDefault(); copyText(absPath(b.getAttribute('data-copy-rel')), b); }
+    }, { once: false });
+    if (location.hash) openHash();
+  }
+  function openHash() {
+    const el = document.getElementById(location.hash.slice(1));
+    if (el && el.tagName === 'DETAILS') { el.open = true; el.scrollIntoView({ block: 'start', behavior: 'smooth' }); }
+  }
+  window.addEventListener('hashchange', openHash);
+
+  /* ---------- boot ---------- */
+  Promise.all([
+    getJSON('catalog.json').then((c) => { state.catalog = c; }),
+    getJSON('manifest.json').then((m) => { state.manifest = m; }).catch((e) => { state.manifestError = e; }),
+    probeHelper(),
+  ]).then(render).catch((e) => { $('#count').textContent = 'could not load the catalog'; console.error(e); });
+
+  fetch('/cdn-cgi/access/get-identity').then((r) => (r.ok ? r.json() : null)).then((d) => {
+    if (!d || !d.email) return;
+    $('#email').textContent = d.email; $('#email-mobile').textContent = d.email;
+  }).catch(() => {});
+})();
+</script>
+</body>
+</html>
