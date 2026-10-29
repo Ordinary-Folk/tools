@@ -1,0 +1,600 @@
+{
+  "_readme": "Curated list behind tools.ordinary.co/scripts. Versions, dates and what's-new come from the live manifest the publisher posts (scripts/publisher). Edit blurbs, groups and glyphs here; a glyph is 16 rows of 16 characters, # = ink. Paths are relative to the Dropbox root (the folder that holds _Ordinary Folk Projects).",
+  "folders": {
+    "ae-shelf": {
+      "label": "OF AE scripts shelf",
+      "path": "_Ordinary Folk Projects/_OF TOOL BOX/AE/_Scripts OF",
+      "ignore": [
+        "_Archive"
+      ]
+    },
+    "lapiz": {
+      "label": "Lapiz releases",
+      "path": "_Ordinary Folk Projects/_OF TOOL BOX/Apps - OF/Lapiz/releases"
+    },
+    "dbxlinks": {
+      "label": "Dropbox Finder Links",
+      "path": "_Ordinary Folk Projects/_OF TOOL BOX/Apps - OF/dropbox-finder"
+    },
+    "time-tracker-app": {
+      "label": "OF Time Tracker Mac app",
+      "path": "_Ordinary Folk Projects/_OF TOOL BOX/Apps - OF/OF Time Tracker Mac App sync"
+    },
+    "doodle-exporter": {
+      "label": "Doodle Filemaker builds",
+      "path": "_Ordinary Folk Projects/202_GOOGWC/Production/Apps/DoodleExporter",
+      "ignore": [
+        "_Archive"
+      ]
+    },
+    "googwc-scripts": {
+      "label": "GOOGWC AE scripts",
+      "path": "_Ordinary Folk Projects/202_GOOGWC/Production/Animation/Utils - Animation/_Scripts",
+      "ignore": [
+        "_Archive",
+        "_src"
+      ]
+    }
+  },
+  "groups": [
+    {
+      "id": "ae",
+      "title": "After Effects",
+      "note": "All on one shelf in Dropbox. Make the folder Available Offline once; the loaders then always run the newest version."
+    },
+    {
+      "id": "other",
+      "title": "Other software"
+    },
+    {
+      "id": "googwc",
+      "title": "GOOGWC project",
+      "note": "Project-specific, kept inside 202_GOOGWC rather than on the shelf."
+    }
+  ],
+  "tile": {
+    "orange": "#FB6D36",
+    "teal": "#85AEB2",
+    "lilac": "#DDA8F5",
+    "khaki": "#AFA278",
+    "ink": "#14161A"
+  },
+  "tools": [
+    {
+      "id": "smart-queue",
+      "name": "Smart Queue",
+      "group": "ae",
+      "app": "After Effects",
+      "platforms": "Mac, Windows",
+      "folder": "ae-shelf",
+      "files": {
+        "versioned": "^Smart Queue v(\\d+\\.\\d+\\.\\d+)\\.jsx$",
+        "entry": "Smart Queue.jsx"
+      },
+      "kbar": {
+        "button": "Smart Queue"
+      },
+      "blurb": "One button queues the comp in the right _Renders folder with the next version number.",
+      "more": "Reads the project's folder conventions to prefill destination, filename and version for the active comp or a selection of comps, shows one confirm dialog (rename comps to match, archive earlier versions, overwrite the latest) and adds them to the Render Queue, rendering straight away if you want. The loader runs the newest version on the shelf, so updates need no reinstall.",
+      "install": [
+        "KBar: a Run JSX File button pointed at Smart Queue.jsx (the loader, not the versioned file).",
+        "Dockable panel: copy Smart Queue.jsx into Scripts/ScriptUI Panels in the After Effects app folder and restart; it sits in the Window menu."
+      ],
+      "tile": "orange",
+      "glyph": [
+        "................",
+        "................",
+        "................",
+        "..#######.......",
+        "................",
+        "................",
+        "..#######.......",
+        "................",
+        "..........#.....",
+        "..######..##....",
+        "..........###...",
+        "..........####..",
+        "..######..###...",
+        "..........##....",
+        "..........#.....",
+        "................"
+      ]
+    },
+    {
+      "id": "word-split",
+      "name": "Word Split",
+      "group": "ae",
+      "app": "After Effects",
+      "platforms": "Mac, Windows",
+      "folder": "ae-shelf",
+      "files": {
+        "versioned": "^Word Split v(\\d+\\.\\d+\\.\\d+)\\.jsx$",
+        "entry": "Word Split.jsx"
+      },
+      "kbar": {
+        "button": "Word Split"
+      },
+      "blurb": "Splits a text layer into one clean text layer per word, parented to the hidden original.",
+      "more": "Select a text layer and run it: every word becomes its own text layer, laid out exactly where it was, parented to the master, which turns into a hidden guide layer. Edit the master and run again to re-lay out; the master's keyframes and effects are handed to the words. An optional live link keeps each word's text and style following the master.",
+      "install": [
+        "KBar: a Run JSX File button pointed at Word Split.jsx (the loader).",
+        "Dockable panel: copy the versioned Word Split file into Scripts/ScriptUI Panels and restart."
+      ],
+      "tile": "lilac",
+      "glyph": [
+        "................",
+        "................",
+        "..###########...",
+        "..###########...",
+        "................",
+        ".......#........",
+        ".......#........",
+        ".....#####......",
+        "......###.......",
+        ".......#........",
+        "................",
+        "..###.####.###..",
+        "..###.####.###..",
+        "................",
+        "................",
+        "................"
+      ]
+    },
+    {
+      "id": "bp-scripture",
+      "name": "BP Scripture Animator",
+      "group": "ae",
+      "app": "After Effects + web editor",
+      "platforms": "Mac, Windows",
+      "folder": "ae-shelf",
+      "files": {
+        "versioned": "^BP Scripture Animator v(\\d+\\.\\d+\\.\\d+)\\.jsx$",
+        "entry": "BP Scripture Animator - Edit in panel.jsx",
+        "extras": [
+          {
+            "label": "AE panel (zxp)",
+            "match": "^BP Scripture Animator Panel v(\\d+)-(\\d+)-(\\d+)\\.zxp$"
+          },
+          {
+            "label": "Panel installer",
+            "name": "BP Scripture Animator - Install panel.jsx"
+          },
+          {
+            "label": "Web editor",
+            "name": "BP Scripture Animator Editor.html"
+          }
+        ]
+      },
+      "kbar": {
+        "button": "BP Scripture Animator",
+        "note": "Opens the panel on the selected comp (and installs nothing)."
+      },
+      "blurb": "Scripture text boxes for BibleProject episodes: a web editor plus an AE panel that builds and updates the comp.",
+      "more": "Write the passage in the editor (reveal chunks, original-language chips, underlines, highlights, boxes, focus, timing against the voice-over), then build it in After Effects as plain text and shape layers. The panel in Window > Extensions is the same editor talking to AE directly and updates a comp without losing what you changed in AE. The shelf also holds the ScriptUI version of the script and the standalone editor page.",
+      "install": [
+        "Panel: run BP Scripture Animator - Install panel.jsx once (File > Scripts > Run Script File), restart AE, then Window > Extensions > BP Scripture Animator.",
+        "KBar: a Run JSX File button pointed at BP Scripture Animator - Edit in panel.jsx opens the panel on the selected comp.",
+        "Needs Preferences > Scripting & Expressions > Allow Scripts to Write Files and Access Network."
+      ],
+      "tile": "khaki",
+      "glyph": [
+        "................",
+        "................",
+        "..############..",
+        "..#..........#..",
+        "..#.######...#..",
+        "..#..........#..",
+        "..#.###.####.#..",
+        "..#.....####.#..",
+        "..#..........#..",
+        "..#.#######..#..",
+        "..#..........#..",
+        "..#.####.....#..",
+        "..#..........#..",
+        "..############..",
+        "................",
+        "................"
+      ]
+    },
+    {
+      "id": "make-footage-local",
+      "name": "Make Footage Local",
+      "group": "ae",
+      "app": "After Effects",
+      "platforms": "Mac only",
+      "folder": "ae-shelf",
+      "files": {
+        "versioned": "^Make Footage Local v(\\d+\\.\\d+\\.\\d+)\\.jsx$",
+        "entry": "Make Footage Local.jsx"
+      },
+      "kbar": {
+        "button": "Make Footage Local"
+      },
+      "blurb": "Finds a comp's Dropbox online-only footage and makes it local with one Finder right-click.",
+      "more": "Scans the active comp (precomps, image sequences and proxies included), opens one Finder window that lists exactly the online-only files wherever they live, already selected. You right-click once and choose Make Available Offline; the palette then reloads each footage item in AE as it lands and shows the count, data volume and time left. Hold Shift while launching to scan the whole project.",
+      "install": [
+        "KBar: a Run JSX File button pointed at Make Footage Local.jsx (the loader)."
+      ],
+      "tile": "teal",
+      "glyph": [
+        "................",
+        "................",
+        "......####......",
+        "....########....",
+        "..############..",
+        "..############..",
+        "...##########...",
+        "................",
+        ".......##.......",
+        ".......##.......",
+        ".......##.......",
+        "....########....",
+        ".....######.....",
+        "......####......",
+        ".......##.......",
+        "................"
+      ]
+    },
+    {
+      "id": "reset-columns",
+      "name": "Reset Timeline Columns",
+      "group": "ae",
+      "app": "After Effects",
+      "platforms": "Mac, Windows",
+      "folder": "ae-shelf",
+      "files": {
+        "versioned": "^Reset Timeline Columns v(\\d+\\.\\d+\\.\\d+)\\.jsx$",
+        "entry": "Reset Timeline Columns.jsx"
+      },
+      "kbar": {
+        "button": "Reset Timeline Columns"
+      },
+      "blurb": "Puts every comp's timeline columns back in AE's default order.",
+      "more": "After Effects has no scripting access to column order, so the script saves the project, rewrites the per-comp column record inside the .aep (same file size, nothing else touched), keeps a backup copy in the system temp folder and reopens the project. Each comp keeps its column widths and which columns it shows; only the order changes.",
+      "install": [
+        "KBar: a Run JSX File button pointed at Reset Timeline Columns.jsx (the loader)."
+      ],
+      "tile": "lilac",
+      "glyph": [
+        "................",
+        "................",
+        "..############..",
+        "..############..",
+        "................",
+        "..###.####.###..",
+        "..###.####.###..",
+        "..###.####.###..",
+        "..###.####.###..",
+        "..###.####.###..",
+        "..###.####.###..",
+        "..###.####.###..",
+        "..###.####.###..",
+        "..###.####.###..",
+        "................",
+        "................"
+      ]
+    },
+    {
+      "id": "audio-from-parent",
+      "name": "Audio From Parent",
+      "group": "ae",
+      "app": "After Effects",
+      "platforms": "Mac, Windows",
+      "folder": "ae-shelf",
+      "files": {
+        "versioned": "^Audio From Parent v(\\d+\\.\\d+\\.\\d+)\\.jsx$",
+        "entry": "Audio From Parent.jsx"
+      },
+      "kbar": {
+        "button": "Audio From Parent"
+      },
+      "blurb": "Brings the top comp's audio into the precomp you are in, offset and trimmed to line up.",
+      "more": "Walks up through the comps that use the open precomp to the top-most one, takes the audio you hear there (a sound-only file, or the mix precomp so a new mix reaches every comp) and adds it at the bottom as a guide layer with the right offset, trimmed to the precomp's length. It never renders or plays twice in the parent. Run it again to replace the layer.",
+      "install": [
+        "KBar: a Run JSX File button pointed at Audio From Parent.jsx (the loader)."
+      ],
+      "tile": "orange",
+      "glyph": [
+        "................",
+        "................",
+        "................",
+        "...........#....",
+        "..........###...",
+        ".....##..#####..",
+        "....###....#....",
+        "..#####....#....",
+        "..#####....#....",
+        "..#####....#....",
+        "....###....#....",
+        ".....##....#....",
+        "................",
+        "................",
+        "................",
+        "................"
+      ]
+    },
+    {
+      "id": "typewriter",
+      "name": "Typewriter Slider",
+      "group": "ae",
+      "app": "After Effects",
+      "platforms": "Mac, Windows",
+      "folder": "ae-shelf",
+      "files": {
+        "versioned": "^Typewriter Slider v(\\d+\\.\\d+\\.\\d+)\\.jsx$",
+        "entry": "Typewriter Slider.jsx"
+      },
+      "kbar": {
+        "button": "Typewriter"
+      },
+      "blurb": "Adds a Typewriter slider to selected text layers: the slider value is the number of characters shown.",
+      "more": "Keyframe the slider from 0 to the text length to type the text on. Running it again on a layer that already has the slider keeps it and resets it to the full length.",
+      "install": [
+        "KBar: a Run JSX File button pointed at Typewriter Slider.jsx (the loader)."
+      ],
+      "tile": "khaki",
+      "glyph": [
+        "................",
+        "................",
+        "................",
+        "....##..........",
+        "...####.........",
+        "..##..##........",
+        "..##..##........",
+        "..######........",
+        "..##..##........",
+        "..##..##..####..",
+        "..##..##..####..",
+        "................",
+        "................",
+        "................",
+        "................",
+        "................"
+      ]
+    },
+    {
+      "id": "extract-comp-info",
+      "name": "Extract Comp Info",
+      "group": "ae",
+      "app": "After Effects",
+      "platforms": "Mac, Windows",
+      "folder": "ae-shelf",
+      "files": {
+        "versioned": "^Extract Comp Info v(\\d+\\.\\d+\\.\\d+)\\.jsx$",
+        "entry": "Extract Comp Info.jsx"
+      },
+      "kbar": {
+        "button": "Extract Comp Info"
+      },
+      "blurb": "Dumps the layers, masks, effects and keyframes of selected comps to one text file.",
+      "more": "Pick comps in a dialog (pre-selected from the Project panel), choose where to save, and get a readable .txt with every layer's transforms, keyframes, expressions, masks, effects and Essential Properties. Handy for comparing two builds or handing a comp's setup to someone, or to Claude.",
+      "install": [
+        "KBar: a Run JSX File button pointed at Extract Comp Info.jsx (the loader), or File > Scripts > Run Script File."
+      ],
+      "tile": "teal",
+      "glyph": [
+        "................",
+        "................",
+        "....########....",
+        "....#......#....",
+        "....#......#....",
+        "....#..##..#....",
+        "....#......#....",
+        "....#..##..#....",
+        "....#..##..#....",
+        "....#..##..#....",
+        "....#..##..#....",
+        "....#......#....",
+        "....#......#....",
+        "....########....",
+        "................",
+        "................"
+      ]
+    },
+    {
+      "id": "lapiz",
+      "name": "Lapiz",
+      "group": "other",
+      "app": "Photoshop",
+      "platforms": "Mac, Windows",
+      "folder": "lapiz",
+      "files": {
+        "versioned": "^Lapiz_(\\d+\\.\\d+\\.\\d+)\\.ccx$"
+      },
+      "blurb": "Frame-by-frame animation panel for Photoshop, OF's fork of FrameBar.",
+      "more": "Step and select drawings, 1s and 2s timing, extend and shrink holds, exact selection on held frames, plus Plugins-menu commands you can bind to F-keys through an Action.",
+      "install": [
+        "Double-click the .ccx: Creative Cloud installs it. The unverified-developer warning is expected, click through.",
+        "Then Plugins > Lapiz in Photoshop."
+      ],
+      "tile": "lilac",
+      "glyph": [
+        "................",
+        "................",
+        "...........##...",
+        "..........####..",
+        ".........####...",
+        "........####....",
+        ".......####.....",
+        "......####......",
+        ".....####.......",
+        "....####........",
+        "...####.........",
+        "..###...........",
+        "..##............",
+        "..#.............",
+        "................",
+        "................"
+      ]
+    },
+    {
+      "id": "dbxlinks",
+      "name": "Dropbox Finder Links",
+      "group": "other",
+      "app": "Finder + Slack",
+      "platforms": "Mac, Windows",
+      "folder": "dbxlinks",
+      "files": {
+        "versionFile": "VERSION",
+        "entry": "Install dbxlinks.command"
+      },
+      "blurb": "Paste a folder link in Slack that opens that folder in the clicker's own Finder.",
+      "more": "The menu bar icon or the Finder quick action copies a link for the selected folder; a teammate clicks it and the folder opens in their Finder, wherever their Dropbox lives. It also powers the Open in Finder buttons on this page, and it updates itself from the team Dropbox (right-click the menu bar icon).",
+      "install": [
+        "Mac: double-click Install dbxlinks.command in the folder (right-click > Open the first time), then switch on Finder > Quick Actions > Customize > Copy Slack Link.",
+        "Windows: run windows/Install dbxlinks.bat in the same folder."
+      ],
+      "tile": "teal",
+      "glyph": [
+        "................",
+        "................",
+        "................",
+        "..#####.........",
+        "..######........",
+        "..############..",
+        "..############..",
+        "..############..",
+        "..###......###..",
+        "..###......###..",
+        "..############..",
+        "..############..",
+        "..############..",
+        "................",
+        "................",
+        "................"
+      ]
+    },
+    {
+      "id": "time-tracker-app",
+      "name": "OF Time Tracker app",
+      "group": "other",
+      "app": "Mac menu bar",
+      "platforms": "Mac only",
+      "folder": "time-tracker-app",
+      "files": {
+        "bundle": "OF Time Tracker.app"
+      },
+      "blurb": "Menu bar timer for the Time Tracker. Copy the app out of Dropbox into Applications.",
+      "more": "Lives in the Dock and as a clock icon in the menu bar and signs in with your OF account. Copy, never move, the app out of the sync folder (select it, Cmd+C, then Cmd+V in Applications); a plain drag would remove it from Dropbox for everyone. Update the same way. The web app is at /time-tracker on this hub.",
+      "install": [
+        "Select OF Time Tracker.app in the Dropbox folder, Cmd+C, open Applications, Cmd+V, Replace if asked.",
+        "No security warning: it reaches you through Dropbox sync, not a browser download."
+      ],
+      "tile": "khaki",
+      "glyph": [
+        "................",
+        "................",
+        ".....#####......",
+        "....#.....#.....",
+        "...#.......#....",
+        "..#....#....#...",
+        "..#....#....#...",
+        "..#....#....#...",
+        "..#....####.#...",
+        "..#.........#...",
+        "..#.........#...",
+        "...#.......#....",
+        "....#.....#.....",
+        ".....#####......",
+        "................",
+        "................"
+      ]
+    },
+    {
+      "id": "doodle-exporter",
+      "name": "Doodle Filemaker",
+      "group": "googwc",
+      "app": "Mac app",
+      "platforms": "Mac only",
+      "folder": "doodle-exporter",
+      "files": {
+        "versioned": "^DoodleExporter-(\\d+\\.\\d+\\.\\d+)\\.app$",
+        "extras": [
+          {
+            "label": "Zip",
+            "match": "^DoodleExporter-(\\d+\\.\\d+\\.\\d+)\\.zip$"
+          }
+        ]
+      },
+      "blurb": "Exports the full Google World Cup doodle deliverable set (GIF, PNG, JPG, MP4) from the master renders.",
+      "more": "Loads the AE render folder, applies each bucket's size caps, background snapping and dither, and names every file per Google's convention. Project-specific to 202_GOOGWC.",
+      "install": [
+        "Copy the .app into Applications (or run it from the folder). Newest build at the top level, earlier ones in _Archive."
+      ],
+      "tile": "ink",
+      "glyph": [
+        "................",
+        "................",
+        "..############..",
+        "..#..........#..",
+        "..#.......##.#..",
+        "..#.......##.#..",
+        "..#..........#..",
+        "..#....#.....#..",
+        "..#...###....#..",
+        "..#..#####.#.#..",
+        "..#.#######.##..",
+        "..#.##########..",
+        "..############..",
+        "................",
+        "................",
+        "................"
+      ]
+    },
+    {
+      "id": "googwc-scripts",
+      "name": "GOOGWC AE scripts",
+      "group": "googwc",
+      "app": "After Effects",
+      "platforms": "Mac, Windows",
+      "folder": "googwc-scripts",
+      "files": {
+        "each": "^([a-z][a-z0-9-]*)-v(\\d+\\.\\d+\\.\\d+)\\.jsx$"
+      },
+      "blurb": "The project's build and render scripts: variations, echoes, logo stills, social versions, queue render.",
+      "more": "Run from the project's _Scripts folder, not from the shelf; each one carries its version in the filename and older builds sit in _Archive.",
+      "install": [
+        "File > Scripts > Run Script File, or a KBar button per script you use often."
+      ],
+      "tile": "ink",
+      "glyph": [
+        "................",
+        "................",
+        "................",
+        "................",
+        ".....##..##.....",
+        "....##....##....",
+        "...##......##...",
+        "..##........##..",
+        "..##........##..",
+        "...##......##...",
+        "....##....##....",
+        ".....##..##.....",
+        "................",
+        "................",
+        "................",
+        "................"
+      ]
+    }
+  ],
+  "landing": {
+    "glyph": [
+      "................",
+      "................",
+      "................",
+      "...##...........",
+      "....##..........",
+      ".....##.........",
+      "......##........",
+      ".......##.......",
+      "......##........",
+      ".....##.........",
+      "....##..........",
+      "...##...........",
+      "........######..",
+      "........######..",
+      "................",
+      "................"
+    ]
+  }
+}

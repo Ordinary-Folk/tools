@@ -38,6 +38,7 @@
   --tile-time: #AFA278;
   --tile-admin: #14161A;
   --tile-admin-glyph: #F5F6F8;
+  --tile-scripts: #E9C46A;
 }
 @media (prefers-color-scheme: dark) {
   :root {
@@ -131,6 +132,7 @@ h1 {
 .tile-time { background: var(--tile-time); }
 .tile-admin { background: var(--tile-admin); }
 .tile-admin svg { fill: var(--tile-admin-glyph); }
+.tile-scripts { background: var(--tile-scripts); }
 .card .text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
 .card .name-row { display: flex; align-items: center; gap: 8px; }
 .card h2 { font-size: 14px; font-weight: 600; line-height: 1.3; margin: 0; }
@@ -251,6 +253,19 @@ h1 {
           <span class="desc">Track time across projects</span>
         </span>
         <span class="path">/time-tracker</span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+      </a>
+
+      <a class="card" href="/scripts/">
+        <span class="tile tile-scripts">
+          <!-- pixel prompt: > _ -->
+          <svg viewBox="0 0 16 16" shape-rendering="crispEdges" fill="#14161A"><path d="M3 3h2v1H3zM4 4h2v1H4zM5 5h2v1H5zM6 6h2v1H6zM7 7h2v1H7zM6 8h2v1H6zM5 9h2v1H5zM4 10h2v1H4zM3 11h2v1H3zM8 12h6v1H8zM8 13h6v1H8z"/></svg>
+        </span>
+        <span class="text">
+          <h2>Scripts</h2>
+          <span class="desc">AE scripts and OF-made tools, newest versions and where they live</span>
+        </span>
+        <span class="path">/scripts</span>
         <svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
       </a>
 

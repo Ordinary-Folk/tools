@@ -77,6 +77,19 @@ export default {
       return handlePeopleAvatars(request, env)
     }
 
+    // Scripts catalog (tools.ordinary.co/scripts): the live manifest of what
+    // sits on the OF shelf in Dropbox. The publisher on one OF Mac (see
+    // scripts/publisher) POSTs it with the publish secret to the pages.dev host,
+    // which Access does not gate; the page reads it back on tools.ordinary.co,
+    // where Access has already signed the reader in. Stored in the TOOLS_DATA
+    // R2 bucket (of-tools-data), nothing else lives there yet.
+    if (url.pathname === '/scripts/__publish') {
+      return handleScriptsPublish(request, env)
+    }
+    if (url.pathname === '/scripts/manifest.json') {
+      return handleScriptsManifest(request, env, url)
+    }
+
     // OF Review share links: give the page real link-preview tags (title,
     // picture, a video-shaped player) so Notion, Slack etc. show a card and
     // can embed the ?embed view instead of the whole page.
@@ -213,6 +226,60 @@ function jsonResp(obj, status = 200) {
     status,
     headers: { 'content-type': 'application/json', 'cache-control': 'no-store' },
   })
+}
+
+// --- Scripts catalog manifest ------------------------------------------------
+const SCRIPTS_MANIFEST_KEY = 'scripts/manifest.json'
+
+// POST /scripts/__publish, body = the manifest JSON, header x-hub-secret =
+// SCRIPTS_PUBLISH_SECRET (a Pages secret; the same value sits on the publishing
+// Mac in ~/Library/Application Support/Ordinary Folk/Scripts Catalog/).
+async function handleScriptsPublish(request, env) {
+  if (request.method !== 'POST') return jsonResp({ error: 'method' }, 405)
+  if (!env.SCRIPTS_PUBLISH_SECRET || !env.TOOLS_DATA) return jsonResp({ error: 'unconfigured' }, 500)
+  if (!sameSecret(request.headers.get('x-hub-secret'), env.SCRIPTS_PUBLISH_SECRET)) return jsonResp({ error: 'forbidden' }, 403)
+  const text = await request.text()
+  if (text.length > 1_000_000) return jsonResp({ error: 'too-large' }, 413)
+  let data
+  try {
+    data = JSON.parse(text)
+  } catch {
+    return jsonResp({ error: 'not-json' }, 400)
+  }
+  if (!data || typeof data !== 'object' || !data.folders || typeof data.folders !== 'object') {
+    return jsonResp({ error: 'bad-shape' }, 400)
+  }
+  data.received = new Date().toISOString()
+  await env.TOOLS_DATA.put(SCRIPTS_MANIFEST_KEY, JSON.stringify(data), {
+    httpMetadata: { contentType: 'application/json' },
+  })
+  return jsonResp({ ok: true, received: data.received })
+}
+
+// GET /scripts/manifest.json. Only answered on the gated hostname (Access has
+// signed the reader in before the request gets here) or locally; elsewhere it
+// needs the publish secret, which lets the publisher check its own upload.
+async function handleScriptsManifest(request, env, url) {
+  if (request.method !== 'GET') return jsonResp({ error: 'method' }, 405)
+  const host = url.hostname
+  const gated = host === 'tools.ordinary.co' || host === 'localhost' || host === '127.0.0.1'
+  const withSecret = Boolean(env.SCRIPTS_PUBLISH_SECRET) && sameSecret(request.headers.get('x-hub-secret'), env.SCRIPTS_PUBLISH_SECRET)
+  if (!gated && !withSecret) return jsonResp({ error: 'not-here' }, 404)
+  if (!env.TOOLS_DATA) return jsonResp({ error: 'unconfigured' }, 500)
+  const obj = await env.TOOLS_DATA.get(SCRIPTS_MANIFEST_KEY)
+  if (!obj) return jsonResp({ error: 'no-manifest' }, 404)
+  return new Response(obj.body, {
+    headers: { 'content-type': 'application/json', 'cache-control': 'no-store' },
+  })
+}
+
+function sameSecret(given, expected) {
+  const a = String(given || '')
+  const b = String(expected || '')
+  if (!a || a.length !== b.length) return false
+  let diff = 0
+  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i)
+  return diff === 0
 }
 
 // --- OF Review link previews ----------------------------------------------
