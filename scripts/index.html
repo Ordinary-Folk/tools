@@ -86,19 +86,6 @@ h1 { margin: 0; font-family: 'DM Sans', sans-serif; font-size: 30px; font-weight
 .notice { font-size: 13px; color: var(--muted); border: 1px solid var(--border); background: var(--card); padding: 10px 12px; }
 .notice b { color: var(--text); font-weight: 600; }
 
-/* recently updated strip */
-.strip { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
-.strip .label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-right: 4px; }
-.chip {
-  display: inline-flex; align-items: center; gap: 6px; text-decoration: none; color: var(--text);
-  font-size: 12px; border: 1px solid var(--border); background: var(--card); padding: 3px 8px 3px 4px;
-}
-.chip:hover { border-color: var(--border-strong); }
-.chip .mini { width: 16px; height: 16px; flex: none; }
-.chip .mini svg { width: 100%; height: 100%; display: block; }
-.chip .v { font-family: var(--mono); color: var(--muted); }
-.chip .d { color: var(--faint); }
-
 /* shelf path row */
 .shelf { border: 1px solid var(--border); background: var(--card); padding: 10px 12px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .shelf .k { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
@@ -106,37 +93,38 @@ h1 { margin: 0; font-family: 'DM Sans', sans-serif; font-size: 30px; font-weight
 .shelf .acts { display: flex; gap: 6px; }
 .hint { font-size: 12px; color: var(--faint); margin: 0; }
 
-/* groups + rows */
-.group { display: flex; flex-direction: column; gap: 8px; }
+/* groups + card grid */
+.group { display: flex; flex-direction: column; gap: 10px; }
 .group-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-top: 10px; }
 .group-head h2 { margin: 0; font-family: 'DM Sans', sans-serif; font-size: 17px; font-weight: 600; }
 .group-head .n { font-family: var(--mono); font-size: 12px; color: var(--muted); }
-.group-note { margin: -4px 0 0; font-size: 12px; color: var(--muted); }
-.list { background: var(--card); border: 1px solid var(--border); display: flex; flex-direction: column; }
-details.row { border-bottom: 1px solid var(--border); }
-details.row:last-child { border-bottom: 0; }
+.group-note { margin: -6px 0 0; font-size: 12px; color: var(--muted); }
+.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+details.row { background: var(--card); border: 1px solid var(--border); min-width: 0; }
+details.row[open] { grid-column: 1 / -1; }
 summary {
-  list-style: none; display: flex; align-items: center; gap: 12px; padding: 12px; cursor: pointer;
+  list-style: none; display: flex; align-items: flex-start; gap: 12px; padding: 14px; cursor: pointer;
   transition: background 120ms ease;
 }
 summary::-webkit-details-marker { display: none; }
 summary:hover { background: var(--card-hover); }
-.tile { width: 36px; height: 36px; flex: none; overflow: hidden; }
+.tile { width: 40px; height: 40px; flex: none; overflow: hidden; }
 .tile svg { width: 100%; height: 100%; display: block; }
-.text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
 .name-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .name-row h3 { font-size: 14px; font-weight: 600; line-height: 1.3; margin: 0; }
 .pill { font-family: var(--mono); font-size: 11px; color: var(--muted); border: 1px solid var(--border); padding: 0 5px; line-height: 1.5; }
 .badge { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; padding: 1px 5px; border: 1px solid var(--text); color: var(--text); }
 .badge.new { background: var(--text); color: var(--bg); }
 .badge.off { border-color: var(--border); color: var(--faint); }
-.desc { font-size: 12px; color: var(--muted); line-height: 1.35; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.when { font-family: var(--mono); font-size: 11px; color: var(--faint); white-space: nowrap; }
-.chev { width: 14px; height: 14px; flex: none; display: block; stroke: var(--faint); transition: transform 120ms ease; }
+.desc { font-size: 12px; color: var(--muted); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.when { font-family: var(--mono); font-size: 11px; color: var(--faint); white-space: nowrap; margin-top: 2px; }
+.chev { width: 14px; height: 14px; flex: none; display: block; stroke: var(--faint); transition: transform 120ms ease; margin-top: 2px; }
 details[open] > summary .chev { transform: rotate(90deg); }
-details[open] > summary { background: var(--card-hover); }
+details[open] > summary { background: var(--card-hover); border-bottom: 1px solid var(--border); }
+details[open] > summary .desc { -webkit-line-clamp: unset; }
 
-.body { padding: 4px 12px 16px 60px; display: flex; flex-direction: column; gap: 12px; font-size: 13px; }
+.body { padding: 14px 14px 16px; display: flex; flex-direction: column; gap: 12px; font-size: 13px; }
 .body h4 { margin: 0 0 4px; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
 .body p { margin: 0; }
 .body .more { color: var(--text); max-width: 64ch; }
@@ -201,12 +189,12 @@ summary:focus-visible, .btn:focus-visible, .account a:focus-visible, .chip:focus
   summary { min-height: 44px; }
   .tile { width: 40px; height: 40px; }
   .desc { white-space: normal; }
-  .when { display: none; }
+  .grid { grid-template-columns: 1fr; }
   .chev { width: 16px; height: 16px; }
-  .body { padding-left: 12px; }
   ul.files li .acts { margin-left: 0; width: 100%; }
   .howto { grid-template-columns: 1fr; }
-  .shelf code { white-space: normal; word-break: break-all; }
+  .shelf { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .shelf code { white-space: normal; word-break: break-all; width: 100%; }
 }
 </style>
 </head>
@@ -236,7 +224,6 @@ summary:focus-visible, .btn:focus-visible, .account a:focus-visible, .chip:focus
     <p class="lede">After Effects scripts and the other tools we make, each with its newest version and where it lives in the OF Dropbox. The shelf is watched, so new scripts and updates show up here on their own.</p>
 
     <div id="notice" class="notice" hidden></div>
-    <div id="strip" class="strip" hidden></div>
 
     <div class="shelf" id="shelf">
       <span class="k">Shelf</span>
@@ -420,8 +407,8 @@ summary:focus-visible, .btn:focus-visible, .account a:focus-visible, .chip:focus
     const meta = '<p class="meta"><span>' + esc(tool.app) + '</span><span>' + esc(tool.platforms) + '</span>' + (m.updated ? '<span>updated ' + esc(ago(m.updated)) + '</span>' : '') + '</p>';
     return '<details class="row" id="tool-' + esc(tool.id) + '"><summary>' +
       '<span class="tile">' + tileSvg(tool) + '</span>' +
-      '<span class="text"><span class="name-row"><h3>' + esc(tool.name) + '</h3>' + pill + badge + '</span><span class="desc">' + esc(tool.blurb) + '</span></span>' +
-      when + '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></summary>' +
+      '<span class="text"><span class="name-row"><h3>' + esc(tool.name) + '</h3>' + pill + badge + '</span><span class="desc">' + esc(tool.blurb) + '</span>' + when + '</span>' +
+      '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></summary>' +
       '<div class="body">' + meta + '<p class="more">' + esc(tool.more) + '</p>' +
       '<div><h4>Files</h4><ul class="files">' + fileRow(rel, '', folder.label || 'Folder', null, null, 'dir') + files + '</ul></div>' +
       (tool.install && tool.install.length ? '<div><h4>Install</h4><ol class="steps">' + tool.install.map((s) => '<li>' + esc(s) + '</li>').join('') + '</ol></div>' : '') +
@@ -445,13 +432,6 @@ summary:focus-visible, .btn:focus-visible, .account a:focus-visible, .chip:focus
     if (!man) { notice.innerHTML = '<b>Live shelf data is not published yet.</b> The list below is the catalog; versions and dates appear once the publisher has run.'; notice.hidden = false; }
     else notice.hidden = true;
 
-    const recent = matched.filter((x) => x.m.updated).sort((a, b) => new Date(b.m.updated) - new Date(a.m.updated)).slice(0, 4);
-    const strip = $('#strip');
-    if (recent.length) {
-      strip.innerHTML = '<span class="label">Recently updated</span>' + recent.map(({ tool, m }) => '<a class="chip" href="#tool-' + esc(tool.id) + '"><span class="mini">' + tileSvg(tool) + '</span>' + esc(tool.name) + (m.version ? ' <span class="v">v' + esc(m.version) + '</span>' : '') + ' <span class="d">' + esc(fmtDate(m.updated)) + '</span></a>').join('');
-      strip.hidden = false;
-    }
-
     const groupsEl = $('#groups');
     groupsEl.innerHTML = cat.groups.map((g) => {
       const rows = matched.filter((x) => x.tool.group === g.id);
@@ -463,7 +443,7 @@ summary:focus-visible, .btn:focus-visible, .account a:focus-visible, .chip:focus
         return '<p class="also">Also in ' + esc(folders[fid].label) + ', not described yet: ' + extra.map((e) => '<code>' + esc(e.name) + '</code>' + (e.version && !new RegExp(e.version.replace(/\./g, '[.-]')).test(e.name) ? ' <span class="v">v' + esc(e.version) + '</span>' : '') + ' (' + esc(fmtDate(e.mtime)) + ')').join(', ') + '.</p>';
       }).join('');
       return '<section class="group"><div class="group-head"><h2>' + esc(g.title) + '</h2><span class="n">' + rows.length + '</span></div>' + (g.note ? '<p class="group-note">' + esc(g.note) + '</p>' : '') +
-        '<div class="list">' + rows.map(({ tool, m }) => renderTool(tool, folders[tool.folder], m)).join('') + '</div>' + also + '</section>';
+        '<div class="grid">' + rows.map(({ tool, m }) => renderTool(tool, folders[tool.folder], m)).join('') + '</div>' + also + '</section>';
     }).join('');
 
     $('#count').textContent = cat.tools.length + ' tools' + (man ? ' · shelf checked ' + ago(man.generated) : '');
