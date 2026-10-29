@@ -50,12 +50,8 @@
       "kbar": {
         "button": "Smart Queue"
       },
-      "blurb": "One button queues the comp in the right _Renders folder with the next version number.",
-      "more": "Reads the project's folder conventions to prefill destination, filename and version for the active comp or a selection of comps, shows one confirm dialog (rename comps to match, archive earlier versions, overwrite the latest) and adds them to the Render Queue, rendering straight away if you want. The loader runs the newest version on the shelf, so updates need no reinstall.",
-      "install": [
-        "KBar: a Run JSX File button pointed at Smart Queue.jsx (the loader, not the versioned file).",
-        "Dockable panel: copy Smart Queue.jsx into Scripts/ScriptUI Panels in the After Effects app folder and restart; it sits in the Window menu."
-      ],
+      "blurb": "Queues the comp in the right _Renders folder with the next version number, in one click.",
+      "install": [],
       "tile": "orange",
       "glyph": [
         "................",
@@ -74,7 +70,13 @@
         "..........##....",
         "..........#.....",
         "................"
-      ]
+      ],
+      "does": [
+        "Reads the project's folder conventions and prefills destination, filename and version for the active comp or a selection of comps.",
+        "One confirm dialog: rename comps to match, archive earlier versions, overwrite the latest, render right away.",
+        "The loader runs the newest build on the shelf, so updates need nothing from you."
+      ],
+      "panel": true
     },
     {
       "id": "word-split",
@@ -90,12 +92,8 @@
       "kbar": {
         "button": "Word Split"
       },
-      "blurb": "Splits a text layer into one clean text layer per word, parented to the hidden original.",
-      "more": "Select a text layer and run it: every word becomes its own text layer, laid out exactly where it was, parented to the master, which turns into a hidden guide layer. Edit the master and run again to re-lay out; the master's keyframes and effects are handed to the words. An optional live link keeps each word's text and style following the master.",
-      "install": [
-        "KBar: a Run JSX File button pointed at Word Split.jsx (the loader).",
-        "Dockable panel: copy the versioned Word Split file into Scripts/ScriptUI Panels and restart."
-      ],
+      "blurb": "Splits a text layer into one text layer per word, parented to the hidden original.",
+      "install": [],
       "tile": "lilac",
       "glyph": [
         "................",
@@ -114,7 +112,13 @@
         "................",
         "................",
         "................"
-      ]
+      ],
+      "does": [
+        "Select a text layer and run it: every word becomes its own layer, placed exactly where it was.",
+        "The original becomes a hidden guide layer. Edit it and run again to re-lay out the words.",
+        "Keyframes and effects on the original carry over to the words; an optional live link keeps text and style in sync."
+      ],
+      "panel": true
     },
     {
       "id": "bp-scripture",
@@ -139,18 +143,17 @@
             "label": "Web editor",
             "name": "BP Scripture Animator Editor.html"
           }
-        ]
+        ],
+        "entryLabel": "Opens the panel on the selected comp. Point KBar here; install the panel once with the installer below."
       },
       "kbar": {
         "button": "BP Scripture Animator",
-        "note": "Opens the panel on the selected comp (and installs nothing)."
+        "note": "opens the panel on the selected comp"
       },
-      "blurb": "Scripture text boxes for BibleProject episodes: a web editor plus an AE panel that builds and updates the comp.",
-      "more": "Write the passage in the editor (reveal chunks, original-language chips, underlines, highlights, boxes, focus, timing against the voice-over), then build it in After Effects as plain text and shape layers. The panel in Window > Extensions is the same editor talking to AE directly and updates a comp without losing what you changed in AE. The shelf also holds the ScriptUI version of the script and the standalone editor page.",
+      "blurb": "Scripture text boxes for BibleProject episodes, from a web editor straight into AE.",
       "install": [
         "Panel: run BP Scripture Animator - Install panel.jsx once (File > Scripts > Run Script File), restart AE, then Window > Extensions > BP Scripture Animator.",
-        "KBar: a Run JSX File button pointed at BP Scripture Animator - Edit in panel.jsx opens the panel on the selected comp.",
-        "Needs Preferences > Scripting & Expressions > Allow Scripts to Write Files and Access Network."
+        "Turn on Preferences > Scripting & Expressions > Allow Scripts to Write Files and Access Network."
       ],
       "tile": "khaki",
       "glyph": [
@@ -170,6 +173,11 @@
         "..############..",
         "................",
         "................"
+      ],
+      "does": [
+        "Write the passage in the editor: reveal chunks, original-language chips, underlines, highlights, boxes, focus, timed to the voice-over.",
+        "Build it in AE as plain text and shape layers, and update it later without losing what you changed in AE.",
+        "The panel in Window > Extensions is the same editor talking to AE directly."
       ]
     },
     {
@@ -186,11 +194,8 @@
       "kbar": {
         "button": "Make Footage Local"
       },
-      "blurb": "Finds a comp's Dropbox online-only footage and makes it local with one Finder right-click.",
-      "more": "Scans the active comp (precomps, image sequences and proxies included), opens one Finder window that lists exactly the online-only files wherever they live, already selected. You right-click once and choose Make Available Offline; the palette then reloads each footage item in AE as it lands and shows the count, data volume and time left. Hold Shift while launching to scan the whole project.",
-      "install": [
-        "KBar: a Run JSX File button pointed at Make Footage Local.jsx (the loader)."
-      ],
+      "blurb": "Makes a comp's online-only Dropbox footage local with one Finder right-click.",
+      "install": [],
       "tile": "teal",
       "glyph": [
         "................",
@@ -209,6 +214,11 @@
         "......####......",
         ".......##.......",
         "................"
+      ],
+      "does": [
+        "Scans the active comp, precomps, sequences and proxies included, and finds the files Dropbox keeps online-only.",
+        "Opens one Finder window with exactly those files selected: right-click > Make Available Offline.",
+        "Reloads each footage item in AE as it lands, with count, size and time left. Hold Shift while launching to scan the whole project."
       ]
     },
     {
@@ -226,10 +236,7 @@
         "button": "Reset Timeline Columns"
       },
       "blurb": "Puts every comp's timeline columns back in AE's default order.",
-      "more": "After Effects has no scripting access to column order, so the script saves the project, rewrites the per-comp column record inside the .aep (same file size, nothing else touched), keeps a backup copy in the system temp folder and reopens the project. Each comp keeps its column widths and which columns it shows; only the order changes.",
-      "install": [
-        "KBar: a Run JSX File button pointed at Reset Timeline Columns.jsx (the loader)."
-      ],
+      "install": [],
       "tile": "lilac",
       "glyph": [
         "................",
@@ -248,6 +255,10 @@
         "..###.####.###..",
         "................",
         "................"
+      ],
+      "does": [
+        "AE has no scripting access to columns, so it saves the project, rewrites the per-comp column record inside the .aep and reopens it.",
+        "Keeps a backup copy in the system temp folder. Column widths and visibility stay as they were."
       ]
     },
     {
@@ -264,11 +275,8 @@
       "kbar": {
         "button": "Audio From Parent"
       },
-      "blurb": "Brings the top comp's audio into the precomp you are in, offset and trimmed to line up.",
-      "more": "Walks up through the comps that use the open precomp to the top-most one, takes the audio you hear there (a sound-only file, or the mix precomp so a new mix reaches every comp) and adds it at the bottom as a guide layer with the right offset, trimmed to the precomp's length. It never renders or plays twice in the parent. Run it again to replace the layer.",
-      "install": [
-        "KBar: a Run JSX File button pointed at Audio From Parent.jsx (the loader)."
-      ],
+      "blurb": "Brings the top comp's audio into the precomp you're in, offset and trimmed to line up.",
+      "install": [],
       "tile": "orange",
       "glyph": [
         "................",
@@ -287,6 +295,11 @@
         "................",
         "................",
         "................"
+      ],
+      "does": [
+        "Walks up to the top-most comp that uses this precomp and takes the audio you hear there: a sound file, or the mix precomp.",
+        "Adds it at the bottom as a guide layer with the right offset, trimmed to the precomp's length, so it never plays twice.",
+        "Run it again to replace the layer."
       ]
     },
     {
@@ -303,11 +316,8 @@
       "kbar": {
         "button": "Typewriter"
       },
-      "blurb": "Adds a Typewriter slider to selected text layers: the slider value is the number of characters shown.",
-      "more": "Keyframe the slider from 0 to the text length to type the text on. Running it again on a layer that already has the slider keeps it and resets it to the full length.",
-      "install": [
-        "KBar: a Run JSX File button pointed at Typewriter Slider.jsx (the loader)."
-      ],
+      "blurb": "Adds a Typewriter slider to selected text layers: the value is how many characters show.",
+      "install": [],
       "tile": "khaki",
       "glyph": [
         "................",
@@ -326,6 +336,10 @@
         "................",
         "................",
         "................"
+      ],
+      "does": [
+        "Keyframe the slider from 0 to the text length to type the text on.",
+        "Running it again on a layer keeps its slider and resets it to the full length."
       ]
     },
     {
@@ -342,11 +356,8 @@
       "kbar": {
         "button": "Extract Comp Info"
       },
-      "blurb": "Dumps the layers, masks, effects and keyframes of selected comps to one text file.",
-      "more": "Pick comps in a dialog (pre-selected from the Project panel), choose where to save, and get a readable .txt with every layer's transforms, keyframes, expressions, masks, effects and Essential Properties. Handy for comparing two builds or handing a comp's setup to someone, or to Claude.",
-      "install": [
-        "KBar: a Run JSX File button pointed at Extract Comp Info.jsx (the loader), or File > Scripts > Run Script File."
-      ],
+      "blurb": "Writes the layers, masks, effects and keyframes of selected comps to one text file.",
+      "install": [],
       "tile": "teal",
       "glyph": [
         "................",
@@ -365,6 +376,11 @@
         "....########....",
         "................",
         "................"
+      ],
+      "does": [
+        "Pick comps in a dialog (pre-selected from the Project panel) and choose where to save.",
+        "You get a readable .txt with transforms, keyframes, expressions, masks, effects and Essential Properties per layer.",
+        "Good for comparing two builds, or handing a comp's setup to someone (or to Claude)."
       ]
     },
     {
@@ -376,12 +392,12 @@
       "folder": "dbxlinks",
       "files": {
         "versionFile": "VERSION",
-        "entry": "Install dbxlinks.command"
+        "entry": "Install dbxlinks.command",
+        "entryLabel": "Double-click to install or update (right-click > Open the first time)."
       },
       "blurb": "Paste a folder link in Slack that opens that folder in the clicker's own Finder.",
-      "more": "The menu bar icon or the Finder quick action copies a link for the selected folder; a teammate clicks it and the folder opens in their Finder, wherever their Dropbox lives. It also powers the Open in Finder buttons on this page, and it updates itself from the team Dropbox (right-click the menu bar icon).",
       "install": [
-        "Mac: double-click Install dbxlinks.command in the folder (right-click > Open the first time), then switch on Finder > Quick Actions > Customize > Copy Slack Link.",
+        "Mac: double-click Install dbxlinks.command (right-click > Open the first time), then switch on Finder > Quick Actions > Customize > Copy Slack Link.",
         "Windows: run windows/Install dbxlinks.bat in the same folder."
       ],
       "tile": "teal",
@@ -402,6 +418,10 @@
         "................",
         "................",
         "................"
+      ],
+      "does": [
+        "The menu bar icon or the Finder quick action copies a link for the selected folder; a teammate clicks it and Finder opens it on their Mac.",
+        "Also powers the Open in Finder buttons on this page. Updates itself from the team Dropbox."
       ]
     },
     {
@@ -414,11 +434,10 @@
       "files": {
         "bundle": "OF Time Tracker.app"
       },
-      "blurb": "Menu bar timer for the Time Tracker. Copy the app out of Dropbox into Applications.",
-      "more": "Lives in the Dock and as a clock icon in the menu bar and signs in with your OF account. Copy, never move, the app out of the sync folder (select it, Cmd+C, then Cmd+V in Applications); a plain drag would remove it from Dropbox for everyone. Update the same way. The web app is at /time-tracker on this hub.",
+      "blurb": "Menu bar timer for the Time Tracker. Copy the app from Dropbox into Applications.",
       "install": [
-        "Select OF Time Tracker.app in the Dropbox folder, Cmd+C, open Applications, Cmd+V, Replace if asked.",
-        "No security warning: it reaches you through Dropbox sync, not a browser download."
+        "Select OF Time Tracker.app, Cmd+C, then Cmd+V in Applications. Never drag it: a move removes it from Dropbox for everyone. Update the same way.",
+        "No security warning: it arrives through Dropbox sync, not a browser download."
       ],
       "tile": "khaki",
       "glyph": [
@@ -438,6 +457,10 @@
         ".....#####......",
         "................",
         "................"
+      ],
+      "does": [
+        "Lives in the Dock and as a clock in the menu bar, and signs in with your OF account.",
+        "The web app is at /time-tracker on this hub."
       ]
     }
   ],

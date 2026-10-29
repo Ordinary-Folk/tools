@@ -142,39 +142,51 @@ a.card:hover { background: var(--card-hover); }
 .back svg { width: 14px; height: 14px; stroke: currentColor; }
 .detail-head { display: flex; align-items: flex-start; gap: 16px; }
 .detail-head .tile { width: 56px; height: 56px; }
-.detail-head .text { gap: 6px; }
+.detail-head .text { gap: 4px; }
 .detail-head h1 { font-size: 26px; line-height: 1.15; }
-.detail-head .sub { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.detail-head .lead { font-size: 15px; color: var(--text); margin: 0; max-width: 56ch; }
+.detail-head .sub { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
 .detail-head .acts { display: flex; gap: 6px; margin-left: auto; flex: none; }
 .meta { font-size: 12px; color: var(--muted); margin: 0; }
 .meta span + span::before { content: ' · '; color: var(--faint); }
-.detail { background: var(--card); border: 1px solid var(--border); padding: 16px; display: flex; flex-direction: column; gap: 14px; font-size: 13px; }
-.detail h4 { margin: 0 0 4px; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
-.detail p { margin: 0; }
-.detail .more { color: var(--text); max-width: 64ch; font-size: 14px; }
-ul.files, ol.steps, ul.notes { margin: 0; padding: 0; list-style: none; }
-ul.files li { display: flex; align-items: center; gap: 10px; padding: 7px 0; border-top: 1px solid var(--border); flex-wrap: wrap; }
-ul.files li:first-child { border-top: 0; padding-top: 0; }
-.fname { font-family: var(--mono); font-size: 12px; color: var(--text); word-break: break-all; }
-.flabel { font-size: 11px; color: var(--muted); flex: 1; min-width: 8ch; }
-.flabel .v { font-family: var(--mono); }
-.acts { display: flex; gap: 6px; margin-left: auto; }
-.acts .btn { padding: 3px 8px; font-size: 11px; }
-ol.steps { counter-reset: s; display: flex; flex-direction: column; gap: 4px; }
-ol.steps li { counter-increment: s; padding-left: 22px; position: relative; color: var(--text); }
-ol.steps li::before { content: counter(s); position: absolute; left: 0; top: 0; font-family: var(--mono); font-size: 11px; color: var(--faint); }
-ol.steps code, .kbar code { font-family: var(--mono); font-size: 12px; }
-.kbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-.kbar .mini { width: 24px; height: 24px; flex: none; }
-.kbar .mini svg { width: 100%; height: 100%; display: block; }
-.kbar .dl { font-size: 12px; color: var(--muted); }
-.kbar .dl a { margin-left: 6px; }
-ul.notes { display: flex; flex-direction: column; gap: 3px; }
-ul.notes li { padding-left: 14px; position: relative; color: var(--text); }
-ul.notes li::before { content: '–'; position: absolute; left: 0; color: var(--faint); }
+.detail-grid { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 12px; align-items: start; }
+.col { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.panel { background: var(--card); border: 1px solid var(--border); padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; font-size: 13px; }
+.panel h4 { margin: 0; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+.panel p { margin: 0; }
+ul.does { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; font-size: 14px; line-height: 1.5; }
+ul.does li { padding-left: 16px; position: relative; }
+ul.does li::before { content: ''; position: absolute; left: 0; top: 8px; width: 6px; height: 6px; background: var(--border-strong); }
 .whatsnew-head { display: flex; align-items: baseline; gap: 8px; }
 .whatsnew-head .v { font-family: var(--mono); font-size: 12px; }
 .whatsnew-head .d { font-family: var(--mono); font-size: 11px; color: var(--faint); }
+ul.notes { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; font-size: 13px; line-height: 1.5; }
+ul.notes li { padding-left: 16px; position: relative; color: var(--text); }
+ul.notes li::before { content: ''; position: absolute; left: 0; top: 8px; width: 6px; height: 6px; background: var(--border-strong); }
+/* get it: the file to point at, then the rest */
+.file { display: flex; flex-direction: column; gap: 6px; padding: 10px 0; border-top: 1px solid var(--border); }
+.file:first-of-type { border-top: 0; padding-top: 0; }
+.file:last-of-type { padding-bottom: 0; }
+.file .fname { font-family: var(--mono); font-size: 13px; color: var(--text); word-break: break-all; }
+.file.primary .fname { font-size: 14px; font-weight: 500; }
+.file .flabel { font-size: 12px; color: var(--muted); }
+.file .flabel .v { font-family: var(--mono); }
+.file .acts { display: flex; gap: 6px; flex-wrap: wrap; }
+.file .acts .btn { padding: 4px 9px; font-size: 12px; }
+.file.minor .fname { font-size: 12px; color: var(--muted); }
+.file.minor .acts .btn { padding: 2px 7px; font-size: 11px; }
+/* install */
+.kb { display: flex; align-items: flex-start; gap: 10px; }
+.kb .mini { width: 32px; height: 32px; flex: none; }
+.kb .mini svg { width: 100%; height: 100%; display: block; }
+.kb .lines { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.kb code { font-family: var(--mono); font-size: 12px; }
+.kb .dl a { margin-right: 8px; }
+ol.steps { margin: 0; padding: 0; list-style: none; counter-reset: s; display: flex; flex-direction: column; gap: 6px; }
+ol.steps li { counter-increment: s; padding-left: 20px; position: relative; line-height: 1.45; }
+ol.steps li::before { content: counter(s); position: absolute; left: 0; top: 0; font-family: var(--mono); font-size: 11px; color: var(--faint); }
+.alt { font-size: 12px; color: var(--muted); }
+.alt code { font-family: var(--mono); font-size: 11px; }
 
 /* how to */
 .howto { border: 1px solid var(--border); background: var(--card); padding: 14px 16px; display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 14px 24px; margin-top: 10px; }
@@ -209,7 +221,12 @@ a.card:focus-visible, .back:focus-visible, .btn:focus-visible, .account a:focus-
   .desc { white-space: normal; }
   .grid { grid-template-columns: 1fr; }
   .chev { width: 16px; height: 16px; }
-  ul.files li .acts { margin-left: 0; width: 100%; }
+  .detail-head { flex-wrap: wrap; }
+  .detail-head .tile { width: 44px; height: 44px; }
+  .detail-head h1 { font-size: 22px; }
+  .detail-head .acts { margin-left: 0; width: 100%; }
+  .detail-grid { grid-template-columns: 1fr; }
+  .panel { padding: 14px; }
   .howto { grid-template-columns: 1fr; }
   .shelf { flex-direction: column; align-items: flex-start; gap: 8px; }
   .shelf code { white-space: normal; word-break: break-all; width: 100%; }
@@ -408,13 +425,6 @@ a.card:focus-visible, .back:focus-visible, .btn:focus-visible, .account a:focus-
   const routeId = () => { const m = location.pathname.match(/^\/scripts\/([a-z0-9-]+)\/?$/); return m ? m[1] : null; };
   let listScroll = 0;
 
-  function fileRow(rel, name, label, version, mtime, kind) {
-    const p = name ? rel + '/' + name : rel;
-    const meta = [label, version ? '<span class="v">v' + esc(version) + '</span>' : '', mtime ? fmtDate(mtime) : ''].filter(Boolean).join(' · ');
-    return '<li><span class="fname">' + esc(name || rel.split('/').pop()) + '</span><span class="flabel">' + meta + '</span>' +
-      '<span class="acts"><button class="btn" data-copy-rel="' + esc(p) + '">Copy path</button>' +
-      '<a class="btn" data-open-rel="' + esc(p) + '" href="' + esc(openUrl(p)) + '" target="_blank" rel="noopener">' + (kind === 'dir' ? 'Open in Finder' : 'Show in Finder') + '</a></span></li>';
-  }
   function badgeFor(m) {
     const days = m.updated ? (Date.now() - new Date(m.updated)) / 864e5 : null;
     if (m.missing && state.manifest) return '<span class="badge off">Not on the shelf</span>';
@@ -429,26 +439,57 @@ a.card:focus-visible, .back:focus-visible, .btn:focus-visible, .account a:focus-
       '<span class="text"><span class="meta-row">' + (pill || '<span class="pill faint">no build</span>') + when + badgeFor(m) + '</span><h3>' + esc(tool.name) + '</h3><span class="desc">' + esc(tool.blurb) + '</span></span>' +
       '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></a>';
   }
+  const cap = (t) => { t = String(t || '').trim(); if (!t) return t; t = t.charAt(0).toUpperCase() + t.slice(1); return /[.!?)]$/.test(t) ? t : t + '.'; };
+  function fileBlock(rel, name, label, version, mtime, kind, cls) {
+    const p = name ? rel + '/' + name : rel;
+    const bits = [label, version ? '<span class="v">v' + esc(version) + '</span>' : '', mtime ? fmtDate(mtime) : ''].filter(Boolean).join(' · ');
+    return '<div class="file ' + cls + '"><span class="fname">' + esc(name || rel.split('/').pop()) + '</span>' + (bits ? '<span class="flabel">' + bits + '</span>' : '') +
+      '<span class="acts"><a class="btn" data-open-rel="' + esc(p) + '" href="' + esc(openUrl(p)) + '" target="_blank" rel="noopener">' + (kind === 'dir' ? 'Open in Finder' : 'Show in Finder') + '</a>' +
+      '<button class="btn" data-copy-rel="' + esc(p) + '">Copy path</button></span></div>';
+  }
   function renderDetail(tool, folder, m) {
     const rel = folder.path;
+    const f = tool.files || {};
     const pill = m.version ? '<span class="pill">v' + esc(m.version) + '</span>' : '';
-    const files = m.files.map((x) => (x.entry ? fileRow(rel, x.entry.name, x.label, x.version, x.entry.mtime, x.entry.kind) : '<li><span class="fname">' + esc(x.missing) + '</span><span class="flabel">' + esc(x.label) + ' · missing from the shelf right now</span></li>')).join('');
-    const kbar = tool.kbar ? '<div><h4>KBar</h4><div class="kbar"><span class="mini">' + tileSvg(tool) + '</span><span>Button <b>' + esc(tool.kbar.button) + '</b> · Run JSX File · <code>' + esc(tool.files.entry || '') + '</code>' + (tool.kbar.note ? ' · ' + esc(tool.kbar.note) : '') + '</span>' +
-      '<span class="dl">Icon:<a href="/scripts/icons/' + tool.id + '.png" download>PNG</a><a href="/scripts/icons/' + tool.id + '.svg" download>SVG</a><a href="/scripts/icons/' + tool.id + '-mono.png" download>mono</a></span></div></div>' : '';
+    // the file to point at first, the rest smaller
+    const entry = m.files.find((x) => x.entry && x.label && /loader|entry/i.test(x.label));
+    const primary = entry || m.files.find((x) => x.entry) || null;
+    const others = m.files.filter((x) => x !== primary);
+    let get = '';
+    if (primary) {
+      // a loader is the file named exactly after the tool; anything else says what it is (catalog entryLabel)
+      const isLoader = Boolean(f.versioned && f.entry && f.entry.toLowerCase() === (tool.name + '.jsx').toLowerCase());
+      const label = f.entryLabel || (isLoader ? 'The loader. Point KBar or File > Scripts here; it runs the newest build.' : (primary.label || ''));
+      get += fileBlock(rel, primary.entry.name, label, (isLoader || f.entryLabel) ? null : primary.version, (isLoader || f.entryLabel) ? null : primary.entry.mtime, primary.entry.kind, 'primary');
+    } else if (m.files.length && m.files[0].missing) {
+      get += '<div class="file primary"><span class="fname">' + esc(m.files[0].missing) + '</span><span class="flabel">Missing from the shelf right now.</span></div>';
+    }
+    others.forEach((x) => { if (x.entry) get += fileBlock(rel, x.entry.name, x.label, x.version, x.entry.mtime, x.entry.kind, 'minor'); });
+    get += fileBlock(rel, '', 'Shelf folder', null, null, 'dir', 'minor');
+
+    let install = '';
+    if (tool.kbar && f.entry) {
+      install += '<div class="kb"><span class="mini">' + tileSvg(tool) + '</span><div class="lines"><span>KBar button <b>' + esc(tool.kbar.button) + '</b>' + (tool.kbar.note ? ' (' + esc(tool.kbar.note) + ')' : '') + '</span>' +
+        '<span>Run JSX File → <code>' + esc(f.entry) + '</code></span>' +
+        '<span class="dl">Icon <a href="/scripts/icons/' + tool.id + '.png" download>PNG</a><a href="/scripts/icons/' + tool.id + '.svg" download>SVG</a><a href="/scripts/icons/' + tool.id + '-mono.png" download>mono</a></span></div></div>';
+      install += '<p class="alt">Or File &gt; Scripts &gt; Run Script File when you need it once.' + (tool.panel ? ' For a dockable panel, copy the loader into <code>Scripts/ScriptUI Panels</code> and restart AE.' : '') + '</p>';
+    }
+    if (tool.install && tool.install.length) install += '<ol class="steps">' + tool.install.map((x) => '<li>' + esc(x) + '</li>').join('') + '</ol>';
+
+    const does = tool.does && tool.does.length ? '<ul class="does">' + tool.does.map((x) => '<li>' + esc(x) + '</li>').join('') + '</ul>' : (tool.more ? '<p>' + esc(tool.more) + '</p>' : '');
     const cl = m.changelog;
-    const whatsnew = cl ? '<div><h4>What\'s new</h4><div class="whatsnew-head"><span class="v">v' + esc(cl.version) + (cl.part ? ' (' + esc(cl.part) + ')' : '') + '</span>' + (cl.date ? '<span class="d">' + esc(fmtDate(cl.date)) + '</span>' : '') + '</div>' +
-      (cl.notes && cl.notes.length ? '<ul class="notes">' + cl.notes.map((n) => '<li>' + esc(n) + '</li>').join('') + '</ul>' : '') + '</div>' : '';
-    const meta = '<p class="meta"><span>' + esc(tool.app) + '</span><span>' + esc(tool.platforms) + '</span>' + (m.updated ? '<span>updated ' + esc(ago(m.updated)) + '</span>' : '') + '</p>';
+    const whatsnew = cl ? '<div class="panel"><h4>What\'s new</h4><div class="whatsnew-head"><span class="v">v' + esc(cl.version) + (cl.part ? ' (' + esc(cl.part) + ')' : '') + '</span>' + (cl.date ? '<span class="d">' + esc(fmtDate(cl.date)) + '</span>' : '') + '</div>' +
+      (cl.notes && cl.notes.length ? '<ul class="notes">' + cl.notes.slice(0, 4).map((n) => '<li>' + esc(cap(n)) + '</li>').join('') + '</ul>' : '') + '</div>' : '';
+    const meta = '<p class="meta"><span>' + esc(tool.app) + '</span><span>' + esc(tool.platforms) + '</span>' + (m.updated ? '<span>updated ' + esc(fmtDate(m.updated)) + '</span>' : '') + '</p>';
     return '<a class="back" href="' + BASE + '" data-back><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>Scripts</a>' +
-      '<div class="detail-head"><span class="tile">' + tileSvg(tool) + '</span><div class="text"><h1>' + esc(tool.name) + '</h1><div class="sub">' + pill + badgeFor(m) + meta + '</div></div>' +
+      '<div class="detail-head"><span class="tile">' + tileSvg(tool) + '</span><div class="text"><h1>' + esc(tool.name) + '</h1><p class="lead">' + esc(tool.blurb) + '</p><div class="sub">' + pill + badgeFor(m) + meta + '</div></div>' +
       '<span class="acts"><button class="btn" data-copy-link>Copy link</button></span></div>' +
-      '<div class="detail">' +
-      '<p class="more">' + esc(tool.more) + '</p>' +
-      '<div><h4>Files</h4><ul class="files">' + fileRow(rel, '', folder.label || 'Folder', null, null, 'dir') + files + '</ul></div>' +
-      (tool.install && tool.install.length ? '<div><h4>Install</h4><ol class="steps">' + tool.install.map((x) => '<li>' + esc(x) + '</li>').join('') + '</ol></div>' : '') +
-      kbar + whatsnew +
-      (state.helper.ok ? '' : '<p class="hint">Open in Finder needs Dropbox Finder Links running on this Mac. Copy path works everywhere.</p>') +
-      '</div>';
+      '<div class="detail-grid"><div class="col">' +
+      '<div class="panel"><h4>What it does</h4>' + does + '</div>' + whatsnew +
+      '</div><div class="col">' +
+      '<div class="panel"><h4>Get it</h4>' + get + (state.helper.ok ? '' : '<p class="alt">Open in Finder needs Dropbox Finder Links running on this Mac.</p>') + '</div>' +
+      (install ? '<div class="panel"><h4>Install</h4>' + install + '</div>' : '') +
+      '</div></div>';
   }
   function matchedAll() {
     const cat = state.catalog, man = state.manifest;
