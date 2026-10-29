@@ -89,6 +89,13 @@ export default {
     if (url.pathname === '/scripts/manifest.json') {
       return handleScriptsManifest(request, env, url)
     }
+    // One URL per tool (/scripts/smart-queue): same page, it reads the path.
+    // Real files under /scripts/ have an extension or a deeper path, so only a
+    // bare one-segment id is rewritten.
+    const toolPage = url.pathname.match(/^\/scripts\/([a-z0-9-]+)\/?$/)
+    if (toolPage && !['icons', 'publisher'].includes(toolPage[1]) && (request.method === 'GET' || request.method === 'HEAD')) {
+      return env.ASSETS.fetch(new Request(new URL('/scripts/', url).toString(), request))
+    }
 
     // OF Review share links: give the page real link-preview tags (title,
     // picture, a video-shaped player) so Notion, Slack etc. show a card and
