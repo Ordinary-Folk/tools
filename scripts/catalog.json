@@ -8,10 +8,6 @@
         "_Archive"
       ]
     },
-    "lapiz": {
-      "label": "Lapiz releases",
-      "path": "_Ordinary Folk Projects/_OF TOOL BOX/Apps - OF/Lapiz/releases"
-    },
     "dbxlinks": {
       "label": "Dropbox Finder Links",
       "path": "_Ordinary Folk Projects/_OF TOOL BOX/Apps - OF/dropbox-finder"
@@ -19,21 +15,6 @@
     "time-tracker-app": {
       "label": "OF Time Tracker Mac app",
       "path": "_Ordinary Folk Projects/_OF TOOL BOX/Apps - OF/OF Time Tracker Mac App sync"
-    },
-    "doodle-exporter": {
-      "label": "Doodle Filemaker builds",
-      "path": "_Ordinary Folk Projects/202_GOOGWC/Production/Apps/DoodleExporter",
-      "ignore": [
-        "_Archive"
-      ]
-    },
-    "googwc-scripts": {
-      "label": "GOOGWC AE scripts",
-      "path": "_Ordinary Folk Projects/202_GOOGWC/Production/Animation/Utils - Animation/_Scripts",
-      "ignore": [
-        "_Archive",
-        "_src"
-      ]
     }
   },
   "groups": [
@@ -45,11 +26,6 @@
     {
       "id": "other",
       "title": "Other software"
-    },
-    {
-      "id": "googwc",
-      "title": "GOOGWC project",
-      "note": "Project-specific, kept inside 202_GOOGWC rather than on the shelf."
     }
   ],
   "tile": {
@@ -392,42 +368,6 @@
       ]
     },
     {
-      "id": "lapiz",
-      "name": "Lapiz",
-      "group": "other",
-      "app": "Photoshop",
-      "platforms": "Mac, Windows",
-      "folder": "lapiz",
-      "files": {
-        "versioned": "^Lapiz_(\\d+\\.\\d+\\.\\d+)\\.ccx$"
-      },
-      "blurb": "Frame-by-frame animation panel for Photoshop, OF's fork of FrameBar.",
-      "more": "Step and select drawings, 1s and 2s timing, extend and shrink holds, exact selection on held frames, plus Plugins-menu commands you can bind to F-keys through an Action.",
-      "install": [
-        "Double-click the .ccx: Creative Cloud installs it. The unverified-developer warning is expected, click through.",
-        "Then Plugins > Lapiz in Photoshop."
-      ],
-      "tile": "lilac",
-      "glyph": [
-        "................",
-        "................",
-        "...........##...",
-        "..........####..",
-        ".........####...",
-        "........####....",
-        ".......####.....",
-        "......####......",
-        ".....####.......",
-        "....####........",
-        "...####.........",
-        "..###...........",
-        "..##............",
-        "..#.............",
-        "................",
-        "................"
-      ]
-    },
-    {
       "id": "dbxlinks",
       "name": "Dropbox Finder Links",
       "group": "other",
@@ -496,82 +436,6 @@
         "...#.......#....",
         "....#.....#.....",
         ".....#####......",
-        "................",
-        "................"
-      ]
-    },
-    {
-      "id": "doodle-exporter",
-      "name": "Doodle Filemaker",
-      "group": "googwc",
-      "app": "Mac app",
-      "platforms": "Mac only",
-      "folder": "doodle-exporter",
-      "files": {
-        "versioned": "^DoodleExporter-(\\d+\\.\\d+\\.\\d+)\\.app$",
-        "extras": [
-          {
-            "label": "Zip",
-            "match": "^DoodleExporter-(\\d+\\.\\d+\\.\\d+)\\.zip$"
-          }
-        ]
-      },
-      "blurb": "Exports the full Google World Cup doodle deliverable set (GIF, PNG, JPG, MP4) from the master renders.",
-      "more": "Loads the AE render folder, applies each bucket's size caps, background snapping and dither, and names every file per Google's convention. Project-specific to 202_GOOGWC.",
-      "install": [
-        "Copy the .app into Applications (or run it from the folder). Newest build at the top level, earlier ones in _Archive."
-      ],
-      "tile": "ink",
-      "glyph": [
-        "................",
-        "................",
-        "..############..",
-        "..#..........#..",
-        "..#.......##.#..",
-        "..#.......##.#..",
-        "..#..........#..",
-        "..#....#.....#..",
-        "..#...###....#..",
-        "..#..#####.#.#..",
-        "..#.#######.##..",
-        "..#.##########..",
-        "..############..",
-        "................",
-        "................",
-        "................"
-      ]
-    },
-    {
-      "id": "googwc-scripts",
-      "name": "GOOGWC AE scripts",
-      "group": "googwc",
-      "app": "After Effects",
-      "platforms": "Mac, Windows",
-      "folder": "googwc-scripts",
-      "files": {
-        "each": "^([a-z][a-z0-9-]*)-v(\\d+\\.\\d+\\.\\d+)\\.jsx$"
-      },
-      "blurb": "The project's build and render scripts: variations, echoes, logo stills, social versions, queue render.",
-      "more": "Run from the project's _Scripts folder, not from the shelf; each one carries its version in the filename and older builds sit in _Archive.",
-      "install": [
-        "File > Scripts > Run Script File, or a KBar button per script you use often."
-      ],
-      "tile": "ink",
-      "glyph": [
-        "................",
-        "................",
-        "................",
-        "................",
-        ".....##..##.....",
-        "....##....##....",
-        "...##......##...",
-        "..##........##..",
-        "..##........##..",
-        "...##......##...",
-        "....##....##....",
-        ".....##..##.....",
-        "................",
-        "................",
         "................",
         "................"
       ]
