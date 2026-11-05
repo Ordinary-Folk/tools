@@ -44,6 +44,7 @@
   --tile-admin: #14161A;
   --tile-admin-glyph: #F5F6F8;
   --tile-scripts: #E9C46A;
+  --tile-look: #A9C7A1;
 }
 @media (prefers-color-scheme: dark) {
   :root {
@@ -142,6 +143,7 @@ h1 {
 .tile-admin { background: var(--tile-admin); }
 .tile-admin svg { fill: var(--tile-admin-glyph); }
 .tile-scripts { background: var(--tile-scripts); }
+.tile-look { background: var(--tile-look); }
 .card .text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
 .card .name-row { display: flex; align-items: center; gap: 8px; }
 .card h2 { font-size: 14px; font-weight: 600; line-height: 1.3; margin: 0; }
@@ -274,6 +276,19 @@ h1 {
           <span class="desc">AE scripts and OF-made tools, newest versions and where they live</span>
         </span>
         <span class="path">/scripts</span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+      </a>
+
+      <a class="card" href="/look/">
+        <span class="tile tile-look">
+          <!-- house palette icon -->
+          <svg viewBox="-4 -4 32 32" shape-rendering="crispEdges" fill="#14161A"><path d="M4 8H8V4H10V8H12V10H10V14H14V12H16V14H20V16H16V20H20V22H4V20H8V16H4V20H2V4H4V8ZM10 20H14V16H10V20ZM22 20H20V16H22V20ZM4 14H8V10H4V14ZM18 12H16V10H18V12ZM16 10H14V8H16V10ZM20 10H18V8H20V10ZM14 8H12V6H14V8ZM22 8H20V6H22V8ZM16 6H14V4H16V6ZM20 6H18V4H20V6ZM8 4H4V2H8V4ZM18 4H16V2H18V4Z"/></svg>
+        </span>
+        <span class="text">
+          <h2>Look</h2>
+          <span class="desc">Design principles, house icons and the icon maker every OF tool uses</span>
+        </span>
+        <span class="path">/look</span>
         <svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
       </a>
 

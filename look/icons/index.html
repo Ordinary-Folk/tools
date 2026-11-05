@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Icons · Look · Ordinary Folk Tools</title>
+<link rel="icon" type="image/svg+xml" href="/icons/icon.svg">
+<link rel="stylesheet" href="/look/look.css">
+<style>
+.bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.bar input[type="search"] { flex: 1 1 220px; min-width: 0; }
+.bar .count { font: 12px var(--mono); color: var(--muted); }
+.layout { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 16px; align-items: start; }
+@media (max-width: 860px) { .layout { grid-template-columns: minmax(0, 1fr); } }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(112px, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); }
+.cell { background: var(--card); border: 0; padding: 14px 8px 10px; display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; color: var(--text); text-align: center; }
+.cell:hover { background: var(--card-hover); }
+.cell[aria-pressed="true"] { background: var(--accent-soft); color: var(--text); border-color: transparent; }
+.cell .ics { display: flex; gap: 10px; align-items: center; height: 24px; }
+.cell .nm { font: 11px var(--mono); color: var(--muted); word-break: break-word; line-height: 1.3; }
+.cell .tag { font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--faint); }
+.detail { position: sticky; top: 72px; display: flex; flex-direction: column; gap: 14px; }
+.detail h2 { font-family: var(--mono); font-size: 16px; margin: 0; }
+.previews { display: grid; grid-template-columns: 1fr 1fr; }
+.pv { display: flex; gap: 14px; align-items: center; justify-content: center; padding: 18px 8px; flex-wrap: wrap; }
+.pv.light { background: #FFFFFF; color: #15171B; border: 1px solid var(--border); }
+.pv.dark { background: #15171B; color: #ECEEF2; border: 1px solid #262A31; }
+.kv { display: grid; grid-template-columns: 70px minmax(0, 1fr); gap: 6px 10px; font-size: 13px; }
+.kv span:nth-child(odd) { color: var(--muted); }
+.acts { display: flex; flex-wrap: wrap; gap: 6px; }
+.empty { padding: 32px; text-align: center; color: var(--muted); background: var(--card); }
+</style>
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="/" aria-label="Ordinary Folk Tools home"><svg viewBox="0 0 684.04 344.08" fill="currentColor" aria-label="Ordinary Folk">
+      <path d="M172.04,0C77.03,0,0,77.03,0,172.04s77.03,172.04,172.04,172.04,172.04-77.03,172.04-172.04S267.06,0,172.04,0ZM172.04,269.7c-52.77,0-95.56-42.78-95.56-95.56s42.79-95.56,95.56-95.56,95.56,42.79,95.56,95.56-42.78,95.56-95.56,95.56Z"/>
+      <path d="M595.51,155.23c-23.7,0-42.92,19.21-42.92,42.92s19.22,42.92,42.92,42.92,42.92-19.21,42.92-42.92-19.22-42.92-42.92-42.92Z"/>
+      <polygon points="506.98 13.3 430.5 13.3 430.5 85.39 430.5 330.71 506.98 330.71 506.98 85.39 684.04 85.39 684.04 13.3 506.98 13.3"/>
+    </svg><span>Look</span></a>
+  <nav class="tabs" aria-label="Look"><a href="/look/">Principles</a><a href="/look/icons/" aria-current="page">Icons</a><a href="/look/maker/">Icon maker</a><a href="/look/tokens.css">Tokens</a></nav>
+</header>
+<main>
+  <section>
+    <span class="eyebrow">Look</span>
+    <h1>Icon library</h1>
+    <p class="lede">Every icon the OF apps use, by its house name. Apps point at these names, so changing one here (in <code>look/icons/house.json</code>) changes it everywhere it appears. Pixelarticons Pro is licensed per seat: people who work with these icons need a seat.</p>
+  </section>
+  <div class="bar" role="search">
+    <input type="search" id="q" placeholder="Search names, e.g. arrow, play, search" aria-label="Search icons">
+    <select id="app" aria-label="App"><option value="">All apps</option><option value="tracker">Project Tracker</option><option value="review">OF Review</option></select>
+    <select id="style" aria-label="Style"><option value="">All styles</option><option value="outline">Outline</option><option value="solid">Solid</option><option value="custom">OF custom</option></select>
+    <span class="count" id="count"></span>
+  </div>
+  <div class="layout">
+    <div><div class="grid" id="grid"></div></div>
+    <aside class="panel detail" id="detail" aria-live="polite"></aside>
+  </div>
+</main>
+<div class="toast" id="toast" role="status"></div>
+<script src="/look/icons/library.js"></script>
+<script>
+(() => {
+  const I = window.OF_ICONS || {};
+  const names = Object.keys(I).sort();
+  const APPN = { tracker: 'Project Tracker', review: 'OF Review' };
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+  const svg = (n, s) => `<svg class="px" width="${s}" height="${s}" viewBox="0 0 24 24" aria-hidden="true"><path${I[n].eo ? ' fill-rule="evenodd"' : ''} d="${I[n].d}"/></svg>`;
+  const svgFile = (n) => `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" shape-rendering="crispEdges"><path${I[n].eo ? ' fill-rule="evenodd"' : ''} d="${I[n].d}"/></svg>`;
+  let sel = new URLSearchParams(location.search).get('icon') || names[0];
+  const q = document.getElementById('q'), app = document.getElementById('app'), style = document.getElementById('style');
+
+  function list() {
+    const s = q.value.trim().toLowerCase();
+    const shown = names.filter((n) => {
+      const it = I[n];
+      if (app.value && !(it.apps || {})[app.value]) return false;
+      if (style.value && it.style !== style.value) return false;
+      return !s || n.includes(s) || String(it.source).includes(s);
+    });
+    document.getElementById('count').textContent = `${shown.length} of ${names.length}`;
+    document.getElementById('grid').innerHTML = shown.length ? shown.map((n) => `<button type="button" class="cell" data-n="${n}" aria-pressed="${n === sel}" title="${esc(n)}"><span class="ics">${svg(n, 12)}${svg(n, 24)}</span><span class="nm">${esc(n)}</span>${I[n].style === 'custom' ? '<span class="tag">OF custom</span>' : ''}</button>`).join('') : '<div class="empty">No icon matches.</div>';
+  }
+  function detail() {
+    const it = I[sel]; if (!it) return;
+    const apps = Object.entries(it.apps || {}).map(([a, keys]) => `${APPN[a] || a} <span class="mono muted">(${keys.join(', ')})</span>`).join('<br>') || '<span class="muted">Not used yet</span>';
+    document.getElementById('detail').innerHTML = `
+      <h2>${esc(sel)}</h2>
+      <div class="previews"><div class="pv light">${svg(sel, 12)}${svg(sel, 24)}${svg(sel, 48)}</div><div class="pv dark">${svg(sel, 12)}${svg(sel, 24)}${svg(sel, 48)}</div></div>
+      <div class="kv"><span>Draws</span><span class="mono">${esc(it.source)}</span><span>Style</span><span>${it.style === 'custom' ? 'OF custom' : it.style[0].toUpperCase() + it.style.slice(1)}</span><span>Used in</span><span>${apps}</span><span>In apps</span><span><code>"@${esc(sel)}"</code></span></div>
+      <div class="acts"><button type="button" class="primary" data-copy="ref">Copy "@${esc(sel)}"</button><button type="button" data-copy="svg">Copy SVG</button><a class="btn" href="/look/maker/?icon=${encodeURIComponent(sel)}">Edit in maker</a></div>`;
+  }
+  document.getElementById('grid').addEventListener('click', (e) => { const b = e.target.closest('.cell'); if (!b) return; sel = b.dataset.n; history.replaceState(null, '', '?icon=' + encodeURIComponent(sel)); list(); detail(); });
+  document.getElementById('detail').addEventListener('click', async (e) => {
+    const b = e.target.closest('[data-copy]'); if (!b) return;
+    const text = b.dataset.copy === 'ref' ? `"@${sel}"` : svgFile(sel);
+    try { await navigator.clipboard.writeText(text); toast('Copied'); } catch { toast('Copy blocked by the browser'); }
+  });
+  [q, app, style].forEach((el) => el.addEventListener('input', list));
+  let tt; function toast(t) { const el = document.getElementById('toast'); el.textContent = t; el.classList.add('show'); clearTimeout(tt); tt = setTimeout(() => el.classList.remove('show'), 1400); }
+  list(); detail();
+})();
+</script>
+</body>
+</html>

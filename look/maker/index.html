@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Icon maker · Look · Ordinary Folk Tools</title>
+<link rel="icon" type="image/svg+xml" href="/icons/icon.svg">
+<link rel="stylesheet" href="/look/look.css">
+<style>
+/* Layout: a workbench. Two pixel grids (Open / Checked) on the left, live previews on the right, export underneath. */
+:root {
+  --bg: #F3F4F1; --surface: #FFFFFF; --ink: #17191B; --muted: #676C70; --line: #DADDD8; --grid: #E8EAE6;
+  --accent: #2B47E0; --accent-soft: #E6EAFD; --on: #17191B; --check: #22A55B;
+  --f-display: 'DM Sans', 'Inter', sans-serif;
+  --f-body: 'Inter', 'Inter Fallback', -apple-system, sans-serif;
+  --f-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0F1113; --surface: #17191C; --ink: #E8EAEC; --muted: #9AA0A5; --line: #2B2F33; --grid: #22262A;
+  --accent: #8EA0FF; --accent-soft: #1F2647; --on: #E8EAEC; --check: #4ADE80; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0F1113; --surface: #17191C; --ink: #E8EAEC; --muted: #9AA0A5; --line: #2B2F33; --grid: #22262A;
+  --accent: #8EA0FF; --accent-soft: #1F2647; --on: #E8EAEC; --check: #4ADE80; color-scheme: dark }
+body { background: var(--bg); color: var(--ink); font: 14px/1.5 var(--f-body); }
+.wrap { max-width: 1200px; margin: 0 auto; padding-block: 28px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.mk-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 20px; margin-bottom: 18px; }
+h1 { font: 700 30px/1.1 var(--f-display); letter-spacing: -.01em; margin: 0; }
+.lede { color: var(--muted); margin: 6px 0 0; max-width: 62ch; }
+.name { display: flex; align-items: center; gap: 8px; }
+.name input { font: 500 14px var(--f-mono); color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 3px; padding: 6px 10px; width: 200px; }
+.layout { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+@media (max-width: 900px) { .layout { grid-template-columns: minmax(0, 1fr); } }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 16px; min-width: 0; }
+.panel h2 { font: 600 11px var(--f-body); text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 0 0 12px; }
+.toolbar { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 14px; }
+.sep { width: 1px; height: 22px; background: var(--line); margin: 0 4px; }
+button, select { font: 500 13px var(--f-body); color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 3px; padding: 5px 10px; cursor: pointer; }
+button:hover { border-color: var(--muted); }
+button[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+button:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+select { padding-right: 28px; }
+.frames { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+@media (max-width: 560px) { .frames { grid-template-columns: minmax(0, 1fr); } }
+.frame { min-width: 0; }
+.frame-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+.frame-head b { font-weight: 600; }
+.frame-head .acts { display: flex; gap: 4px; flex-wrap: wrap; }
+.frame-head .acts button { font-size: 12px; padding: 3px 8px; }
+.frame.active canvas { outline: 2px solid var(--accent); outline-offset: 2px; }
+canvas.grid { width: 100%; aspect-ratio: 1; display: block; touch-action: none; cursor: crosshair; image-rendering: pixelated; background: var(--surface); border: 1px solid var(--line); }
+.hint { color: var(--muted); font-size: 12px; margin-top: 10px; }
+.previews { display: grid; gap: 14px; }
+.card { background: #16181b; border: 1px solid #2a2d31; padding: 12px 14px 8px; color: #c9ced4; }
+.card .hd { display: flex; align-items: center; gap: 8px; }
+.card .av { width: 22px; height: 22px; border-radius: 50%; background: #50555b; flex: none; }
+.card b { color: #fff; font-weight: 600; }
+.card .tc { font: 11px var(--f-mono); color: #7fb2ff; background: #1b2a44; padding: 2px 5px; }
+.card .tx { margin: 8px 0 10px; line-height: 1.4; font-size: 13px; }
+.card .ft { display: flex; align-items: center; gap: 8px; }
+.card .ft .sp { flex: 1; }
+.card .state { font-size: 10px; color: #5c6168; }
+.card button.ic { background: none; border: 0; padding: 4px; display: inline-flex; color: inherit; cursor: pointer; }
+.sizes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.swatch { padding: 14px; display: flex; align-items: center; gap: 18px; flex-wrap: wrap; border: 1px solid var(--line); }
+.swatch.dark { background: #15171b; }
+.swatch.light { background: #ffffff; }
+.swatch small { font: 10px var(--f-mono); color: #868b91; width: 100%; }
+.colors { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; font-size: 13px; color: var(--muted); }
+.colors label { display: flex; gap: 6px; align-items: center; }
+.colors input[type="color"] { width: 32px; height: 24px; border: 1px solid var(--line); padding: 0; background: none; cursor: pointer; }
+.export { margin-top: 20px; }
+.export-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
+@media (max-width: 760px) { .export-row { grid-template-columns: minmax(0, 1fr); } }
+textarea { width: 100%; min-height: 82px; font: 12px/1.5 var(--f-mono); color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 3px; padding: 8px; resize: vertical; box-sizing: border-box; }
+.row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; align-items: center; }
+.toast { position: fixed; left: 0; right: 0; margin: 0 auto; width: fit-content; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); background: var(--ink); color: var(--bg); padding: 8px 14px; border-radius: 3px; font-size: 13px; opacity: 0; transition: opacity .2s; pointer-events: none; }
+.toast.show { opacity: 1; }
+svg.px { shape-rendering: crispEdges; flex: none; }
+@media (prefers-reduced-motion: reduce) { .toast { transition: none; } }
+</style>
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="/" aria-label="Ordinary Folk Tools home"><svg viewBox="0 0 684.04 344.08" fill="currentColor" aria-label="Ordinary Folk">
+      <path d="M172.04,0C77.03,0,0,77.03,0,172.04s77.03,172.04,172.04,172.04,172.04-77.03,172.04-172.04S267.06,0,172.04,0ZM172.04,269.7c-52.77,0-95.56-42.78-95.56-95.56s42.79-95.56,95.56-95.56,95.56,42.79,95.56,95.56-42.78,95.56-95.56,95.56Z"/>
+      <path d="M595.51,155.23c-23.7,0-42.92,19.21-42.92,42.92s19.22,42.92,42.92,42.92,42.92-19.21,42.92-42.92-19.22-42.92-42.92-42.92Z"/>
+      <polygon points="506.98 13.3 430.5 13.3 430.5 85.39 430.5 330.71 506.98 330.71 506.98 85.39 684.04 85.39 684.04 13.3 506.98 13.3"/>
+    </svg><span>Look</span></a>
+  <nav class="tabs" aria-label="Look"><a href="/look/">Principles</a><a href="/look/icons/">Icons</a><a href="/look/maker/" aria-current="page">Icon maker</a><a href="/look/tokens.css">Tokens</a></nav>
+</header>
+<div class="wrap">
+  <div class="mk-head">
+    <div>
+      <span class="eyebrow">Look</span>
+      <h1>Icon maker</h1>
+      <p class="lede">Draw on the pixel grid, see it at real size and in a comment card, then copy the SVG. Two frames: <b>Open</b> and <b>Checked</b>, for icons that change when you click them. Grid matches Pixelarticons (12 pixels on a 24 viewBox). Start from any <a href="/look/icons/">house icon</a>; each icon name keeps its own saved work in this browser.</p>
+    </div>
+    <label class="name">Name <input id="iconName" value="resolve" spellcheck="false" aria-label="Icon name"></label>
+  </div>
+
+  <div class="layout">
+    <section class="panel" aria-label="Editor">
+      <div class="toolbar" role="toolbar" aria-label="Tools">
+        <button type="button" data-tool="pen" aria-pressed="true" title="Click or drag to paint; starting on a filled pixel erases">Pencil</button>
+        <button type="button" data-tool="fill" aria-pressed="false" title="Fill an area">Fill</button>
+        <span class="sep"></span>
+        <button type="button" id="undo" title="Undo (⌘Z)">Undo</button>
+        <button type="button" id="redo" title="Redo (⇧⌘Z)">Redo</button>
+        <span class="sep"></span>
+        <select id="preset" aria-label="Start from">
+          <option value="">Start from…</option>
+          <optgroup label="Starting points">
+            <option value="boldRing">Bold tick in ring</option>
+            <option value="thinRing">Thin tick in ring</option>
+            <option value="boldTick">Bold tick only</option>
+            <option value="blank">Blank</option>
+          </optgroup>
+          <optgroup label="House icons" id="houseOpts"></optgroup>
+        </select>
+        <select id="gridSize" aria-label="Grid" title="12 = standard Pixelarticons pixel; 24 = half-pixel detail">
+          <option value="12">12 × 12</option>
+          <option value="24">24 × 24</option>
+        </select>
+      </div>
+      <div class="frames">
+        <div class="frame active" data-frame="open">
+          <div class="frame-head"><b>Open</b>
+            <span class="acts">
+              <button type="button" data-act="flip">Flip</button>
+              <button type="button" data-act="invert">Invert</button>
+              <button type="button" data-act="clear">Clear</button>
+            </span>
+          </div>
+          <canvas class="grid" id="gridOpen" aria-label="Open frame pixel grid"></canvas>
+        </div>
+        <div class="frame" data-frame="checked">
+          <div class="frame-head"><b>Checked</b>
+            <span class="acts">
+              <button type="button" data-act="copy" title="Copy the Open frame here">Same as Open</button>
+              <button type="button" data-act="solid" title="Fill the inside of the Open shape and cut its marks out">Solid version</button>
+              <button type="button" data-act="clear">Clear</button>
+            </span>
+          </div>
+          <canvas class="grid" id="gridChecked" aria-label="Checked frame pixel grid"></canvas>
+        </div>
+      </div>
+      <p class="hint">Shift-drag erases. Arrow keys nudge the active frame one pixel. Each name saves separately in this browser. To add an icon to the house: save the SVG into <code>look/icons/custom/</code> and give it a name in <code>house.json</code> (or send it to Jorge).</p>
+    </section>
+
+    <section class="panel previews" aria-label="Preview">
+      <h2>In context</h2>
+      <div class="card">
+        <div class="hd"><span class="av"></span><b>Mona</b><span class="tc">00:03:54:06</span></div>
+        <div class="tx">im a bit confused conceptually about the shadow here.</div>
+        <div class="ft"><span id="ctxThumb"></span><span class="sp"></span><span class="state" id="ctxState">Open · click to check</span><button type="button" class="ic" id="ctxToggle" aria-label="Toggle checked"></button></div>
+      </div>
+      <h2>Sizes</h2>
+      <div class="sizes">
+        <div class="swatch dark" id="swDark"></div>
+        <div class="swatch light" id="swLight"></div>
+      </div>
+      <div class="colors">
+        <label>Open <input type="color" id="colOpen" value="#8b9097"></label>
+        <label>Checked <input type="color" id="colChecked" value="#4ade80"></label>
+        <button type="button" id="resetColors">Reset</button>
+      </div>
+    </section>
+  </div>
+
+  <section class="panel export" aria-label="Export">
+    <h2>Export</h2>
+    <div class="export-row">
+      <div>
+        <b>Open</b>
+        <textarea id="outOpen" readonly aria-label="Open SVG"></textarea>
+        <div class="row"><button type="button" class="primary" data-copy="open">Copy SVG</button><button type="button" data-path="open">Copy path</button><button type="button" data-save="open" class="save">Save .svg</button></div>
+      </div>
+      <div>
+        <b>Checked</b>
+        <textarea id="outChecked" readonly aria-label="Checked SVG"></textarea>
+        <div class="row"><button type="button" class="primary" data-copy="checked">Copy SVG</button><button type="button" data-path="checked">Copy path</button><button type="button" data-save="checked" class="save">Save .svg</button></div>
+      </div>
+    </div>
+    <h2 style="margin-top:18px">Import</h2>
+    <textarea id="importBox" placeholder="Paste an SVG or a path d= (24 × 24 viewBox), then pick a frame" aria-label="Import SVG"></textarea>
+    <div class="row"><button type="button" data-import="open">Into Open</button><button type="button" data-import="checked">Into Checked</button><span class="hint" id="importMsg" style="margin:0"></span></div>
+  </section>
+</div>
+<div class="toast" id="toast" role="status"></div>
+<script src="/look/icons/library.js"></script>
+<script>
+(() => {
+  // ---- Presets (12-grid rows; # = on) ----
+  const RING = ['............','...######...','..#......#..','.#........#.','.#........#.','.#........#.','.#........#.','.#........#.','.#........#.','..#......#..','...######...','............'];
+  const BOLD = [[8,4],[7,5],[8,5],[4,6],[6,6],[7,6],[4,7],[5,7],[6,7],[5,8]];
+  const THIN = [[8,4],[7,5],[4,6],[6,6],[5,7]];
+  const BIGTICK = [[2,6],[2,7],[3,7],[3,8],[4,8],[4,9],[5,9],[6,8],[5,8],[6,7],[7,7],[7,6],[8,6],[8,5],[9,5],[9,4],[10,4],[10,3]];
+  const SEARCH = 'M22 22h-2v-2h2v2Zm-2-2h-2v-2h2v2Zm-6-2H6v-2h8v2Zm4 0h-2v-2h2v2ZM6 16H4v-2h2v2Zm10 0h-2v-2h2v2ZM4 14H2V6h2v8Zm14 0h-2V6h2v8ZM6 6H4V4h2v2Zm10 0h-2V4h2v2Zm-2-2H6V2h8v2Z';
+  // Rasterize a 24-viewBox path onto the current grid (cell centres).
+  function rasterPath(d, evenodd, vbx = 0, vby = 0, vbw = 24) {
+    const ctx = document.createElement('canvas').getContext('2d'), u = 24 / N, out = new Array(N * N).fill(0), sc = 24 / vbw;
+    ctx.setTransform(sc, 0, 0, sc, -vbx * sc, -vby * sc);
+    const p = new Path2D(d);
+    for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) if (ctx.isPointInPath(p, (x + .5) * u, (y + .5) * u, evenodd ? 'evenodd' : 'nonzero')) out[y * N + x] = 1;
+    return out;
+  }
+  function fromRows(rows) { const a = new Array(144).fill(0); rows.forEach((r, y) => [...r].forEach((c, x) => { if (c === '#') a[y * 12 + x] = 1; })); return a; }
+  function withCells(base, cells) { const a = base.slice(); cells.forEach(([x, y]) => { a[y * 12 + x] = 1; }); return a; }
+
+  let N = 12;
+  const state = { open: new Array(144).fill(0), checked: new Array(144).fill(0) };
+  let active = 'open', tool = 'pen';
+  const undo = [], redo = [];
+  const $ = (id) => document.getElementById(id);
+  const canv = { open: $('gridOpen'), checked: $('gridChecked') };
+
+  // ---- persistence (per viewer) ----
+  const KEY = 'of-look-maker:';
+  const LAST = 'of-look-maker-last';
+  const slotName = () => ($('iconName').value.trim() || 'icon');
+  function save() { try { localStorage.setItem(KEY + slotName(), JSON.stringify({ N, open: state.open, checked: state.checked, name: slotName(), colOpen: $('colOpen').value, colChecked: $('colChecked').value })); localStorage.setItem(LAST, slotName()); } catch {} }
+  function load(name) {
+    try {
+      const s = JSON.parse(localStorage.getItem(KEY + name) || 'null');
+      if (s && s.open && s.open.length === s.N * s.N) {
+        N = s.N; state.open = s.open; state.checked = s.checked; $('iconName').value = s.name || 'icon';
+        if (s.colOpen) $('colOpen').value = s.colOpen; if (s.colChecked) $('colChecked').value = s.colChecked;
+        $('gridSize').value = String(N); return true;
+      }
+    } catch {}
+    return false;
+  }
+  function applyPreset(p) {
+    N = 12; $('gridSize').value = '12';
+    const ring = fromRows(RING);
+    if (p === 'boldRing') { state.open = withCells(ring, BOLD); state.checked = solidOf(state.open); }
+    if (p === 'thinRing') { state.open = withCells(ring, THIN); state.checked = state.open.slice(); }
+    if (p === 'boldTick') { state.open = withCells(new Array(144).fill(0), BIGTICK); state.checked = state.open.slice(); }
+    const H = window.OF_ICONS || {};
+    if (H[p]) {
+      state.open = rasterPath(H[p].d, !!H[p].eo);
+      const pair = p === 'resolve' && H.resolved ? H.resolved : H[p];
+      state.checked = rasterPath(pair.d, !!pair.eo);
+      $('iconName').value = p;
+    }
+    if (p === 'blank') { state.open = new Array(144).fill(0); state.checked = new Array(144).fill(0); }
+  }
+
+  // ---- history ----
+  function snap() { undo.push(JSON.stringify({ N, open: state.open, checked: state.checked })); if (undo.length > 100) undo.shift(); redo.length = 0; }
+  function restore(s) { const o = JSON.parse(s); N = o.N; state.open = o.open; state.checked = o.checked; $('gridSize').value = String(N); }
+  function doUndo() { if (!undo.length) return; redo.push(JSON.stringify({ N, open: state.open, checked: state.checked })); restore(undo.pop()); render(); }
+  function doRedo() { if (!redo.length) return; undo.push(JSON.stringify({ N, open: state.open, checked: state.checked })); restore(redo.pop()); render(); }
+
+  // ---- geometry helpers ----
+  function flood(a, x0, y0, val) {
+    const target = a[y0 * N + x0]; if (target === val) return a;
+    const out = a.slice(), st = [[x0, y0]];
+    while (st.length) { const [x, y] = st.pop(); if (x < 0 || y < 0 || x >= N || y >= N || out[y * N + x] !== target) continue; out[y * N + x] = val; st.push([x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]); }
+    return out;
+  }
+  // Solid version: everything not reachable from the outside becomes filled, then the inner marks are cut out.
+  function solidOf(a) {
+    const outside = new Array(N * N).fill(0), st = [];
+    for (let i = 0; i < N; i++) st.push([i, 0], [i, N - 1], [0, i], [N - 1, i]);
+    while (st.length) { const [x, y] = st.pop(); if (x < 0 || y < 0 || x >= N || y >= N) continue; const k = y * N + x; if (outside[k] || a[k]) continue; outside[k] = 1; st.push([x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]); }
+    // ring = filled cells touching the outside region or the edge; interior marks = other filled cells
+    const out = new Array(N * N).fill(0);
+    for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
+      const k = y * N + x;
+      if (outside[k]) continue;
+      if (!a[k]) { out[k] = 1; continue; }
+      const touchOut = [[1,0],[-1,0],[0,1],[0,-1]].some(([dx, dy]) => { const X = x + dx, Y = y + dy; return X < 0 || Y < 0 || X >= N || Y >= N || outside[Y * N + X]; });
+      out[k] = touchOut ? 1 : 0;
+    }
+    return out;
+  }
+  function resample(a, from, to) {
+    const out = new Array(to * to).fill(0);
+    for (let y = 0; y < to; y++) for (let x = 0; x < to; x++) { const sx = Math.floor(x * from / to), sy = Math.floor(y * from / to); out[y * to + x] = a[sy * from + sx]; }
+    return out;
+  }
+  // Path data on the 24 viewBox, one rect run per row (compact, crisp).
+  function toPath(a) {
+    const u = 24 / N; let d = '';
+    for (let y = 0; y < N; y++) { let x = 0; while (x < N) { if (!a[y * N + x]) { x++; continue; } let w = 0; while (x + w < N && a[y * N + x + w]) w++; d += `M${x * u} ${y * u}h${w * u}v${u}h-${w * u}z`; x += w; } }
+    return d;
+  }
+  function svgStr(a, size, color) { const d = toPath(a); return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="${color || 'currentColor'}" shape-rendering="crispEdges"><path d="${d}"/></svg>`; }
+  function svgEl(a, size, color) { return svgStr(a, size, color).replace('<svg ', '<svg class="px" aria-hidden="true" '); }
+
+  // ---- drawing on the canvases ----
+  function cssVar(n) { return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+  function draw(which) {
+    const c = canv[which], a = state[which];
+    const px = Math.round(c.getBoundingClientRect().width * devicePixelRatio) || 480;
+    if (c.width !== px) { c.width = px; c.height = px; }
+    const g = c.getContext('2d'), cell = px / N;
+    g.fillStyle = cssVar('--surface'); g.fillRect(0, 0, px, px);
+    g.fillStyle = which === 'checked' ? $('colChecked').value : cssVar('--on');
+    for (let i = 0; i < N * N; i++) if (a[i]) g.fillRect(Math.floor((i % N) * cell), Math.floor(Math.floor(i / N) * cell), Math.ceil(cell), Math.ceil(cell));
+    g.strokeStyle = cssVar('--grid'); g.lineWidth = 1;
+    for (let i = 1; i < N; i++) { const p = Math.round(i * cell) + .5; g.beginPath(); g.moveTo(p, 0); g.lineTo(p, px); g.stroke(); g.beginPath(); g.moveTo(0, p); g.lineTo(px, p); g.stroke(); }
+    if (N === 24) { g.strokeStyle = cssVar('--line'); for (let i = 2; i < 24; i += 2) { const p = Math.round(i * cell) + .5; g.beginPath(); g.moveTo(p, 0); g.lineTo(p, px); g.stroke(); g.beginPath(); g.moveTo(0, p); g.lineTo(px, p); g.stroke(); } }
+  }
+  let painting = null;
+  function cellAt(c, e) { const r = c.getBoundingClientRect(); const x = Math.floor((e.clientX - r.left) / r.width * N), y = Math.floor((e.clientY - r.top) / r.height * N); return (x < 0 || y < 0 || x >= N || y >= N) ? null : [x, y]; }
+  function setActive(which) { active = which; document.querySelectorAll('.frame').forEach((f) => f.classList.toggle('active', f.dataset.frame === which)); }
+  for (const which of ['open', 'checked']) {
+    const c = canv[which];
+    c.addEventListener('pointerdown', (e) => {
+      const p = cellAt(c, e); if (!p) return; setActive(which); snap();
+      const k = p[1] * N + p[0];
+      if (tool === 'fill') { state[which] = flood(state[which], p[0], p[1], e.shiftKey ? 0 : (state[which][k] ? 0 : 1)); render(); return; }
+      painting = { which, val: e.shiftKey ? 0 : (state[which][k] ? 0 : 1) };
+      c.setPointerCapture(e.pointerId); state[which][k] = painting.val; render();
+    });
+    c.addEventListener('pointermove', (e) => { if (!painting || painting.which !== which) return; const p = cellAt(c, e); if (!p) return; const k = p[1] * N + p[0]; if (state[which][k] !== painting.val) { state[which][k] = painting.val; render(); } });
+    c.addEventListener('pointerup', () => { painting = null; });
+    c.addEventListener('pointercancel', () => { painting = null; });
+  }
+
+  // ---- previews + export ----
+  let ctxChecked = false;
+  const THUMB = fromRows(['............','......#.....','.....##.....','.....#......','.###.######.','.#.#......#.','.#.#.....#..','.#.#.....#..','.#.#....#...','.###.####...','............','............']);
+  function render() {
+    draw('open'); draw('checked');
+    const co = $('colOpen').value, cc = $('colChecked').value;
+    $('ctxThumb').innerHTML = svgEl(THUMB, 12, '#8b9097');
+    $('ctxToggle').innerHTML = svgEl(ctxChecked ? state.checked : state.open, 12, ctxChecked ? cc : co);
+    $('ctxState').textContent = ctxChecked ? 'Checked · click to open' : 'Open · click to check';
+    const sizes = (bgLabel, colO) => [12, 24, 48].map((s) => svgEl(state.open, s, colO)).join('') + [12, 24, 48].map((s) => svgEl(state.checked, s, cc)).join('') + `<small>${bgLabel}: open 12 · 24 · 48, then checked</small>`;
+    $('swDark').innerHTML = sizes('Dark', co);
+    $('swLight').innerHTML = sizes('Light', '#4a4f55');
+    $('outOpen').value = svgStr(state.open, 24);
+    $('outChecked').value = svgStr(state.checked, 24);
+    save();
+  }
+
+  // ---- toolbar ----
+  document.querySelectorAll('[data-tool]').forEach((b) => b.addEventListener('click', () => { tool = b.dataset.tool; document.querySelectorAll('[data-tool]').forEach((x) => x.setAttribute('aria-pressed', String(x === b))); }));
+  $('undo').addEventListener('click', doUndo); $('redo').addEventListener('click', doRedo);
+  $('preset').addEventListener('change', (e) => { if (!e.target.value) return; snap(); applyPreset(e.target.value); e.target.value = ''; render(); });
+  $('gridSize').addEventListener('change', (e) => { const to = Number(e.target.value); if (to === N) return; snap(); state.open = resample(state.open, N, to); state.checked = resample(state.checked, N, to); N = to; render(); });
+  document.querySelectorAll('.frame').forEach((f) => f.querySelectorAll('[data-act]').forEach((b) => b.addEventListener('click', () => {
+    const which = f.dataset.frame; setActive(which); snap(); const a = state[which];
+    if (b.dataset.act === 'clear') state[which] = new Array(N * N).fill(0);
+    if (b.dataset.act === 'invert') state[which] = a.map((v) => v ? 0 : 1);
+    if (b.dataset.act === 'flip') { const o = []; for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) o.push(a[y * N + (N - 1 - x)]); state[which] = o; }
+    if (b.dataset.act === 'copy') state.checked = state.open.slice();
+    if (b.dataset.act === 'solid') state.checked = solidOf(state.open);
+    render();
+  })));
+  $('ctxToggle').addEventListener('click', () => { ctxChecked = !ctxChecked; render(); });
+  ['colOpen', 'colChecked'].forEach((id) => $(id).addEventListener('input', render));
+  $('resetColors').addEventListener('click', () => { $('colOpen').value = '#8b9097'; $('colChecked').value = '#4ade80'; render(); });
+  $('iconName').addEventListener('change', () => { if (!load(slotName())) save(); render(); });
+  document.addEventListener('keydown', (e) => {
+    if (e.target.closest('input, textarea, select')) return;
+    const mod = e.metaKey || e.ctrlKey;
+    if (mod && e.key.toLowerCase() === 'z') { e.preventDefault(); e.shiftKey ? doRedo() : doUndo(); return; }
+    const dir = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }[e.key];
+    if (dir) { e.preventDefault(); snap(); const a = state[active], o = new Array(N * N).fill(0); for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) { const X = x + dir[0], Y = y + dir[1]; if (a[y * N + x] && X >= 0 && Y >= 0 && X < N && Y < N) o[Y * N + X] = 1; } state[active] = o; render(); }
+  });
+
+  // ---- copy / save / import ----
+  const toastEl = $('toast'); let tt;
+  function toast(t) { toastEl.textContent = t; toastEl.classList.add('show'); clearTimeout(tt); tt = setTimeout(() => toastEl.classList.remove('show'), 1600); }
+  async function copy(text, label, fallbackEl) {
+    try { await navigator.clipboard.writeText(text); toast(label + ' copied'); }
+    catch { if (fallbackEl) { fallbackEl.focus(); fallbackEl.select(); } toast('Press ⌘C to copy'); }
+  }
+  document.querySelectorAll('[data-copy]').forEach((b) => b.addEventListener('click', () => { const w = b.dataset.copy; copy(svgStr(state[w], 24), 'SVG', $(w === 'open' ? 'outOpen' : 'outChecked')); }));
+  document.querySelectorAll('[data-path]').forEach((b) => b.addEventListener('click', () => copy(toPath(state[b.dataset.path]), 'Path', null)));
+  document.querySelectorAll('[data-save]').forEach((b) => b.addEventListener('click', () => {
+    const w = b.dataset.save;
+    const name = slotName().replace(/[^\w-]+/g, '-') + (w === 'checked' ? '-checked' : '') + '.svg';
+    const url = URL.createObjectURL(new Blob([svgStr(state[w], 24)], { type: 'image/svg+xml' }));
+    const a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }));
+  document.querySelectorAll('[data-import]').forEach((b) => b.addEventListener('click', () => {
+    const raw = $('importBox').value.trim(); const msg = $('importMsg');
+    if (!raw) { msg.textContent = 'Paste an SVG or path first.'; return; }
+    const ds = raw.includes('<') ? [...raw.matchAll(/\sd="([^"]+)"/g)].map((m) => m[1]) : [raw];
+    const evenodd = /evenodd/.test(raw);
+    if (!ds.length) { msg.textContent = 'No path found in that SVG.'; return; }
+    const vb = raw.match(/viewBox="([\d.\s-]+)"/); const vbs = vb ? vb[1].trim().split(/\s+/).map(Number) : [0, 0, 24, 24];
+    const scale = 24 / (vbs[2] || 24);
+    const ctx = document.createElement('canvas').getContext('2d'), u = 24 / N, out = new Array(N * N).fill(0);
+    ctx.setTransform(scale, 0, 0, scale, -vbs[0] * scale, -vbs[1] * scale);
+    let p; try { p = new Path2D(ds.join(' ')); } catch { msg.textContent = 'That path could not be read.'; return; }
+    for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) if (ctx.isPointInPath(p, (x + .5) * u * 1, (y + .5) * u * 1, evenodd ? 'evenodd' : 'nonzero')) out[y * N + x] = 1;
+    snap(); state[b.dataset.import] = out; setActive(b.dataset.import); render(); msg.textContent = 'Imported. Odd-pixel icons look best on the 24 × 24 grid.';
+  }));
+
+  (function boot() {
+    const H = window.OF_ICONS || {};
+    const og = document.getElementById('houseOpts');
+    og.innerHTML = Object.keys(H).sort().map((n) => `<option value="${n}">${n}</option>`).join('');
+    const want = new URLSearchParams(location.search).get('icon');
+    let last = null; try { last = localStorage.getItem(LAST); } catch {}
+    if (want) { if (!load(want)) { applyPreset(H[want] ? want : 'boldRing'); $('iconName').value = want; } }
+    else if (!(last && load(last))) applyPreset('boldRing');
+  })();
+  render();
+  new ResizeObserver(() => { draw('open'); draw('checked'); }).observe(canv.open);
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', render);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+/* Pixelarticons Pro. Vendored from tools/look/icons (tools.ordinary.co/look); edit it there. */
+
+/* Whole pixels only: 12px (default) or 24px. Never scale with em or %,
+   the 2px grid blurs at any size that is not a multiple of 12. */
+.px-icon {
+  display: inline-block;
+  flex: none;
+  width: 12px;
+  height: 12px;
+  vertical-align: -1px;
+  fill: currentColor;
+  shape-rendering: crispEdges;
+}
+
+.px-icon--24 {
+  width: 24px;
+  height: 24px;
+  vertical-align: -5px;
+}

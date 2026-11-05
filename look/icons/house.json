@@ -1,0 +1,1097 @@
+{
+  "_about": "OF house icons: one name per idea. Apps reference these as \"@name\" in their pixel-icons.json; the generator (look/icons/gen.mjs) fills in the icon. icon = Pixelarticons name (Solid unless :outline) or custom/<file>.svg. apps = which app key uses it.",
+  "icons": {
+    "activity": {
+      "icon": "activity",
+      "apps": {
+        "tracker": [
+          "activity"
+        ]
+      }
+    },
+    "analytics": {
+      "icon": "analytics:outline",
+      "apps": {
+        "review": [
+          "analytics"
+        ]
+      }
+    },
+    "archive": {
+      "icon": "archive:outline",
+      "apps": {
+        "tracker": [
+          "archive"
+        ]
+      }
+    },
+    "arrow-diagonal-ne": {
+      "icon": "arrow-diagonal-ne:outline",
+      "apps": {
+        "tracker": [
+          "arrow-diagonal-ne"
+        ],
+        "review": [
+          "drawArrow"
+        ]
+      }
+    },
+    "arrow-down-box": {
+      "icon": "arrow-down-box:outline",
+      "apps": {
+        "tracker": [
+          "arrow-down-box"
+        ]
+      }
+    },
+    "arrow-left-box": {
+      "icon": "arrow-left-box:outline",
+      "apps": {
+        "tracker": [
+          "arrow-left-box"
+        ],
+        "review": [
+          "back"
+        ]
+      }
+    },
+    "arrow-return-left": {
+      "icon": "arrow-return-left:outline",
+      "apps": {
+        "tracker": [
+          "arrow-return-left"
+        ],
+        "review": [
+          "reply"
+        ]
+      }
+    },
+    "arrow-right-box": {
+      "icon": "arrow-right-box:outline",
+      "apps": {
+        "tracker": [
+          "arrow-right-box"
+        ],
+        "review": [
+          "arrowRight"
+        ]
+      }
+    },
+    "arrow-up-box": {
+      "icon": "arrow-up-box:outline",
+      "apps": {
+        "tracker": [
+          "arrow-up-box"
+        ]
+      }
+    },
+    "calendar": {
+      "icon": "calendar:outline",
+      "apps": {
+        "review": [
+          "calendar"
+        ]
+      }
+    },
+    "channel": {
+      "icon": "hash",
+      "apps": {
+        "review": [
+          "channel"
+        ]
+      }
+    },
+    "chart-bar": {
+      "icon": "chart-bar",
+      "apps": {
+        "tracker": [
+          "chart-bar"
+        ]
+      }
+    },
+    "check": {
+      "icon": "check",
+      "apps": {
+        "tracker": [
+          "check"
+        ],
+        "review": [
+          "check"
+        ]
+      }
+    },
+    "checkbox": {
+      "icon": "checkbox:outline",
+      "apps": {
+        "tracker": [
+          "checkbox"
+        ]
+      }
+    },
+    "checklist": {
+      "icon": "checklist",
+      "apps": {
+        "tracker": [
+          "checklist"
+        ]
+      }
+    },
+    "chevron-down": {
+      "icon": "chevron-down",
+      "apps": {
+        "tracker": [
+          "chevron-down"
+        ],
+        "review": [
+          "chevronDown"
+        ]
+      }
+    },
+    "chevron-left": {
+      "icon": "chevron-left",
+      "apps": {
+        "tracker": [
+          "chevron-left"
+        ]
+      }
+    },
+    "chevron-right": {
+      "icon": "chevron-right",
+      "apps": {
+        "tracker": [
+          "chevron-right"
+        ],
+        "review": [
+          "chevronRight"
+        ]
+      }
+    },
+    "chevron-up": {
+      "icon": "chevron-up",
+      "apps": {
+        "tracker": [
+          "chevron-up"
+        ]
+      }
+    },
+    "circle-alert": {
+      "icon": "circle-alert",
+      "apps": {
+        "tracker": [
+          "circle-alert"
+        ],
+        "review": [
+          "alert"
+        ]
+      }
+    },
+    "circle-check": {
+      "icon": "circle-check",
+      "apps": {
+        "tracker": [
+          "circle-check"
+        ]
+      }
+    },
+    "circle-info": {
+      "icon": "circle-info:outline",
+      "apps": {
+        "tracker": [
+          "circle-info"
+        ]
+      }
+    },
+    "circle-minus": {
+      "icon": "circle-minus:outline",
+      "apps": {
+        "tracker": [
+          "circle-minus"
+        ]
+      }
+    },
+    "circle-plus": {
+      "icon": "circle-plus:outline",
+      "apps": {
+        "tracker": [
+          "circle-plus"
+        ]
+      }
+    },
+    "clapperboard": {
+      "icon": "clapperboard:outline",
+      "apps": {
+        "tracker": [
+          "clapperboard"
+        ]
+      }
+    },
+    "clipboard": {
+      "icon": "clipboard:outline",
+      "apps": {
+        "tracker": [
+          "clipboard"
+        ]
+      }
+    },
+    "clipboard-check": {
+      "icon": "clipboard-check:outline",
+      "apps": {
+        "tracker": [
+          "clipboard-check"
+        ]
+      }
+    },
+    "clock": {
+      "icon": "clock:outline",
+      "apps": {
+        "tracker": [
+          "clock"
+        ]
+      }
+    },
+    "close": {
+      "icon": "close",
+      "apps": {
+        "tracker": [
+          "close"
+        ],
+        "review": [
+          "close"
+        ]
+      }
+    },
+    "columns": {
+      "icon": "columns:outline",
+      "apps": {
+        "tracker": [
+          "columns"
+        ]
+      }
+    },
+    "comment": {
+      "icon": "comment:outline",
+      "apps": {
+        "tracker": [
+          "comment"
+        ],
+        "review": [
+          "comment"
+        ]
+      }
+    },
+    "comment-plus": {
+      "icon": "comment-plus:outline",
+      "apps": {
+        "tracker": [
+          "comment-plus"
+        ]
+      }
+    },
+    "copy": {
+      "icon": "copy:outline",
+      "apps": {
+        "review": [
+          "copy"
+        ]
+      }
+    },
+    "corner-left-up": {
+      "icon": "corner-left-up",
+      "apps": {
+        "tracker": [
+          "corner-left-up"
+        ]
+      }
+    },
+    "crosshair": {
+      "icon": "crosshair:outline",
+      "apps": {
+        "tracker": [
+          "crosshair"
+        ]
+      }
+    },
+    "diamond": {
+      "icon": "diamond",
+      "apps": {
+        "tracker": [
+          "diamond"
+        ]
+      }
+    },
+    "download": {
+      "icon": "download",
+      "apps": {
+        "tracker": [
+          "download"
+        ],
+        "review": [
+          "download"
+        ]
+      }
+    },
+    "drag-handle": {
+      "icon": "grip-vertical",
+      "apps": {
+        "tracker": [
+          "grip-vertical"
+        ],
+        "review": [
+          "dragHandle"
+        ]
+      }
+    },
+    "draw-line": {
+      "icon": "slash",
+      "apps": {
+        "review": [
+          "drawLine"
+        ]
+      }
+    },
+    "duplicate": {
+      "icon": "duplicate:outline",
+      "apps": {
+        "tracker": [
+          "duplicate"
+        ]
+      }
+    },
+    "edit": {
+      "icon": "edit:outline",
+      "apps": {
+        "review": [
+          "edit"
+        ]
+      }
+    },
+    "eraser": {
+      "icon": "eraser:outline",
+      "apps": {
+        "tracker": [
+          "eraser"
+        ]
+      }
+    },
+    "external-link": {
+      "icon": "external-link:outline",
+      "apps": {
+        "tracker": [
+          "external-link"
+        ],
+        "review": [
+          "external",
+          "share"
+        ]
+      }
+    },
+    "file": {
+      "icon": "file",
+      "apps": {
+        "tracker": [
+          "file"
+        ]
+      }
+    },
+    "file-plus": {
+      "icon": "file-plus:outline",
+      "apps": {
+        "tracker": [
+          "file-plus"
+        ]
+      }
+    },
+    "file-text": {
+      "icon": "file-text:outline",
+      "apps": {
+        "tracker": [
+          "file-text"
+        ]
+      }
+    },
+    "film": {
+      "icon": "film:outline",
+      "apps": {
+        "tracker": [
+          "film"
+        ]
+      }
+    },
+    "filter": {
+      "icon": "filter:outline",
+      "apps": {
+        "tracker": [
+          "filter"
+        ],
+        "review": [
+          "filter"
+        ]
+      }
+    },
+    "find-diff": {
+      "icon": "circle-search:outline",
+      "apps": {
+        "review": [
+          "findDiff"
+        ]
+      }
+    },
+    "flag": {
+      "icon": "flag:outline",
+      "apps": {
+        "tracker": [
+          "flag"
+        ]
+      }
+    },
+    "folder": {
+      "icon": "folder:outline",
+      "apps": {
+        "review": [
+          "folder"
+        ]
+      }
+    },
+    "frame": {
+      "icon": "frame:outline",
+      "apps": {
+        "tracker": [
+          "frame"
+        ]
+      }
+    },
+    "fullscreen": {
+      "icon": "arrows-scale",
+      "apps": {
+        "tracker": [
+          "arrows-scale"
+        ],
+        "review": [
+          "fullscreen"
+        ]
+      }
+    },
+    "fullscreen-outline": {
+      "icon": "arrows-scale:outline",
+      "apps": {
+        "tracker": [
+          "media-fullscreen"
+        ]
+      }
+    },
+    "hand": {
+      "icon": "hand:outline",
+      "apps": {
+        "tracker": [
+          "hand"
+        ],
+        "review": [
+          "hand"
+        ]
+      }
+    },
+    "hide": {
+      "icon": "eye-off:outline",
+      "apps": {
+        "review": [
+          "hide"
+        ]
+      }
+    },
+    "home": {
+      "icon": "home:outline",
+      "apps": {
+        "tracker": [
+          "home"
+        ]
+      }
+    },
+    "image": {
+      "icon": "image",
+      "apps": {
+        "tracker": [
+          "image"
+        ],
+        "review": [
+          "image"
+        ]
+      }
+    },
+    "inbox": {
+      "icon": "inbox:outline",
+      "apps": {
+        "review": [
+          "inbox"
+        ]
+      }
+    },
+    "lightbulb": {
+      "icon": "lightbulb:outline",
+      "apps": {
+        "tracker": [
+          "lightbulb"
+        ]
+      }
+    },
+    "link": {
+      "icon": "link",
+      "apps": {
+        "tracker": [
+          "link"
+        ]
+      }
+    },
+    "list-box": {
+      "icon": "list-box:outline",
+      "apps": {
+        "tracker": [
+          "list-box"
+        ]
+      }
+    },
+    "list-view": {
+      "icon": "rows:outline",
+      "apps": {
+        "review": [
+          "listView"
+        ]
+      }
+    },
+    "loader": {
+      "icon": "loader",
+      "apps": {
+        "tracker": [
+          "loader"
+        ]
+      }
+    },
+    "lock": {
+      "icon": "lock",
+      "apps": {
+        "tracker": [
+          "lock"
+        ],
+        "review": [
+          "lock"
+        ]
+      }
+    },
+    "mention": {
+      "icon": "at-sign",
+      "apps": {
+        "review": [
+          "mention"
+        ]
+      }
+    },
+    "menu": {
+      "icon": "menu",
+      "apps": {
+        "tracker": [
+          "menu"
+        ]
+      }
+    },
+    "minimize": {
+      "icon": "minimize",
+      "apps": {
+        "tracker": [
+          "minimize"
+        ],
+        "review": [
+          "minimize"
+        ]
+      }
+    },
+    "minus": {
+      "icon": "minus",
+      "apps": {
+        "tracker": [
+          "minus"
+        ]
+      }
+    },
+    "more-horizontal": {
+      "icon": "more-horizontal:outline",
+      "apps": {
+        "tracker": [
+          "more-horizontal"
+        ],
+        "review": [
+          "more"
+        ]
+      }
+    },
+    "move": {
+      "icon": "move",
+      "apps": {
+        "tracker": [
+          "move"
+        ]
+      }
+    },
+    "music": {
+      "icon": "music:outline",
+      "apps": {
+        "tracker": [
+          "music"
+        ]
+      }
+    },
+    "note": {
+      "icon": "note:outline",
+      "apps": {
+        "tracker": [
+          "note"
+        ]
+      }
+    },
+    "palette": {
+      "icon": "palette:outline",
+      "apps": {
+        "tracker": [
+          "palette"
+        ]
+      }
+    },
+    "paperclip": {
+      "icon": "paperclip",
+      "apps": {
+        "tracker": [
+          "paperclip"
+        ]
+      }
+    },
+    "pause": {
+      "icon": "pause",
+      "apps": {
+        "tracker": [
+          "pause"
+        ],
+        "review": [
+          "pause"
+        ]
+      }
+    },
+    "pencil": {
+      "icon": "pencil:outline",
+      "apps": {
+        "tracker": [
+          "pencil"
+        ]
+      }
+    },
+    "play": {
+      "icon": "play",
+      "apps": {
+        "tracker": [
+          "play"
+        ],
+        "review": [
+          "play"
+        ]
+      }
+    },
+    "play-circle": {
+      "icon": "circle-play",
+      "apps": {
+        "review": [
+          "playCircle"
+        ]
+      }
+    },
+    "plus": {
+      "icon": "plus",
+      "apps": {
+        "tracker": [
+          "plus"
+        ],
+        "review": [
+          "add"
+        ]
+      }
+    },
+    "pointer": {
+      "icon": "pointer:outline",
+      "apps": {
+        "tracker": [
+          "pointer"
+        ]
+      }
+    },
+    "presentation": {
+      "icon": "presentation:outline",
+      "apps": {
+        "tracker": [
+          "presentation"
+        ]
+      }
+    },
+    "rectangle": {
+      "icon": "rectangle:outline",
+      "apps": {
+        "tracker": [
+          "rectangle"
+        ],
+        "review": [
+          "box"
+        ]
+      }
+    },
+    "redo": {
+      "icon": "redo",
+      "apps": {
+        "tracker": [
+          "redo"
+        ]
+      }
+    },
+    "replace": {
+      "icon": "refresh:outline",
+      "apps": {
+        "tracker": [
+          "media-replace",
+          "refresh"
+        ],
+        "review": [
+          "replace"
+        ]
+      }
+    },
+    "resolve": {
+      "icon": "custom/resolve.svg",
+      "apps": {
+        "review": [
+          "resolve"
+        ]
+      }
+    },
+    "resolved": {
+      "icon": "custom/resolved.svg",
+      "apps": {
+        "review": [
+          "resolved"
+        ]
+      }
+    },
+    "restore": {
+      "icon": "rotate-ccw",
+      "apps": {
+        "tracker": [
+          "rotate-ccw-solid"
+        ]
+      }
+    },
+    "rotate-ccw": {
+      "icon": "rotate-ccw:outline",
+      "apps": {
+        "tracker": [
+          "rotate-ccw",
+          "status-revise"
+        ]
+      }
+    },
+    "save": {
+      "icon": "save:outline",
+      "apps": {
+        "tracker": [
+          "save"
+        ]
+      }
+    },
+    "search": {
+      "icon": "search:outline",
+      "apps": {
+        "tracker": [
+          "search"
+        ],
+        "review": [
+          "search"
+        ]
+      }
+    },
+    "settings": {
+      "icon": "settings-2:outline",
+      "apps": {
+        "tracker": [
+          "settings"
+        ],
+        "review": [
+          "settings"
+        ]
+      }
+    },
+    "sign-out": {
+      "icon": "logout:outline",
+      "apps": {
+        "review": [
+          "signOut"
+        ]
+      }
+    },
+    "skip-back-10": {
+      "icon": "rewind",
+      "apps": {
+        "review": [
+          "skipBack10"
+        ]
+      }
+    },
+    "skip-forward-10": {
+      "icon": "fast-forward",
+      "apps": {
+        "review": [
+          "skipFwd10"
+        ]
+      }
+    },
+    "smile": {
+      "icon": "smile:outline",
+      "apps": {
+        "tracker": [
+          "smile"
+        ]
+      }
+    },
+    "sort": {
+      "icon": "sort-vertical",
+      "apps": {
+        "review": [
+          "sort"
+        ]
+      }
+    },
+    "spinner": {
+      "icon": "spinner:outline",
+      "apps": {
+        "tracker": [
+          "spinner"
+        ]
+      }
+    },
+    "spline-cursor": {
+      "icon": "spline-cursor:outline",
+      "apps": {
+        "tracker": [
+          "spline-cursor"
+        ]
+      }
+    },
+    "split-handle": {
+      "icon": "chevrons-horizontal-2",
+      "apps": {
+        "tracker": [
+          "chevrons-horizontal-2"
+        ]
+      }
+    },
+    "square-alert": {
+      "icon": "square-alert:outline",
+      "apps": {
+        "tracker": [
+          "square-alert"
+        ]
+      }
+    },
+    "status-complete": {
+      "icon": "circle-check:outline",
+      "apps": {
+        "tracker": [
+          "status-complete"
+        ]
+      }
+    },
+    "status-in-progress": {
+      "icon": "circle-dot:outline",
+      "apps": {
+        "tracker": [
+          "status-in-progress"
+        ]
+      }
+    },
+    "status-outstanding": {
+      "icon": "circle:outline",
+      "apps": {
+        "tracker": [
+          "circle",
+          "status-outstanding"
+        ],
+        "review": [
+          "ellipse"
+        ]
+      }
+    },
+    "step-back": {
+      "icon": "skip-back",
+      "apps": {
+        "review": [
+          "stepBack"
+        ]
+      }
+    },
+    "step-fwd": {
+      "icon": "skip-forward",
+      "apps": {
+        "review": [
+          "stepFwd"
+        ]
+      }
+    },
+    "table": {
+      "icon": "table:outline",
+      "apps": {
+        "tracker": [
+          "table"
+        ]
+      }
+    },
+    "text-start-t": {
+      "icon": "text-start-t",
+      "apps": {
+        "tracker": [
+          "text-start-t"
+        ]
+      }
+    },
+    "thumbs-up": {
+      "icon": "thumbs-up:outline",
+      "apps": {
+        "review": [
+          "thumbsUp"
+        ]
+      }
+    },
+    "timer": {
+      "icon": "timer:outline",
+      "apps": {
+        "tracker": [
+          "timer"
+        ]
+      }
+    },
+    "transcript": {
+      "icon": "subtitles:outline",
+      "apps": {
+        "review": [
+          "transcript"
+        ]
+      }
+    },
+    "trash": {
+      "icon": "trash:outline",
+      "apps": {
+        "tracker": [
+          "media-delete",
+          "trash"
+        ],
+        "review": [
+          "trash"
+        ]
+      }
+    },
+    "undo": {
+      "icon": "undo",
+      "apps": {
+        "tracker": [
+          "undo"
+        ]
+      }
+    },
+    "upload": {
+      "icon": "upload",
+      "apps": {
+        "tracker": [
+          "upload"
+        ],
+        "review": [
+          "upload"
+        ]
+      }
+    },
+    "user": {
+      "icon": "user:outline",
+      "apps": {
+        "tracker": [
+          "user"
+        ],
+        "review": [
+          "user"
+        ]
+      }
+    },
+    "user-plus": {
+      "icon": "user-plus:outline",
+      "apps": {
+        "tracker": [
+          "user-plus"
+        ]
+      }
+    },
+    "versions": {
+      "icon": "layers",
+      "apps": {
+        "review": [
+          "versions"
+        ]
+      }
+    },
+    "view": {
+      "icon": "eye:outline",
+      "apps": {
+        "tracker": [
+          "eye",
+          "status-review"
+        ],
+        "review": [
+          "view"
+        ]
+      }
+    },
+    "volume-2": {
+      "icon": "volume-2:outline",
+      "apps": {
+        "tracker": [
+          "volume-2"
+        ],
+        "review": [
+          "volume"
+        ]
+      }
+    },
+    "volume-x": {
+      "icon": "volume-x",
+      "apps": {
+        "tracker": [
+          "volume-x"
+        ],
+        "review": [
+          "mute"
+        ]
+      }
+    },
+    "zap": {
+      "icon": "zap:outline",
+      "apps": {
+        "tracker": [
+          "zap"
+        ]
+      }
+    },
+    "zoom-in": {
+      "icon": "zoom-in:outline",
+      "apps": {
+        "tracker": [
+          "zoom-in"
+        ]
+      }
+    },
+    "zoom-out": {
+      "icon": "zoom-out:outline",
+      "apps": {
+        "tracker": [
+          "zoom-out"
+        ]
+      }
+    }
+  }
+}
