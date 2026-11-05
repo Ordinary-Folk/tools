@@ -156,7 +156,6 @@ async function landingWithIdentity(request, env, url) {
   return new HTMLRewriter()
     .on('html', { element: (el) => el.setAttribute('data-identity', 'server') })
     .on('#email', { element: (el) => el.setInnerContent(email) })
-    .on('#email-mobile', { element: (el) => el.setInnerContent(email) })
     .on('#admin-card', {
       element: (el) => {
         if (admin) el.removeAttribute('style')

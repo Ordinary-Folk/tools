@@ -76,15 +76,17 @@ header {
   border-bottom: 1px solid var(--border);
   padding: 12px 20px;
 }
-.brand { display: flex; align-items: center; gap: 10px; color: var(--text); }
+.brand { display: flex; align-items: center; gap: 10px; color: var(--text); flex: none; }
 .brand svg { height: 16px; width: auto; display: block; }
 .brand span { font-size: 14px; font-weight: 600; }
-.account { display: flex; align-items: center; gap: 12px; }
-#email, .email-mobile {
+.account { display: flex; align-items: center; gap: 12px; min-width: 0; }
+#email {
   font-family: var(--mono); font-size: 12px; color: var(--muted);
   font-variant-numeric: tabular-nums;
+  min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 .account a {
+  flex: none;
   color: var(--text); text-decoration: none;
   font-size: 12px; font-weight: 500;
   border: 1px solid var(--border); background: var(--card);
@@ -109,7 +111,6 @@ h1 {
   font-family: var(--mono); font-size: 12px; color: var(--muted);
   font-variant-numeric: tabular-nums;
 }
-.email-mobile { display: none; }
 /* Anything filled in after load fades in; its space is already held. */
 .fade-in { animation: fade-in 200ms ease-out both; }
 @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
@@ -171,13 +172,12 @@ h1 {
 @media (max-width: 600px) {
   header { padding: 12px 16px; }
   .brand svg { height: 15px; }
-  #email { display: none; }
+  .account { gap: 10px; }
   .account a { padding: 7px 10px; }
   main { padding: 20px 16px 28px; }
   .title-row { flex-direction: column; align-items: stretch; gap: 2px; }
   h1 { font-size: 26px; }
   #count { display: none; }
-  .email-mobile { display: block; min-height: 18px; } /* one line held from first paint */
   .card { min-height: 44px; }
   .tile { width: 40px; height: 40px; }
   .card .desc { white-space: normal; }
@@ -209,7 +209,6 @@ h1 {
     <div class="title-row">
       <h1>Tools</h1>
       <span id="count"></span>
-      <span class="email-mobile" id="email-mobile"></span>
     </div>
 
     <nav class="list">
@@ -306,7 +305,7 @@ h1 {
 <script>
   // The hub worker fills in the email and Admin row before the page is
   // sent (data-identity="server"). Without it (pages.dev, local dev) ask Access
-  // here; late arrivals fade in, and the email line's space is already held.
+  // here; late arrivals fade in.
   const ADMINS = ['stefan@ordinaryfolk.co', 'mona@ordinaryfolk.co', 'jorge@ordinaryfolk.co'];
   const updateCount = () => {
     const n = [...document.querySelectorAll('.card')].filter((c) => c.style.display !== 'none').length;
@@ -319,11 +318,9 @@ h1 {
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => {
         if (!d || !d.email) return;
-        for (const id of ['email', 'email-mobile']) {
-          const el = document.getElementById(id);
-          el.textContent = d.email;
-          show(el);
-        }
+        const el = document.getElementById('email');
+        el.textContent = d.email;
+        show(el);
         if (ADMINS.includes(d.email.toLowerCase())) {
           const card = document.getElementById('admin-card');
           card.style.display = '';
