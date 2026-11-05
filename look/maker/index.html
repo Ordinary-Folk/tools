@@ -9,7 +9,7 @@
 <style>
 /* Layout: a workbench. Two pixel grids (Open / Checked) on the left, live previews on the right, export underneath. */
 :root {
-  --bg: #F3F4F1; --surface: #FFFFFF; --ink: #17191B; --muted: #676C70; --line: #DADDD8; --grid: #E8EAE6;
+  --bg: #F3F4F1; --surface: #FFFFFF; --ink: #17191B; --muted: #676C70; --line: #DADDD8; --grid: #DCDFDA;
   --accent: #2B47E0; --accent-soft: #E6EAFD; --on: #17191B; --check: #22A55B;
   --f-display: 'DM Sans', 'Inter', sans-serif;
   --f-body: 'Inter', 'Inter Fallback', -apple-system, sans-serif;
@@ -76,7 +76,7 @@ textarea { width: 100%; min-height: 82px; font: 12px/1.5 var(--f-mono); color: v
 .row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; align-items: center; }
 .toast { position: fixed; left: 0; right: 0; margin: 0 auto; width: fit-content; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); background: var(--ink); color: var(--bg); padding: 8px 14px; border-radius: 3px; font-size: 13px; opacity: 0; transition: opacity .2s; pointer-events: none; }
 .toast.show { opacity: 1; }
-svg.px { shape-rendering: crispEdges; flex: none; }
+svg.mk-px { shape-rendering: crispEdges; flex: none; }
 @media (prefers-reduced-motion: reduce) { .toast { transition: none; } }
 </style>
 </head>
@@ -288,21 +288,24 @@ svg.px { shape-rendering: crispEdges; flex: none; }
     return d;
   }
   function svgStr(a, size, color) { const d = toPath(a); return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="${color || 'currentColor'}" shape-rendering="crispEdges"><path d="${d}"/></svg>`; }
-  function svgEl(a, size, color) { return svgStr(a, size, color).replace('<svg ', '<svg class="px" aria-hidden="true" '); }
+  function svgEl(a, size, color) { return svgStr(a, size, color).replace('<svg ', '<svg class="mk-px" aria-hidden="true" '); }
 
   // ---- drawing on the canvases ----
   function cssVar(n) { return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
   function draw(which) {
     const c = canv[which], a = state[which];
-    const px = Math.round(c.getBoundingClientRect().width * devicePixelRatio) || 480;
+    const w = c.getBoundingClientRect().width; if (!w) return; const px = Math.round(w * devicePixelRatio);
     if (c.width !== px) { c.width = px; c.height = px; }
     const g = c.getContext('2d'), cell = px / N;
     g.fillStyle = cssVar('--surface'); g.fillRect(0, 0, px, px);
     g.fillStyle = which === 'checked' ? $('colChecked').value : cssVar('--on');
     for (let i = 0; i < N * N; i++) if (a[i]) g.fillRect(Math.floor((i % N) * cell), Math.floor(Math.floor(i / N) * cell), Math.ceil(cell), Math.ceil(cell));
-    g.strokeStyle = cssVar('--grid'); g.lineWidth = 1;
-    for (let i = 1; i < N; i++) { const p = Math.round(i * cell) + .5; g.beginPath(); g.moveTo(p, 0); g.lineTo(p, px); g.stroke(); g.beginPath(); g.moveTo(0, p); g.lineTo(px, p); g.stroke(); }
-    if (N === 24) { g.strokeStyle = cssVar('--line'); for (let i = 2; i < 24; i += 2) { const p = Math.round(i * cell) + .5; g.beginPath(); g.moveTo(p, 0); g.lineTo(p, px); g.stroke(); g.beginPath(); g.moveTo(0, p); g.lineTo(px, p); g.stroke(); } }
+    // Grid as whole device-pixel rectangles: hairline strokes at .5 offsets vanish
+    // whenever the canvas is scaled even slightly.
+    const t = Math.max(1, Math.round(devicePixelRatio || 1));
+    const line = (color, step) => { g.fillStyle = color; for (let i = step; i < N; i += step) { const p = Math.round(i * cell) - Math.floor(t / 2); g.fillRect(p, 0, t, px); g.fillRect(0, p, px, t); } };
+    line(cssVar('--grid'), 1);
+    if (N === 24) line(cssVar('--line'), 2);
   }
   let painting = null;
   function cellAt(c, e) { const r = c.getBoundingClientRect(); const x = Math.floor((e.clientX - r.left) / r.width * N), y = Math.floor((e.clientY - r.top) / r.height * N); return (x < 0 || y < 0 || x >= N || y >= N) ? null : [x, y]; }
@@ -405,7 +408,7 @@ svg.px { shape-rendering: crispEdges; flex: none; }
     else if (!(last && load(last))) applyPreset('boldRing');
   })();
   render();
-  new ResizeObserver(() => { draw('open'); draw('checked'); }).observe(canv.open);
+  const ro = new ResizeObserver(() => { draw('open'); draw('checked'); }); ro.observe(canv.open); ro.observe(canv.checked);
   matchMedia('(prefers-color-scheme: dark)').addEventListener('change', render);
 })();
 </script>
