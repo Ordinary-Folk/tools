@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ordinary Folk Tools</title>
+<link rel="preload" href="/fonts/inter-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/inter-600.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/dm-sans-700.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="icon" type="image/svg+xml" href="/icons/icon.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="/icons/icon-32.png">
 <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
@@ -15,6 +18,8 @@
 @font-face { font-family: 'Inter'; font-style: normal; font-weight: 500; font-display: swap; src: url('/fonts/inter-500.woff2') format('woff2'); }
 @font-face { font-family: 'Inter'; font-style: normal; font-weight: 600; font-display: swap; src: url('/fonts/inter-600.woff2') format('woff2'); }
 @font-face { font-family: 'Inter'; font-style: normal; font-weight: 700; font-display: swap; src: url('/fonts/inter-700.woff2') format('woff2'); }
+/* Arial sized to Inter's metrics, so text wraps the same before and after the swap. */
+@font-face { font-family: 'Inter Fallback'; src: local('Arial'), local('ArialMT'); size-adjust: 107.4%; ascent-override: 90.2%; descent-override: 22.48%; line-gap-override: 0%; }
 @font-face { font-family: 'DM Sans'; font-style: normal; font-weight: 500; font-display: swap; src: url('/fonts/dm-sans-500.woff2') format('woff2'); }
 @font-face { font-family: 'DM Sans'; font-style: normal; font-weight: 600; font-display: swap; src: url('/fonts/dm-sans-600.woff2') format('woff2'); }
 @font-face { font-family: 'DM Sans'; font-style: normal; font-weight: 700; font-display: swap; src: url('/fonts/dm-sans-700.woff2') format('woff2'); }
@@ -56,7 +61,7 @@
 }
 * { box-sizing: border-box; }
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-family: 'Inter', 'Inter Fallback', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   background: var(--bg);
   color: var(--text);
   margin: 0;
@@ -105,6 +110,9 @@ h1 {
   font-variant-numeric: tabular-nums;
 }
 .email-mobile { display: none; }
+/* Anything filled in after load fades in; its space is already held. */
+.fade-in { animation: fade-in 200ms ease-out both; }
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
 
 .list {
   background: var(--card);
@@ -157,6 +165,7 @@ h1 {
 }
 @media (prefers-reduced-motion: reduce) {
   .card, .account a { transition: none; }
+  .fade-in { animation: none; }
 }
 
 @media (max-width: 600px) {
@@ -168,7 +177,7 @@ h1 {
   .title-row { flex-direction: column; align-items: stretch; gap: 2px; }
   h1 { font-size: 26px; }
   #count { display: none; }
-  .email-mobile { display: block; }
+  .email-mobile { display: block; min-height: 18px; } /* one line held from first paint */
   .card { min-height: 44px; }
   .tile { width: 40px; height: 40px; }
   .card .desc { white-space: normal; }
@@ -269,8 +278,9 @@ h1 {
         <svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
       </a>
 
-      <!-- Admin: hidden by default; revealed by the script below only for the
-           admin emails. Proxied at /admin/ (hub SSO, no second login); the app
+      <!-- Admin: hidden by default. The hub worker shows it (or drops it) from
+           the Access identity before the page is sent; the script below is
+           the fallback when there is no identity. Proxied at /admin/ (hub SSO, no second login); the app
            itself also self-gates to the admin team. -->
       <a class="card" id="admin-card" href="/admin/" style="display:none">
         <span class="tile tile-admin">
@@ -294,26 +304,35 @@ h1 {
 </main>
 
 <script>
-  // Show the signed-in OF account (provided by Cloudflare Access, same-origin).
-  // Only these accounts see the OF Admin tile (cosmetic — the app self-gates too).
+  // The hub worker fills in the email and Admin row before the page is
+  // sent (data-identity="server"). Without it (pages.dev, local dev) ask Access
+  // here; late arrivals fade in, and the email line's space is already held.
   const ADMINS = ['stefan@ordinaryfolk.co', 'mona@ordinaryfolk.co', 'jorge@ordinaryfolk.co'];
   const updateCount = () => {
     const n = [...document.querySelectorAll('.card')].filter((c) => c.style.display !== 'none').length;
     document.getElementById('count').textContent = n + ' tool' + (n === 1 ? '' : 's');
   };
+  const show = (el) => { el.classList.add('fade-in'); };
   updateCount();
-  fetch('/cdn-cgi/access/get-identity')
-    .then((r) => (r.ok ? r.json() : null))
-    .then((d) => {
-      if (!d || !d.email) return;
-      document.getElementById('email').textContent = d.email;
-      document.getElementById('email-mobile').textContent = d.email;
-      if (ADMINS.includes(d.email.toLowerCase())) {
-        document.getElementById('admin-card').style.display = '';
-        updateCount();
-      }
-    })
-    .catch(() => {});
+  if (document.documentElement.dataset.identity !== 'server') {
+    fetch('/cdn-cgi/access/get-identity')
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        if (!d || !d.email) return;
+        for (const id of ['email', 'email-mobile']) {
+          const el = document.getElementById(id);
+          el.textContent = d.email;
+          show(el);
+        }
+        if (ADMINS.includes(d.email.toLowerCase())) {
+          const card = document.getElementById('admin-card');
+          card.style.display = '';
+          show(card);
+          updateCount();
+        }
+      })
+      .catch(() => {});
+  }
 </script>
 </body>
 </html>

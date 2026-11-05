@@ -112,9 +112,67 @@ export default {
       }
     }
 
+    // Landing page: fill in who is signed in (and the Admin row) before it
+    // leaves here, so nothing pops in after load.
+    if (url.pathname === '/' && (request.method === 'GET' || request.method === 'HEAD')) {
+      return landingWithIdentity(request, env, url)
+    }
+
     // Everything else: static landing page + single-file tools in this repo.
     return env.ASSETS.fetch(request)
   },
+}
+
+// --- Landing page identity ----------------------------------------------------
+// Same list the page used client-side. Cosmetic only: OF Admin gates itself.
+const HUB_ADMINS = ['stefan@ordinaryfolk.co', 'mona@ordinaryfolk.co', 'jorge@ordinaryfolk.co']
+
+// Reads the Access identity (JWT header, else the CF_Authorization cookie) and
+// writes the email and the Admin row (or drops it) into index.html. With no
+// identity (pages.dev, local dev) the page is served as is and its own script
+// asks /cdn-cgi/access/get-identity like before. Locally, DEV_IDENTITY (a
+// `--binding`) stands in for Access so the server path can be tested.
+async function landingWithIdentity(request, env, url) {
+  const res = await env.ASSETS.fetch(request)
+  if (!res.ok || !(res.headers.get('content-type') || '').includes('text/html')) return res
+
+  let email = ''
+  const jwt = request.headers.get('Cf-Access-Jwt-Assertion') || readCookie(request, 'CF_Authorization')
+  if (jwt) {
+    const claims = await verifyAccessJwt(jwt).catch(() => null)
+    email = String(claims?.email || '').toLowerCase()
+  }
+  const local = url.hostname === 'localhost' || url.hostname === '127.0.0.1'
+  if (!email && local && env.DEV_IDENTITY) email = String(env.DEV_IDENTITY).toLowerCase()
+  if (!email) return res
+
+  const admin = HUB_ADMINS.includes(email)
+  const headers = new Headers(res.headers)
+  headers.delete('content-length')
+  headers.delete('etag')
+  // Per-person HTML: never let the edge or a shared cache keep it.
+  headers.set('cache-control', 'private, no-store')
+  headers.set('vary', 'Cookie, Cf-Access-Jwt-Assertion')
+  return new HTMLRewriter()
+    .on('html', { element: (el) => el.setAttribute('data-identity', 'server') })
+    .on('#email', { element: (el) => el.setInnerContent(email) })
+    .on('#email-mobile', { element: (el) => el.setInnerContent(email) })
+    .on('#admin-card', {
+      element: (el) => {
+        if (admin) el.removeAttribute('style')
+        else el.remove()
+      },
+    })
+    .transform(new Response(res.body, { status: res.status, statusText: res.statusText, headers }))
+}
+
+function readCookie(request, name) {
+  const raw = request.headers.get('Cookie') || ''
+  for (const part of raw.split(';')) {
+    const i = part.indexOf('=')
+    if (i > 0 && part.slice(0, i).trim() === name) return part.slice(i + 1).trim()
+  }
+  return ''
 }
 
 // --- Cloudflare Access SSO bridge ----------------------------------------
