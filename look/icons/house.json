@@ -800,7 +800,7 @@
       }
     },
     "search": {
-      "icon": "search:outline",
+      "icon": "custom/search.svg",
       "apps": {
         "tracker": [
           "search"
@@ -808,7 +808,8 @@
         "review": [
           "search"
         ]
-      }
+      },
+      "note": "Jorge's magnifier with a thicker handle (2026-11-05)"
     },
     "settings": {
       "icon": "settings-2:outline",
