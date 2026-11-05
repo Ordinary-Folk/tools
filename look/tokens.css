@@ -12,15 +12,13 @@
   /* Surfaces */
   --of-bg: #FFFFFF;
   --of-surface: #F7F8FA;
-  --of-surface-2: #ECEEF2;
-  --of-line: #E6E8EC;
-  --of-line-strong: #C2C7D0;
+  --of-line: #E6E8EC;         /* borders, dividers, hover and raised fills */
+  --of-line-strong: #C2C7D0;  /* strong borders, control outlines, faint text (placeholders, disabled) */
 
   /* Text (cool-tinted neutrals) */
   --of-text: #15171B;
   --of-text-2: #5C626D;
   --of-muted: #8A909B;
-  --of-faint: #C2C7D0;
 
   /* Accent: actions, links, selection. Never status, never decoration. */
   --of-accent: #2563EB;
@@ -67,13 +65,11 @@
 .of-dark, [data-theme="dark"] {
   --of-bg: #0B0C0E;
   --of-surface: #15171B;
-  --of-surface-2: #1C1F25;
   --of-line: #262A31;
-  --of-line-strong: #363B44;
+  --of-line-strong: #5C626D;  /* lighter than a plain border so it still reads as faint text */
   --of-text: #ECEEF2;
   --of-text-2: #C2C7D0;
   --of-muted: #8A909B;
-  --of-faint: #5C626D;
   --of-accent: #2563EB;
   --of-accent-hover: #3B82F6;
   --of-accent-text: #60A5FA;
@@ -84,4 +80,11 @@
   --of-shadow-popover: 0 8px 24px rgba(0, 0, 0, 0.45);
   --of-shadow-overlay: 0 24px 64px rgba(0, 0, 0, 0.6);
   --of-scrim: rgba(0, 0, 0, 0.6);
+}
+
+/* Deprecated 2026-11-05 (merged): surface-2 → line, faint → line-strong. Kept so
+   older references still resolve; don't use them in new code. */
+:root, .of-dark, [data-theme="dark"] {
+  --of-surface-2: var(--of-line);
+  --of-faint: var(--of-line-strong);
 }

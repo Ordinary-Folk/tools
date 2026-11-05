@@ -63,7 +63,7 @@ table.adopt { width: 100%; border-collapse: collapse; font-size: 13px; }
 
   <section class="panel">
     <h2>Colour</h2>
-    <p class="muted" style="margin-top:-6px">One set of names, two themes. Light for the Tracker, Schedule, Time Tracker and this hub; dark for OF Review.</p>
+    <p class="muted" style="margin-top:-6px">One set of names, two themes. Light for the Tracker, Schedule, Time Tracker and this hub; dark for OF Review. Greys come in three steps: <b>line</b> for borders and hover fills, <b>line strong</b> for strong borders and faint text, <b>muted</b> for secondary text.</p>
     <div class="grid2">
       <div class="theme"><h3>Light</h3><div class="swatches" data-swatches></div><div class="pills" data-pills></div></div>
       <div class="theme of-dark"><h3>Dark</h3><div class="swatches" data-swatches></div></div>
@@ -146,7 +146,7 @@ table.adopt { width: 100%; border-collapse: collapse; font-size: 13px; }
     ['columns', 'Space on a 4px scale', 'Gap between things, not margins on them. 44px taps on phones.'],
   ];
   document.getElementById('principles').innerHTML = P.map(([i, t, p]) => `<div class="principle">${svg(i)}<h3>${t}</h3><p>${p}</p></div>`).join('');
-  const S = [['--of-bg', 'bg'], ['--of-surface', 'surface'], ['--of-surface-2', 'surface 2'], ['--of-line', 'line'], ['--of-line-strong', 'line strong'], ['--of-text', 'text'], ['--of-text-2', 'text 2'], ['--of-muted', 'muted'], ['--of-faint', 'faint'], ['--of-accent', 'accent'], ['--of-accent-text', 'accent text'], ['--of-success', 'success'], ['--of-warning', 'warning'], ['--of-danger', 'danger']];
+  const S = [['--of-bg', 'bg'], ['--of-surface', 'surface'], ['--of-line', 'line'], ['--of-line-strong', 'line strong'], ['--of-text', 'text'], ['--of-text-2', 'text 2'], ['--of-muted', 'muted'], ['--of-accent', 'accent'], ['--of-accent-text', 'accent text'], ['--of-success', 'success'], ['--of-warning', 'warning'], ['--of-danger', 'danger']];
   document.querySelectorAll('[data-swatches]').forEach((el) => {
     const cs = getComputedStyle(el);
     el.innerHTML = S.map(([v, l]) => `<div class="sw"><b style="background:var(${v})"></b>${l}<code>${cs.getPropertyValue(v).trim()}</code></div>`).join('');
