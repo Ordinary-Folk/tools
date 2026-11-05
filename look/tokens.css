@@ -1,0 +1,87 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   OF Look — design tokens, the source of truth for every Ordinary Folk app.
+   Shown at tools.ordinary.co/look. Light is the default (Tracker, Schedule,
+   Time Tracker, the hub); dark is OF Review and any `.of-dark` / [data-theme="dark"]
+   surface. Same names in both, so components never branch on theme.
+
+   Vendor into an app by copying this file (or importing it from the hub) and
+   mapping the app's own variable names onto these. Change values HERE first.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* Surfaces */
+  --of-bg: #FFFFFF;
+  --of-surface: #F7F8FA;
+  --of-surface-2: #ECEEF2;
+  --of-line: #E6E8EC;
+  --of-line-strong: #C2C7D0;
+
+  /* Text (cool-tinted neutrals) */
+  --of-text: #15171B;
+  --of-text-2: #5C626D;
+  --of-muted: #8A909B;
+  --of-faint: #C2C7D0;
+
+  /* Accent: actions, links, selection. Never status, never decoration. */
+  --of-accent: #2563EB;
+  --of-accent-hover: #1D4ED8;
+  --of-accent-text: #2563EB;
+  --of-accent-soft: rgba(37, 99, 235, 0.10);
+
+  /* Semantic */
+  --of-success: #059669;  --of-success-text: #0F6E56;
+  --of-warning: #D97706;  --of-warning-text: #854F0B;
+  --of-danger: #DC2626;   --of-danger-text: #A32D2D;
+
+  /* Status (the only colour that carries meaning in a table) */
+  --of-status-outstanding-bg: #FCEBEB; --of-status-outstanding-fg: #A32D2D; --of-status-outstanding-dot: #EF4444;
+  --of-status-progress-bg: #FAEEDA;    --of-status-progress-fg: #854F0B;    --of-status-progress-dot: #D97706;
+  --of-status-review-bg: #EEEDFE;      --of-status-review-fg: #3C3489;      --of-status-review-dot: #8B5CF6;
+  --of-status-revise-bg: #FCEDE3;      --of-status-revise-fg: #9A4A1E;      --of-status-revise-dot: #F97316;
+  --of-status-complete-bg: #E1F5EE;    --of-status-complete-fg: #0F6E56;    --of-status-complete-dot: #059669;
+
+  /* Type */
+  --of-font-display: 'DM Sans', system-ui, sans-serif;
+  --of-font-ui: 'Inter', system-ui, -apple-system, sans-serif;
+  --of-font-mono: ui-monospace, 'SF Mono', Menlo, monospace;
+  --of-fs-micro: 11px; --of-fs-sm: 12px; --of-fs-base: 13px; --of-fs-md: 14px; --of-fs-lg: 15px;
+  --of-fs-xl: 18px; --of-fs-2xl: 22px; --of-fs-3xl: 28px;
+
+  /* Geometry: sharp by default */
+  --of-radius: 0px;
+  --of-radius-round: 999px; /* avatars, status dots, toggles ONLY */
+  --of-space-1: 4px; --of-space-2: 8px; --of-space-3: 12px; --of-space-4: 16px;
+  --of-space-6: 24px; --of-space-8: 32px; --of-space-12: 48px;
+  --of-control-h: 36px; --of-control-h-sm: 28px; --of-field-h: 40px; --of-touch: 44px;
+
+  /* Icons: Pixelarticons Pro + OF custom, whole pixels only */
+  --of-icon: 12px;
+  --of-icon-lg: 24px;
+
+  /* Elevation: two levels, no glow, no coloured shadows */
+  --of-shadow-popover: 0 8px 24px rgba(21, 23, 27, 0.14);
+  --of-shadow-overlay: 0 24px 64px rgba(21, 23, 27, 0.18);
+  --of-scrim: rgba(21, 23, 27, 0.28);
+}
+
+.of-dark, [data-theme="dark"] {
+  --of-bg: #0B0C0E;
+  --of-surface: #15171B;
+  --of-surface-2: #1C1F25;
+  --of-line: #262A31;
+  --of-line-strong: #363B44;
+  --of-text: #ECEEF2;
+  --of-text-2: #C2C7D0;
+  --of-muted: #8A909B;
+  --of-faint: #5C626D;
+  --of-accent: #2563EB;
+  --of-accent-hover: #3B82F6;
+  --of-accent-text: #60A5FA;
+  --of-accent-soft: rgba(37, 99, 235, 0.16);
+  --of-success: #059669;  --of-success-text: #34D399;
+  --of-warning: #D97706;  --of-warning-text: #FBBF24;
+  --of-danger: #DC2626;   --of-danger-text: #F87171;
+  --of-shadow-popover: 0 8px 24px rgba(0, 0, 0, 0.45);
+  --of-shadow-overlay: 0 24px 64px rgba(0, 0, 0, 0.6);
+  --of-scrim: rgba(0, 0, 0, 0.6);
+}

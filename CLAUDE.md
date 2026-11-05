@@ -51,6 +51,21 @@ project). Individual tools live in their own folders/repos and are proxied in.
   301 to `www.ordinaryfolk.co`. The `ordinaryfolk.co` marketing site is on a
   separate registrar and is NOT touched by any of this.
 
+
+## Look (tools.ordinary.co/look): the OF design source of truth (2026-11-05)
+
+`look/` holds the principles page, `tokens.css` (light default + `.of-dark`), the
+house icon list and the icon maker. **Icons:** `look/icons/house.json` names every
+icon once (`search`, `settings`, `resolve`…) → Pixelarticons Pro name (Solid
+unless `:outline`) or `custom/<file>.svg`. Apps reference house names in their
+`pixel-icons.json` (`"search": "@search"`) and run `node look/icons/gen.mjs <app>`
+(or `--all-apps`, `--check`); the runtime it vendors is `look/icons/runtime/`.
+After editing house.json or custom/, run `node look/icons/build-library.mjs`
+(regenerates `library.js` for the library + maker pages), then `./deploy.sh`.
+`deploy.sh` stages `look/` but drops gen.mjs, build-library.mjs and runtime/.
+Pixelarticons source lives in `_OF TOOL BOX/Icons/pixelarticons-pro-2.7.0` (per-seat licence;
+only the icons in house.json are published, behind Access).
+
 ## `_worker.js` routing
 
 - `APPS` maps a path prefix → `{ origin, strip }`:

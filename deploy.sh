@@ -11,7 +11,7 @@ unset CLOUDFLARE_API_TOKEN
 STAGE=/tmp/of-tools-deploy
 rm -rf "$STAGE" && mkdir -p "$STAGE"
 cp index.html _worker.js "$STAGE/"
-cp -R icons fonts scripts "$STAGE/"
-rm -rf "$STAGE/scripts/publisher" "$STAGE/scripts/icons/build.py"
+cp -R icons fonts scripts look "$STAGE/"
+rm -rf "$STAGE/scripts/publisher" "$STAGE/scripts/icons/build.py" "$STAGE/look/icons/gen.mjs" "$STAGE/look/icons/build-library.mjs" "$STAGE/look/icons/runtime"
 find "$STAGE" -name .DS_Store -delete
 npx wrangler@latest pages deploy "$STAGE" --project-name of-tools --branch main "$@"

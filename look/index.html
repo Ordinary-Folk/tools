@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Look · Ordinary Folk Tools</title>
+<link rel="icon" type="image/svg+xml" href="/icons/icon.svg">
+<link rel="stylesheet" href="/look/look.css">
+<link rel="stylesheet" href="/look/tokens.css">
+<style>
+.principles { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
+.principle { background: var(--card); border: 1px solid var(--border); padding: 16px; display: flex; flex-direction: column; gap: 6px; }
+.principle .px { color: var(--text); }
+.principle p { margin: 0; color: var(--muted); font-size: 13px; }
+.theme { padding: 16px; border: 1px solid var(--of-line); background: var(--of-bg); color: var(--of-text); }
+.theme h3 { color: var(--of-text); }
+.swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 8px; }
+.sw { display: flex; flex-direction: column; gap: 4px; font-size: 11px; color: var(--of-muted); }
+.sw b { height: 36px; border: 1px solid var(--of-line); display: block; }
+.sw code { background: none; padding: 0; color: var(--of-text-2); font-size: 11px; }
+.pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.pill { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; padding: 3px 8px; }
+.pill i { width: 6px; height: 6px; border-radius: 999px; display: block; }
+.type-row { display: grid; grid-template-columns: 140px minmax(0, 1fr); gap: 12px; align-items: baseline; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.type-row:last-child { border-bottom: 0; }
+.type-row .meta { font: 11px var(--mono); color: var(--muted); }
+.space { display: flex; flex-direction: column; gap: 6px; }
+.space div { display: flex; align-items: center; gap: 10px; font: 11px var(--mono); color: var(--muted); }
+.space span { height: 10px; background: var(--accent); display: block; }
+.flow { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; align-items: stretch; }
+.flow div { border: 1px solid var(--border); background: var(--card); padding: 12px; font-size: 13px; }
+.flow b { display: block; margin-bottom: 4px; }
+@media (max-width: 760px) { .flow { grid-template-columns: minmax(0, 1fr); } .type-row { grid-template-columns: minmax(0, 1fr); gap: 2px; } }
+table.adopt { width: 100%; border-collapse: collapse; font-size: 13px; }
+.adopt th { text-align: left; font-weight: 500; color: var(--muted); font-size: 12px; padding: 8px; border-bottom: 1px solid var(--border); }
+.adopt td { padding: 8px; border-bottom: 1px solid var(--border); vertical-align: top; }
+.adopt .yes { color: var(--success); font-weight: 600; }
+.adopt .no { color: var(--muted); }
+.table-wrap { overflow-x: auto; }
+.cta { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+</style>
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="/" aria-label="Ordinary Folk Tools home"><svg viewBox="0 0 684.04 344.08" fill="currentColor" aria-label="Ordinary Folk">
+      <path d="M172.04,0C77.03,0,0,77.03,0,172.04s77.03,172.04,172.04,172.04,172.04-77.03,172.04-172.04S267.06,0,172.04,0ZM172.04,269.7c-52.77,0-95.56-42.78-95.56-95.56s42.79-95.56,95.56-95.56,95.56,42.79,95.56,95.56-42.78,95.56-95.56,95.56Z"/>
+      <path d="M595.51,155.23c-23.7,0-42.92,19.21-42.92,42.92s19.22,42.92,42.92,42.92,42.92-19.21,42.92-42.92-19.22-42.92-42.92-42.92Z"/>
+      <polygon points="506.98 13.3 430.5 13.3 430.5 85.39 430.5 330.71 506.98 330.71 506.98 85.39 684.04 85.39 684.04 13.3 506.98 13.3"/>
+    </svg><span>Look</span></a>
+  <nav class="tabs" aria-label="Look"><a href="/look/" aria-current="page">Principles</a><a href="/look/icons/">Icons</a><a href="/look/maker/">Icon maker</a><a href="/look/tokens.css">Tokens</a></nav>
+</header>
+<main>
+  <section>
+    <span class="eyebrow">Source of truth</span>
+    <h1>The OF look</h1>
+    <p class="lede">How every Ordinary Folk tool looks and behaves: principles, colour, type, spacing and the house icons. Change things here first; the apps take their icons and tokens from this page's files.</p>
+  </section>
+
+  <section>
+    <h2>Principles</h2>
+    <div class="principles" id="principles"></div>
+  </section>
+
+  <section class="panel">
+    <h2>Colour</h2>
+    <p class="muted" style="margin-top:-6px">One set of names, two themes. Light for the Tracker, Schedule, Time Tracker and this hub; dark for OF Review.</p>
+    <div class="grid2">
+      <div class="theme"><h3>Light</h3><div class="swatches" data-swatches></div><div class="pills" data-pills></div></div>
+      <div class="theme of-dark"><h3>Dark</h3><div class="swatches" data-swatches></div></div>
+    </div>
+  </section>
+
+  <section class="grid2">
+    <div class="panel">
+      <h2>Type</h2>
+      <div class="type-row"><span class="meta">Display · DM Sans 28/600</span><span style="font:600 28px/1.15 var(--display)">Production schedule</span></div>
+      <div class="type-row"><span class="meta">Heading · DM Sans 20/600</span><span style="font:600 20px var(--display)">Boards</span></div>
+      <div class="type-row"><span class="meta">Label · Inter 14/600</span><span style="font:600 14px var(--sans)">Assigned</span></div>
+      <div class="type-row"><span class="meta">Body · Inter 14/400</span><span style="font:400 14px var(--sans)">Shot tracking through design and animation.</span></div>
+      <div class="type-row"><span class="meta">Small · Inter 12/400</span><span style="font:400 12px var(--sans);color:var(--muted)">Updated 2 hours ago</span></div>
+      <div class="type-row"><span class="meta">Eyebrow · Inter 11/600</span><span class="eyebrow">Design · 25%</span></div>
+      <div class="type-row"><span class="meta">Numbers · mono 13</span><span class="mono" style="font-size:13px">00:03:54:06 · S02-04</span></div>
+    </div>
+    <div class="panel">
+      <h2>Geometry</h2>
+      <p class="muted" style="margin-top:-6px">Sharp corners everywhere. Round only for avatars, status dots and toggles. Spacing on a 4px scale, laid out with gap, not margins.</p>
+      <div class="space">
+        <div><span style="width:4px"></span>4</div><div><span style="width:8px"></span>8</div><div><span style="width:12px"></span>12</div><div><span style="width:16px"></span>16</div><div><span style="width:24px"></span>24</div><div><span style="width:32px"></span>32</div><div><span style="width:48px"></span>48</div>
+      </div>
+      <p class="muted" style="font-size:13px">Controls 36px tall (28px in toolbars), fields 40px, taps at least 44px on phones. Two shadows: popover and overlay. No glows, no coloured shadows.</p>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>Icons</h2>
+    <p class="muted" style="margin-top:-6px"><span id="iconCount">All</span> house icons, Pixelarticons Pro plus OF custom drawings. One name per idea, used the same way in every app.</p>
+    <ul class="muted" style="font-size:13px;margin:0;padding-left:18px">
+      <li>Whole pixels only: 12px next to text, 24px for big targets. Never 16px or 1em.</li>
+      <li>Outline by default; Solid where it reads better or means "done".</li>
+      <li>Colour comes from the text. Logos, charts and people's emoji stay as they are.</li>
+      <li>Directions never share an icon; boxed arrows for moves, plain chevrons for menus.</li>
+    </ul>
+    <div class="cta"><a class="btn primary" href="/look/icons/">Icon library</a><a class="btn" href="/look/maker/">Icon maker</a></div>
+  </section>
+
+  <section class="panel">
+    <h2>How apps use this</h2>
+    <div class="flow">
+      <div><b>1. House list</b><code>look/icons/house.json</code> names every icon (search, settings, resolve…) and what it draws.</div>
+      <div><b>2. App list</b>Each app's <code>pixel-icons.json</code> points at house names: <code>"search": "@search"</code>.</div>
+      <div><b>3. Generator</b><code>node look/icons/gen.mjs &lt;app&gt;</code> writes the app's icon file. <code>--all-apps</code> does every app.</div>
+      <div><b>4. Ship</b>Commit and deploy the app. Change a house icon once, re-run, every app follows.</div>
+    </div>
+    <p class="muted" style="font-size:13px">Colours, type and spacing come from <a href="/look/tokens.css">tokens.css</a> (same names in light and dark). New icons: draw them in the <a href="/look/maker/">maker</a>, save the SVG into <code>look/icons/custom/</code>, add a house name.</p>
+  </section>
+
+  <section class="panel">
+    <h2>Where each app stands</h2>
+    <div class="table-wrap"><table class="adopt">
+      <thead><tr><th>App</th><th>House icons</th><th>Tokens</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Project Tracker</td><td class="yes">Yes, every icon</td><td>Same values, own names (normalized light set)</td><td>Next: rename to the <code>--of-</code> tokens</td></tr>
+        <tr><td>OF Review</td><td class="yes">Yes, every icon</td><td>Same values, own names (dark set)</td><td>Custom resolve ticks live in the house list</td></tr>
+        <tr><td>Master Schedule</td><td class="no">Not yet</td><td>OF Review reskin</td><td>Has hand-written pixel icons; move them to house names</td></tr>
+        <tr><td>Time Tracker</td><td class="no">Not yet</td><td>OF Review reskin</td><td></td></tr>
+        <tr><td>OF Admin</td><td class="no">Not yet</td><td class="no">Not yet</td><td></td></tr>
+        <tr><td>Tools hub</td><td class="no">Tiles are custom</td><td>Same values</td><td>Tile icons being redrawn</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+</main>
+<script src="/look/icons/library.js"></script>
+<script>
+(() => {
+  const I = window.OF_ICONS || {};
+  const svg = (n, s = 24) => I[n] ? `<svg class="px" width="${s}" height="${s}" viewBox="0 0 24 24" aria-hidden="true"><path${I[n].eo ? ' fill-rule="evenodd"' : ''} d="${I[n].d}"/></svg>` : '';
+  document.getElementById('iconCount').textContent = Object.keys(I).length;
+  const P = [
+    ['square-alert', 'Sharp by default', 'Zero radius on everything. Round only for avatars, status dots and toggles.'],
+    ['circle-check', 'Colour means status', 'Status pills and dots are the only colour in a table. Nothing decorative.'],
+    ['pointer', 'One blue, for actions', '#2563EB for buttons, links and selection. Never for status or decoration.'],
+    ['view', 'Cool greys, two themes', 'Light for most tools, dark for review. Same token names in both.'],
+    ['text-start-t', 'Three typefaces, three jobs', 'Inter for the interface, DM Sans for display, mono for timecodes and numbers.'],
+    ['drag-handle', 'Pixel icons, whole pixels', 'House icons at 12px or 24px, outline by default, from one shared list.'],
+    ['comment', 'Lean words', 'The shortest clear label. Details go in tooltips. No em dashes.'],
+    ['columns', 'Space on a 4px scale', 'Gap between things, not margins on them. 44px taps on phones.'],
+  ];
+  document.getElementById('principles').innerHTML = P.map(([i, t, p]) => `<div class="principle">${svg(i)}<h3>${t}</h3><p>${p}</p></div>`).join('');
+  const S = [['--of-bg', 'bg'], ['--of-surface', 'surface'], ['--of-surface-2', 'surface 2'], ['--of-line', 'line'], ['--of-line-strong', 'line strong'], ['--of-text', 'text'], ['--of-text-2', 'text 2'], ['--of-muted', 'muted'], ['--of-faint', 'faint'], ['--of-accent', 'accent'], ['--of-accent-text', 'accent text'], ['--of-success', 'success'], ['--of-warning', 'warning'], ['--of-danger', 'danger']];
+  document.querySelectorAll('[data-swatches]').forEach((el) => {
+    const cs = getComputedStyle(el);
+    el.innerHTML = S.map(([v, l]) => `<div class="sw"><b style="background:var(${v})"></b>${l}<code>${cs.getPropertyValue(v).trim()}</code></div>`).join('');
+  });
+  const ST = [['outstanding', 'Outstanding'], ['progress', 'In progress'], ['review', 'Review'], ['revise', 'Revise'], ['complete', 'Complete']];
+  document.querySelector('[data-pills]').innerHTML = ST.map(([k, l]) => `<span class="pill" style="background:var(--of-status-${k}-bg);color:var(--of-status-${k}-fg)"><i style="background:var(--of-status-${k}-dot)"></i>${l}</span>`).join('');
+})();
+</script>
+</body>
+</html>
