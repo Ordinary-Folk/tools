@@ -9,18 +9,13 @@
 <style>
 /* Layout: a workbench. Two pixel grids (Open / Checked) on the left, live previews on the right, export underneath. */
 :root {
-  --bg: #F3F4F1; --surface: #FFFFFF; --ink: #17191B; --muted: #676C70; --line: #DADDD8; --grid: #DCDFDA;
-  --accent: #2B47E0; --accent-soft: #E6EAFD; --on: #17191B; --check: #22A55B;
+  /* Look colours (look.css, from tokens.css); the maker only adds its own names. */
+  --surface: var(--card); --ink: var(--text); --line: var(--border); --grid: var(--border-strong);
+  --on: var(--text); --check: var(--success);
   --f-display: 'DM Sans', 'Inter', sans-serif;
   --f-body: 'Inter', 'Inter Fallback', -apple-system, sans-serif;
   --f-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
 }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
-  --bg: #0F1113; --surface: #17191C; --ink: #E8EAEC; --muted: #9AA0A5; --line: #2B2F33; --grid: #22262A;
-  --accent: #8EA0FF; --accent-soft: #1F2647; --on: #E8EAEC; --check: #4ADE80; color-scheme: dark } }
-:root[data-theme="dark"] {
-  --bg: #0F1113; --surface: #17191C; --ink: #E8EAEC; --muted: #9AA0A5; --line: #2B2F33; --grid: #22262A;
-  --accent: #8EA0FF; --accent-soft: #1F2647; --on: #E8EAEC; --check: #4ADE80; color-scheme: dark }
 body { background: var(--bg); color: var(--ink); font: 14px/1.5 var(--f-body); }
 .wrap { max-width: 1200px; margin: 0 auto; padding-block: 28px 64px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
 .mk-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 20px; margin-bottom: 18px; }
@@ -51,21 +46,21 @@ select { padding-right: 28px; }
 canvas.grid { width: 100%; aspect-ratio: 1; display: block; touch-action: none; cursor: crosshair; image-rendering: pixelated; background: var(--surface); border: 1px solid var(--line); }
 .hint { color: var(--muted); font-size: 12px; margin-top: 10px; }
 .previews { display: grid; gap: 14px; }
-.card { background: #16181b; border: 1px solid #2a2d31; padding: 12px 14px 8px; color: #c9ced4; }
+.card { background: #15171B; border: 1px solid #262A31; padding: 12px 14px 8px; color: #C2C7D0; }
 .card .hd { display: flex; align-items: center; gap: 8px; }
-.card .av { width: 22px; height: 22px; border-radius: 50%; background: #50555b; flex: none; }
+.card .av { width: 22px; height: 22px; border-radius: 50%; background: #363B44; flex: none; }
 .card b { color: #fff; font-weight: 600; }
-.card .tc { font: 11px var(--f-mono); color: #7fb2ff; background: #1b2a44; padding: 2px 5px; }
+.card .tc { font: 11px var(--f-mono); color: #60A5FA; background: rgba(37, 99, 235, 0.16); padding: 2px 5px; }
 .card .tx { margin: 8px 0 10px; line-height: 1.4; font-size: 13px; }
 .card .ft { display: flex; align-items: center; gap: 8px; }
 .card .ft .sp { flex: 1; }
-.card .state { font-size: 10px; color: #5c6168; }
+.card .state { font-size: 10px; color: #5C626D; }
 .card button.ic { background: none; border: 0; padding: 4px; display: inline-flex; color: inherit; cursor: pointer; }
 .sizes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
 .swatch { padding: 14px; display: flex; align-items: center; gap: 18px; flex-wrap: wrap; border: 1px solid var(--line); }
-.swatch.dark { background: #15171b; }
+.swatch.dark { background: #15171B; }
 .swatch.light { background: #ffffff; }
-.swatch small { font: 10px var(--f-mono); color: #868b91; width: 100%; }
+.swatch small { font: 10px var(--f-mono); color: #8A909B; width: 100%; }
 .colors { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; font-size: 13px; color: var(--muted); }
 .colors label { display: flex; gap: 6px; align-items: center; }
 .colors input[type="color"] { width: 32px; height: 24px; border: 1px solid var(--line); padding: 0; background: none; cursor: pointer; }
@@ -161,8 +156,8 @@ svg.mk-px { shape-rendering: crispEdges; flex: none; }
         <div class="swatch light" id="swLight"></div>
       </div>
       <div class="colors">
-        <label>Open <input type="color" id="colOpen" value="#8b9097"></label>
-        <label>Checked <input type="color" id="colChecked" value="#4ade80"></label>
+        <label>Open <input type="color" id="colOpen" value="#8A909B"></label>
+        <label>Checked <input type="color" id="colChecked" value="#34D399"></label>
         <button type="button" id="resetColors">Reset</button>
       </div>
     </section>
@@ -330,12 +325,12 @@ svg.mk-px { shape-rendering: crispEdges; flex: none; }
   function render() {
     draw('open'); draw('checked');
     const co = $('colOpen').value, cc = $('colChecked').value;
-    $('ctxThumb').innerHTML = svgEl(THUMB, 12, '#8b9097');
+    $('ctxThumb').innerHTML = svgEl(THUMB, 12, '#8A909B');
     $('ctxToggle').innerHTML = svgEl(ctxChecked ? state.checked : state.open, 12, ctxChecked ? cc : co);
     $('ctxState').textContent = ctxChecked ? 'Checked · click to open' : 'Open · click to check';
     const sizes = (bgLabel, colO) => [12, 24, 48].map((s) => svgEl(state.open, s, colO)).join('') + [12, 24, 48].map((s) => svgEl(state.checked, s, cc)).join('') + `<small>${bgLabel}: open 12 · 24 · 48, then checked</small>`;
     $('swDark').innerHTML = sizes('Dark', co);
-    $('swLight').innerHTML = sizes('Light', '#4a4f55');
+    $('swLight').innerHTML = sizes('Light', '#5C626D');
     $('outOpen').value = svgStr(state.open, 24);
     $('outChecked').value = svgStr(state.checked, 24);
     save();
@@ -357,7 +352,7 @@ svg.mk-px { shape-rendering: crispEdges; flex: none; }
   })));
   $('ctxToggle').addEventListener('click', () => { ctxChecked = !ctxChecked; render(); });
   ['colOpen', 'colChecked'].forEach((id) => $(id).addEventListener('input', render));
-  $('resetColors').addEventListener('click', () => { $('colOpen').value = '#8b9097'; $('colChecked').value = '#4ade80'; render(); });
+  $('resetColors').addEventListener('click', () => { $('colOpen').value = '#8A909B'; $('colChecked').value = '#34D399'; render(); });
   $('iconName').addEventListener('change', () => { if (!load(slotName())) save(); render(); });
   document.addEventListener('keydown', (e) => {
     if (e.target.closest('input, textarea, select')) return;

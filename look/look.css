@@ -8,10 +8,11 @@
 @font-face { font-family: 'DM Sans'; font-style: normal; font-weight: 700; font-display: swap; src: url('/fonts/dm-sans-700.woff2') format('woff2'); }
 
 :root {
+  /* Values from look/tokens.css (light): page = surface, cards = bg, text 2 for secondary copy. */
   color-scheme: light dark;
-  --bg: #F5F6F8; --card: #FFFFFF; --card-hover: #F5F6F8; --sunk: #EEF0F3;
-  --text: #14161A; --muted: #6F7681; --faint: #9AA1AB;
-  --border: #E2E5EA; --border-strong: #C8CDD5;
+  --bg: #F7F8FA; --card: #FFFFFF; --card-hover: #F7F8FA; --sunk: #E6E8EC;
+  --text: #15171B; --muted: #5C626D; --faint: #8A909B;
+  --border: #E6E8EC; --border-strong: #C2C7D0;
   --accent: #2563EB; --accent-soft: rgba(37, 99, 235, 0.10);
   --success: #059669;
   --mono: ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -20,10 +21,11 @@
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #0F1114; --card: #16191D; --card-hover: #1C2027; --sunk: #0B0C0E;
-    --text: #EDEFF3; --muted: #9AA1AB; --faint: #6F7681;
-    --border: #272B31; --border-strong: #3A3F47;
-    --accent: #60A5FA; --accent-soft: rgba(96, 165, 250, 0.14);
+    /* tokens.css dark (.of-dark) */
+    --bg: #0B0C0E; --card: #15171B; --card-hover: #262A31; --sunk: #262A31;
+    --text: #ECEEF2; --muted: #C2C7D0; --faint: #8A909B;
+    --border: #262A31; --border-strong: #5C626D;
+    --accent: #60A5FA; --accent-soft: rgba(37, 99, 235, 0.16);
     --success: #34D399;
   }
 }
