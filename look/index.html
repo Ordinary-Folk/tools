@@ -63,10 +63,10 @@ table.adopt { width: 100%; border-collapse: collapse; font-size: 13px; }
 
   <section class="panel">
     <h2>Colour</h2>
-    <p class="muted" style="margin-top:-6px">One set of names, two themes. Light for the Tracker, Schedule, Time Tracker and this hub; dark for OF Review. Greys come in three steps: <b>line</b> for borders and hover fills, <b>line strong</b> for strong borders and faint text, <b>muted</b> for secondary text.</p>
+    <p class="muted" style="margin-top:-6px">One set of names, two themes. Light for the Tracker, Schedule, Time Tracker and this hub; dark for OF Review. Greys run lightest to darkest: <b>line</b> for borders and hover fills, <b>line strong</b> for strong borders and faint text, <b>muted</b> for metadata, <b>text 2</b> for body copy, <b>text</b> for headings and key values.</p>
     <div class="grid2">
-      <div class="theme"><h3>Light</h3><div class="swatches" data-swatches></div><div class="pills" data-pills></div></div>
-      <div class="theme of-dark"><h3>Dark</h3><div class="swatches" data-swatches></div></div>
+      <div class="theme"><h3>Light</h3><div data-swatches></div><div class="pills" data-pills></div></div>
+      <div class="theme of-dark"><h3>Dark</h3><div data-swatches></div></div>
     </div>
   </section>
 
@@ -146,10 +146,15 @@ table.adopt { width: 100%; border-collapse: collapse; font-size: 13px; }
     ['columns', 'Space on a 4px scale', 'Gap between things, not margins on them. 44px taps on phones.'],
   ];
   document.getElementById('principles').innerHTML = P.map(([i, t, p]) => `<div class="principle">${svg(i)}<h3>${t}</h3><p>${p}</p></div>`).join('');
-  const S = [['--of-bg', 'bg'], ['--of-surface', 'surface'], ['--of-line', 'line'], ['--of-line-strong', 'line strong'], ['--of-text', 'text'], ['--of-text-2', 'text 2'], ['--of-muted', 'muted'], ['--of-accent', 'accent'], ['--of-accent-text', 'accent text'], ['--of-success', 'success'], ['--of-warning', 'warning'], ['--of-danger', 'danger']];
+  // Greys sorted lightest to darkest from their actual values (per theme), then the colours.
+  const GREYS = [['--of-bg', 'bg'], ['--of-surface', 'surface'], ['--of-line', 'line'], ['--of-line-strong', 'line strong'], ['--of-muted', 'muted'], ['--of-text-2', 'text 2'], ['--of-text', 'text']];
+  const COLOURS = [['--of-accent', 'accent'], ['--of-accent-text', 'accent text'], ['--of-success', 'success'], ['--of-warning', 'warning'], ['--of-danger', 'danger']];
+  const lum = (hex) => { const m = hex.replace('#', '').match(/../g); if (!m) return 0; const [r, g, b] = m.map((x) => { const c = parseInt(x, 16) / 255; return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4; }); return 0.2126 * r + 0.7152 * g + 0.0722 * b; };
+  const sw = (cs) => ([v, l]) => `<div class="sw"><b style="background:var(${v})"></b>${l}<code>${cs.getPropertyValue(v).trim()}</code></div>`;
   document.querySelectorAll('[data-swatches]').forEach((el) => {
     const cs = getComputedStyle(el);
-    el.innerHTML = S.map(([v, l]) => `<div class="sw"><b style="background:var(${v})"></b>${l}<code>${cs.getPropertyValue(v).trim()}</code></div>`).join('');
+    const greys = GREYS.slice().sort((a, b) => lum(cs.getPropertyValue(b[0]).trim()) - lum(cs.getPropertyValue(a[0]).trim()));
+    el.innerHTML = `<div class="swatches">${greys.map(sw(cs)).join('')}</div><div class="swatches" style="margin-top:12px">${COLOURS.map(sw(cs)).join('')}</div>`;
   });
   const ST = [['outstanding', 'Outstanding'], ['progress', 'In progress'], ['review', 'Review'], ['revise', 'Revise'], ['complete', 'Complete']];
   document.querySelector('[data-pills]').innerHTML = ST.map(([k, l]) => `<span class="pill" style="background:var(--of-status-${k}-bg);color:var(--of-status-${k}-fg)"><i style="background:var(--of-status-${k}-dot)"></i>${l}</span>`).join('');
