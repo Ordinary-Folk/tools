@@ -564,15 +564,6 @@
       },
       "note": "Icon maker tool"
     },
-    "filled": {
-      "icon": "fill-half:outline",
-      "apps": {
-        "look": [
-          "filled"
-        ]
-      },
-      "note": "Icon maker tool"
-    },
     "film": {
       "icon": "film:outline",
       "apps": {

@@ -39,6 +39,8 @@ h1 { font: 700 30px/1.1 var(--f-display); letter-spacing: -.01em; margin: 0; }
   .rail .sep { width: 1px; height: 24px; margin: 8px 2px; }
 }
 .toolbar.head #saveCustom { min-width: 64px; }
+.toolbar.head button.ic { width: 32px; padding: 0; display: inline-flex; align-items: center; justify-content: center; }
+.toolbar.head button.ic svg { width: 24px; height: 24px; fill: currentColor; shape-rendering: crispEdges; display: block; }
 .confirm { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; font-size: 13px; background: var(--sunk); padding: 8px 10px; margin: -8px 0 16px; }
 .confirm span { flex: 1 1 200px; min-width: 0; }
 .confirm[hidden] { display: none; }
@@ -141,6 +143,8 @@ svg.mk-px { shape-rendering: crispEdges; flex: none; }
           <option value="12">12 × 12</option>
           <option value="24">24 × 24</option>
         </select>
+        <button type="button" class="ic" id="undo" data-ic="undo" aria-label="Undo" title="Undo (⌘Z)"></button>
+        <button type="button" class="ic" id="redo" data-ic="redo" aria-label="Redo" title="Redo (⇧⌘Z)"></button>
         <button type="button" class="primary" id="saveCustom" title="Save to Custom icons (shared with the team)">Save</button>
       </div>
       <div class="confirm" id="replaceRow" hidden><span id="replaceMsg"></span><button type="button" class="primary" id="replaceYes">Replace</button><button type="button" id="replaceNo">Cancel</button></div>
@@ -152,11 +156,6 @@ svg.mk-px { shape-rendering: crispEdges; flex: none; }
         <button type="button" data-tool="ellipse" data-ic="circle" aria-pressed="false" aria-label="Circle" title="Circle (O). Shift keeps it round. Option erases."></button>
         <button type="button" data-tool="fill" data-ic="fill" aria-pressed="false" aria-label="Fill" title="Fill an area (G)"></button>
         <button type="button" data-tool="lasso" data-ic="lasso" aria-pressed="false" aria-label="Lasso" title="Lasso (L). Draw around pixels, then drag them. Arrows nudge, Delete removes, Esc drops, ⌘A selects all."></button>
-        <span class="sep"></span>
-        <button type="button" id="filled" data-ic="filled" aria-pressed="false" aria-label="Filled shapes" title="Draw squares and circles filled (F)"></button>
-        <span class="sep"></span>
-        <button type="button" id="undo" data-ic="undo" aria-label="Undo" title="Undo (⌘Z)"></button>
-        <button type="button" id="redo" data-ic="redo" aria-label="Redo" title="Redo (⇧⌘Z)"></button>
       </div>
       <div class="frames">
         <div class="frame active" data-frame="open">
@@ -505,8 +504,7 @@ svg.mk-px { shape-rendering: crispEdges; flex: none; }
   // ---- toolbar ----
   function setTool(t) { tool = t; if (t !== 'lasso') sel = null; document.querySelectorAll('[data-tool]').forEach((x) => x.setAttribute('aria-pressed', String(x.dataset.tool === t))); render(); }
   document.querySelectorAll('[data-tool]').forEach((b) => b.addEventListener('click', () => setTool(b.dataset.tool)));
-  function setFilled(v) { filled = v; $('filled').setAttribute('aria-pressed', String(v)); }
-  $('filled').addEventListener('click', () => setFilled(!filled));
+
   $('undo').addEventListener('click', doUndo); $('redo').addEventListener('click', doRedo);
   $('preset').addEventListener('change', (e) => { if (!e.target.value) return; snap(); applyPreset(e.target.value); e.target.value = ''; render(); });
   $('gridSize').addEventListener('change', (e) => { const to = Number(e.target.value); if (to === N) return; sel = null; snap(); state.open = resample(state.open, N, to); state.checked = resample(state.checked, N, to); N = to; render(); });
@@ -533,7 +531,6 @@ svg.mk-px { shape-rendering: crispEdges; flex: none; }
     if (!mod && !e.altKey) {
       const t = { p: 'pen', i: 'line', u: 'rect', o: 'ellipse', g: 'fill', l: 'lasso' }[e.key.toLowerCase()];
       if (t) { setTool(t); return; }
-      if (e.key.toLowerCase() === 'f') { setFilled(!filled); return; }
     }
     if (e.key === 'Escape' && dropSel()) { render(); return; }
     if ((e.key === 'Delete' || e.key === 'Backspace') && sel) { e.preventDefault(); snap(); sel.pix = []; compose(); sel = null; render(); return; }
@@ -612,7 +609,7 @@ svg.mk-px { shape-rendering: crispEdges; flex: none; }
 
   (function boot() {
     const H = window.OF_ICONS || {};
-    document.querySelectorAll('.rail [data-ic]').forEach((b) => { const ic = H[b.dataset.ic]; if (ic) b.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true"><path${ic.eo ? ' fill-rule="evenodd"' : ''} d="${ic.d}"/></svg>`; else b.textContent = b.getAttribute('aria-label'); });
+    document.querySelectorAll('.rail [data-ic], .toolbar [data-ic]').forEach((b) => { const ic = H[b.dataset.ic]; if (ic) b.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true"><path${ic.eo ? ' fill-rule="evenodd"' : ''} d="${ic.d}"/></svg>`; else b.textContent = b.getAttribute('aria-label'); });
     const og = document.getElementById('houseOpts');
     og.innerHTML = Object.keys(H).sort().map((n) => `<option value="${n}">${n}</option>`).join('');
     const want = new URLSearchParams(location.search).get('icon');
