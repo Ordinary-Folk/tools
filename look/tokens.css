@@ -35,7 +35,7 @@
   --of-status-outstanding-bg: #FCEBEB; --of-status-outstanding-fg: #A32D2D; --of-status-outstanding-dot: #DC2626;
   --of-status-progress-bg: #FAEEDA;    --of-status-progress-fg: #854F0B;    --of-status-progress-dot: #D97706;
   --of-status-review-bg: #EEEDFE;      --of-status-review-fg: #3C3489;      --of-status-review-dot: #8B5CF6;
-  --of-status-revise-bg: #FCEDE3;      --of-status-revise-fg: #9A4A1E;      --of-status-revise-dot: #FF7342;
+  --of-status-revise-bg: #FCEDE3;      --of-status-revise-fg: #854F0B;      --of-status-revise-dot: #FF7342;
   --of-status-complete-bg: #E1F5EE;    --of-status-complete-fg: #32603C;    --of-status-complete-dot: #4D8E64;
 
   /* OF brand colours (Lorena, Explorations V3, 2026-11-06). Named here; the tokens
