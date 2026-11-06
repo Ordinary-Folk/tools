@@ -45,19 +45,19 @@
         ]
       }
     },
-    "arrow-down-box": {
-      "icon": "arrow-down-box:outline",
+    "arrow-down": {
+      "icon": "arrow-down:outline",
       "apps": {
         "tracker": [
-          "arrow-down-box"
+          "arrow-down"
         ]
       }
     },
-    "arrow-left-box": {
-      "icon": "arrow-left-box:outline",
+    "arrow-left": {
+      "icon": "arrow-left:outline",
       "apps": {
         "tracker": [
-          "arrow-left-box"
+          "arrow-left"
         ],
         "review": [
           "back"
@@ -75,22 +75,22 @@
         ]
       }
     },
-    "arrow-right-box": {
-      "icon": "arrow-right-box:outline",
+    "arrow-right": {
+      "icon": "arrow-right:outline",
       "apps": {
         "tracker": [
-          "arrow-right-box"
+          "arrow-right"
         ],
         "review": [
           "arrowRight"
         ]
       }
     },
-    "arrow-up-box": {
-      "icon": "arrow-up-box:outline",
+    "arrow-up": {
+      "icon": "arrow-up:outline",
       "apps": {
         "tracker": [
-          "arrow-up-box"
+          "arrow-up"
         ]
       }
     },
