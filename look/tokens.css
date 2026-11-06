@@ -15,19 +15,19 @@
   --of-line: #E6E8EC;         /* borders, dividers, hover and raised fills */
   --of-line-strong: #C2C7D0;  /* strong borders, control outlines, faint text (placeholders, disabled) */
 
-  /* Text (cool-tinted neutrals) */
-  --of-text: #15171B;
+  /* Text: warm ink (Lorena's palette, 2026-11-06) over cool greys */
+  --of-text: #121411;
   --of-text-2: #5C626D;
   --of-muted: #8A909B;
 
   /* Accent: actions, links, selection. Never status, never decoration. */
-  --of-accent: #2563EB;
-  --of-accent-hover: #1D4ED8;
-  --of-accent-text: #2563EB;
-  --of-accent-soft: rgba(37, 99, 235, 0.10);
+  --of-accent: #1044F2;
+  --of-accent-hover: #0B33C2;
+  --of-accent-text: #1044F2;
+  --of-accent-soft: rgba(16, 68, 242, 0.10);
 
   /* Semantic */
-  --of-success: #059669;  --of-success-text: #0F6E56;
+  --of-success: #4D8E64;  --of-success-text: #32603C;
   --of-warning: #D97706;  --of-warning-text: #854F0B;
   --of-danger: #DC2626;   --of-danger-text: #A32D2D;
 
@@ -35,8 +35,8 @@
   --of-status-outstanding-bg: #FCEBEB; --of-status-outstanding-fg: #A32D2D; --of-status-outstanding-dot: #EF4444;
   --of-status-progress-bg: #FAEEDA;    --of-status-progress-fg: #854F0B;    --of-status-progress-dot: #D97706;
   --of-status-review-bg: #EEEDFE;      --of-status-review-fg: #3C3489;      --of-status-review-dot: #8B5CF6;
-  --of-status-revise-bg: #FCEDE3;      --of-status-revise-fg: #9A4A1E;      --of-status-revise-dot: #F97316;
-  --of-status-complete-bg: #E1F5EE;    --of-status-complete-fg: #0F6E56;    --of-status-complete-dot: #059669;
+  --of-status-revise-bg: #FCEDE3;      --of-status-revise-fg: #9A4A1E;      --of-status-revise-dot: #FF7343;
+  --of-status-complete-bg: #E1F5EE;    --of-status-complete-fg: #32603C;    --of-status-complete-dot: #4D8E64;
 
   /* Tool colours: each tool's tile on the hub (from Lorena's UI icons, 2026-11).
      Identity only, never interface or status colour. Glyphs are ink on every tile;
@@ -47,9 +47,9 @@
   --of-tool-time: #B1A16E;
   --of-tool-scripts: #E1A6F7;
   --of-tool-look: #82A8AA;
-  --of-tool-admin: #121411;
-  --of-tool-ink: #121411;
-  --of-tool-ink-on-admin: #EEECE8;
+  --of-tool-admin: #121411;  /* = light --of-text */
+  --of-tool-ink: #121411;    /* = light --of-text */
+  --of-tool-ink-on-admin: #EEECE8; /* = dark --of-text */
 
   /* Type */
   --of-font-display: 'DM Sans', system-ui, sans-serif;
@@ -80,14 +80,14 @@
   --of-surface: #15171B;
   --of-line: #262A31;
   --of-line-strong: #5C626D;  /* lighter than a plain border so it still reads as faint text */
-  --of-text: #ECEEF2;
+  --of-text: #EEECE8;
   --of-text-2: #C2C7D0;
   --of-muted: #8A909B;
-  --of-accent: #2563EB;
-  --of-accent-hover: #3B82F6;
-  --of-accent-text: #60A5FA;
-  --of-accent-soft: rgba(37, 99, 235, 0.16);
-  --of-success: #059669;  --of-success-text: #34D399;
+  --of-accent: #1044F2;
+  --of-accent-hover: #2F5BFF;
+  --of-accent-text: #607CFF;
+  --of-accent-soft: rgba(16, 68, 242, 0.16);
+  --of-success: #4D8E64;  --of-success-text: #7DB892;
   --of-warning: #D97706;  --of-warning-text: #FBBF24;
   --of-danger: #DC2626;   --of-danger-text: #F87171;
   --of-shadow-popover: 0 8px 24px rgba(0, 0, 0, 0.45);

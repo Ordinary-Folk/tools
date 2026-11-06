@@ -156,7 +156,7 @@
       "note": "Jorge's bar chart on a baseline (2026-11-06)"
     },
     "check": {
-      "icon": "check",
+      "icon": "custom/check.svg",
       "apps": {
         "tracker": [
           "check"
@@ -173,7 +173,8 @@
         "admin": [
           "check"
         ]
-      }
+      },
+      "note": "Jorge's bolder check, steady 2px stroke (2026-11-06)"
     },
     "checkbox": {
       "icon": "checkbox:outline",

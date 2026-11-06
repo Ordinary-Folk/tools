@@ -81,7 +81,7 @@ canvas.grid { width: 100%; aspect-ratio: 1; display: block; touch-action: none; 
 .card .hd { display: flex; align-items: center; gap: 8px; }
 .card .av { width: 22px; height: 22px; border-radius: 50%; background: #363B44; flex: none; }
 .card b { color: #fff; font-weight: 600; }
-.card .tc { font: 11px var(--f-mono); color: #60A5FA; background: rgba(37, 99, 235, 0.16); padding: 2px 5px; }
+.card .tc { font: 11px var(--f-mono); color: #607CFF; background: rgba(16, 68, 242, 0.16); padding: 2px 5px; }
 .card .tx { margin: 8px 0 10px; line-height: 1.4; font-size: 13px; }
 .card .ft { display: flex; align-items: center; gap: 8px; }
 .card .ft .sp { flex: 1; }
@@ -202,7 +202,7 @@ svg.mk-px { shape-rendering: crispEdges; flex: none; }
       <div class="sz" id="sizes">
         <span class="hd"></span><span class="hd d">12</span><span class="hd d">24</span><span class="hd d">48</span><span class="hd">12</span><span class="hd">24</span><span class="hd">48</span>
         <label class="rl">Open <input type="color" id="colOpen" value="#8A909B"></label><span id="rowOpen" style="display:contents"></span>
-        <label class="rl r2">Checked <input type="color" id="colChecked" value="#34D399"></label><span id="rowChecked" style="display:contents"></span>
+        <label class="rl r2">Checked <input type="color" id="colChecked" value="#7DB892"></label><span id="rowChecked" style="display:contents"></span>
       </div>
       <div class="sz-foot"><button type="button" id="resetColors">Reset colours</button></div>
     </section>
@@ -297,9 +297,15 @@ svg.mk-px { shape-rendering: crispEdges; flex: none; }
     if (p === 'boldTick') { state.open = withCells(new Array(144).fill(0), BIGTICK); state.checked = state.open.slice(); }
     const H = window.OF_ICONS || {};
     if (H[p]) {
-      state.open = rasterPath(H[p].d, !!H[p].eo);
+      // Open on the grid the icon is really drawn on: 12 when every pixel is a whole
+      // 2 x 2 block, else 24 (half-pixel details, e.g. the chevrons), so nothing is rounded off.
       const pair = p === 'resolve' && H.resolved ? H.resolved : H[p];
-      state.checked = rasterPath(pair.d, !!pair.eo);
+      N = 24;
+      const o24 = rasterPath(H[p].d, !!H[p].eo), c24 = rasterPath(pair.d, !!pair.eo);
+      const fits12 = (a) => { for (let y = 0; y < 24; y += 2) for (let x = 0; x < 24; x += 2) { const v = a[y * 24 + x]; if (a[y * 24 + x + 1] !== v || a[(y + 1) * 24 + x] !== v || a[(y + 1) * 24 + x + 1] !== v) return false; } return true; };
+      if (fits12(o24) && fits12(c24)) { state.open = resample(o24, 24, 12); state.checked = resample(c24, 24, 12); N = 12; }
+      else { state.open = o24; state.checked = c24; }
+      $('gridSize').value = String(N);
       $('iconName').value = p;
     }
     if (p === 'blank') { state.open = new Array(144).fill(0); state.checked = new Array(144).fill(0); }
@@ -535,7 +541,7 @@ svg.mk-px { shape-rendering: crispEdges; flex: none; }
   })));
   $('ctxToggle').addEventListener('click', () => { ctxChecked = !ctxChecked; render(); });
   ['colOpen', 'colChecked'].forEach((id) => $(id).addEventListener('input', render));
-  $('resetColors').addEventListener('click', () => { $('colOpen').value = '#8A909B'; $('colChecked').value = '#34D399'; render(); });
+  $('resetColors').addEventListener('click', () => { $('colOpen').value = '#8A909B'; $('colChecked').value = '#7DB892'; render(); });
   $('iconName').addEventListener('change', () => { sel = null; if (!load(slotName())) save(); render(); });
   document.addEventListener('keydown', (e) => {
     if (e.target.closest('input, textarea, select')) return;
