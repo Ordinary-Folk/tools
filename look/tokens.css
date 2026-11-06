@@ -43,12 +43,12 @@
        Off-black #111411 · Off-white #F0EDE8 · Garibaldi blue #1044F2
        Maple flame #FF7342 · Kraft canvas #B1A16E · Evergreen #1F4D29
        Lilac #E1A6F7 · Sea glass #83A8AA · Lime #DBF78D · Burgundy #6C1534
-     Our lighter tints take the family name: Garibaldi light #607CFF,
+     Our lighter tints take the family name: Garibaldi light #598BFF,
      Evergreen light #4D8E64. */
   --of-brand-off-black: #111411;
   --of-brand-off-white: #F0EDE8;
   --of-brand-garibaldi: #1044F2;
-  --of-brand-garibaldi-light: #607CFF;
+  --of-brand-garibaldi-light: #598BFF;
   --of-brand-maple: #FF7342;
   --of-brand-kraft: #B1A16E;
   --of-brand-evergreen: #1F4D29;
@@ -105,7 +105,7 @@
   --of-muted: #8A909B;
   --of-accent: #1044F2;
   --of-accent-hover: #2F5BFF;
-  --of-accent-text: #607CFF;
+  --of-accent-text: #598BFF;
   --of-accent-soft: rgba(16, 68, 242, 0.16);
   --of-success: #4D8E64;  --of-success-text: #4D8E64;
   --of-warning: #D97706;  --of-warning-text: #FBBF24;
