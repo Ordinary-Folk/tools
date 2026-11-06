@@ -72,3 +72,37 @@
   opacity: 1;
   cursor: pointer;
 }
+
+/* House range slider: a flat 12px pixel bar, sharp corners, two blues. The filled part is
+   Garibaldi light, the square thumb is Garibaldi blue, the rest is line grey. Pure CSS: the
+   thumb's left shadow paints the fill (clipped by overflow), Firefox uses ::-moz-range-progress.
+   Override per app with --px-range-track / --px-range-fill / --px-range-thumb (e.g. dark). */
+:where(input[type="range"]) {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 12px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: var(--px-range-track, #E6E8EC);
+  overflow: hidden;
+  cursor: pointer;
+  vertical-align: middle;
+}
+:where(input[type="range"])::-webkit-slider-runnable-track { height: 12px; background: transparent; border: 0; }
+:where(input[type="range"])::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  border: 0;
+  border-radius: 0;
+  background: var(--px-range-thumb, #1044F2);
+  box-shadow: -100vw 0 0 100vw var(--px-range-fill, #607CFF);
+}
+:where(input[type="range"])::-moz-range-track { height: 12px; background: var(--px-range-track, #E6E8EC); border: 0; border-radius: 0; }
+:where(input[type="range"])::-moz-range-progress { height: 12px; background: var(--px-range-fill, #607CFF); }
+:where(input[type="range"])::-moz-range-thumb { width: 12px; height: 12px; border: 0; border-radius: 0; background: var(--px-range-thumb, #1044F2); }
+:where(input[type="range"]):focus-visible { outline: 2px solid #1044F2; outline-offset: 2px; }
+:where(input[type="range"]):disabled { opacity: 0.5; cursor: default; }
