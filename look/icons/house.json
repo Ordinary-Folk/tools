@@ -147,12 +147,13 @@
       }
     },
     "chart-bar": {
-      "icon": "chart-bar",
+      "icon": "custom/chart-bar.svg",
       "apps": {
         "tracker": [
           "chart-bar"
         ]
-      }
+      },
+      "note": "Jorge's bar chart on a baseline (2026-11-06)"
     },
     "check": {
       "icon": "check",
