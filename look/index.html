@@ -92,7 +92,7 @@ table.adopt { width: 100%; border-collapse: collapse; font-size: 13px; }
     <p class="muted" style="margin-top:-6px">One set of names, two themes. Light for the Tracker, Schedule, Time Tracker and this hub; dark for OF Review. Greys run lightest to darkest: <b>line</b> for borders and hover fills, <b>line strong</b> for strong borders and faint text, <b>muted</b> for metadata, <b>text 2</b> for body copy, <b>text</b> for headings and key values.</p>
     <h3 style="margin-top:4px">Palette</h3>
     <p class="muted" style="margin:0 0 12px;font-size:13px">Every colour in the OF tools, grouped by colour, lightest to darkest. Under each: the tokens and tools that use it (<i>d</i> = dark theme). Built from <code>tokens.css</code>, so it never drifts.</p>
-    <div class="fams-key"><em>OF</em> Ordinary Folk brand colour, named in Lorena's Explorations V3 (outlined swatch). Lighter tints share the family name.</div>
+    <div class="fams-key"><em>OF</em> Ordinary Folk brand colour, named after Lorena's Explorations V3 (outlined swatch).</div>
     <div class="fams" data-families></div>
     <h3 style="margin-top:24px">In the interface</h3>
     <div class="grid2">
@@ -171,7 +171,7 @@ table.adopt { width: 100%; border-collapse: collapse; font-size: 13px; }
   document.getElementById('iconCount').textContent = Object.keys(I).length;
   // Swatch helpers: hex printed inside the box (ink or off-white for contrast), click copies it.
   const rootCS = getComputedStyle(document.documentElement);
-  const BRANDS = [['off-black', 'Off-black', 1], ['off-white', 'Off-white', 1], ['garibaldi', 'Garibaldi blue', 1], ['garibaldi-light', 'Garibaldi light', 0], ['maple', 'Maple flame', 1], ['kraft', 'Kraft canvas', 1], ['evergreen', 'Evergreen', 1], ['evergreen-light', 'Evergreen light', 0], ['lilac', 'Lilac', 1], ['sea-glass', 'Sea glass', 1], ['lime', 'Lime', 1], ['burgundy', 'Burgundy', 1]];
+  const BRANDS = [['off-black', 'Off-black', 1], ['off-white', 'Off-white', 1], ['garibaldi', 'Garibaldi blue', 1], ['garibaldi-light', 'Garibaldi light', 1], ['maple', 'Maple flame', 1], ['kraft', 'Kraft canvas', 1], ['evergreen', 'Evergreen', 1], ['evergreen-light', 'Evergreen light', 1], ['lilac', 'Lilac', 1], ['sea-glass', 'Sea glass', 1], ['lime', 'Lime', 1], ['burgundy', 'Burgundy', 1]];
   const BRANDMAP = new Map(BRANDS.map(([k, n, core]) => [rootCS.getPropertyValue('--of-brand-' + k).trim().toUpperCase(), { name: n, core: !!core }]));
   function brandOf(h) { return BRANDMAP.get(String(h).toUpperCase()) || null; }
   function inkFor(h) { const [r, g, b] = [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16) / 255).map((c) => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4)); return 0.2126 * r + 0.7152 * g + 0.0722 * b > 0.25 ? '#111411' : '#F0EDE8'; }
@@ -216,7 +216,7 @@ table.adopt { width: 100%; border-collapse: collapse; font-size: 13px; }
     const groups = FAMS.map(([n]) => [n, []]);
     const NEUTRAL = /^(d )?(bg|surface|line|line-strong|text|text-2|muted)$|^tile (admin|ink)|^brand-off-/;
     const BRAND = { 'brand-off-black': 'Off-black', 'brand-off-white': 'Off-white', 'brand-garibaldi': 'Garibaldi blue', 'brand-garibaldi-light': 'Garibaldi light', 'brand-maple': 'Maple flame', 'brand-kraft': 'Kraft canvas', 'brand-evergreen': 'Evergreen', 'brand-evergreen-light': 'Evergreen light', 'brand-lilac': 'Lilac', 'brand-sea-glass': 'Sea glass', 'brand-lime': 'Lime', 'brand-burgundy': 'Burgundy' };
-    const TINTS = new Set(['brand-garibaldi-light', 'brand-evergreen-light']);
+    const TINTS = new Set();
     for (const [h, list] of uses) { const [H, S, L] = hsl(h); const k = list.some((u) => NEUTRAL.test(u)) ? 0 : 1 + FAMS.slice(1).findIndex(([, t]) => t(H, S, L)); groups[k][1].push({ h, list, L }); }
     document.querySelector('[data-families]').innerHTML = groups.filter(([, a]) => a.length).map(([n, a]) => `<div class="fam"><b>${n}</b><div class="row">${a.sort((x, y) => y.L - x.L).map((c) => (() => {
       const b = c.list.find((u) => BRAND[u]), core = b && !TINTS.has(b), rest = [...new Set(c.list.filter((u) => !BRAND[u]))];
