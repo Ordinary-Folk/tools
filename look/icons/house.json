@@ -1477,12 +1477,13 @@
       }
     },
     "video": {
-      "icon": "video",
+      "icon": "custom/video.svg",
       "apps": {
         "schedule": [
           "meeting"
         ]
-      }
+      },
+      "note": "Jorge's video camera (2026-11-06)"
     },
     "view": {
       "icon": "eye:outline",

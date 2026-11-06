@@ -39,6 +39,7 @@
 .ccard .art .sep { width: 1px; align-self: stretch; background: var(--border); }
 .ccard .nm { font: 13px var(--mono); word-break: break-word; }
 .ccard .meta { font-size: 12px; color: var(--muted); }
+.ccard .applied { align-self: flex-start; font-size: 11px; font-weight: 600; color: var(--success); background: rgba(77, 142, 100, 0.12); padding: 2px 6px; text-decoration: none; }
 .ccard .acts button, .ccard .acts .btn { font-size: 12px; padding: 4px 8px; }
 .ccard .ask { font-size: 12px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
 button.danger { background: #DC2626; border-color: #DC2626; color: #fff; }
@@ -125,6 +126,16 @@ button.danger { background: #DC2626; border-color: #DC2626; color: #fff; }
 
   // ---- Custom icons (saved from the maker; shared on the hub) ----
   let CUSTOM = [], asking = '';
+  // A custom icon is "in the house" when its pixels match a house icon (an admin applied it).
+  const pix = (d) => { const c = document.createElement('canvas').getContext('2d'); let p; try { p = new Path2D(d); } catch { return ''; } let s = ''; for (let y = 0; y < 24; y++) for (let x = 0; x < 24; x++) s += c.isPointInPath(p, x + .5, y + .5) ? 1 : 0; return s; };
+  let HOUSEPIX = null;
+  // Either frame can match; prefer a house icon the apps actually use.
+  const inHouse = (it) => {
+    if (!HOUSEPIX) { HOUSEPIX = new Map(); names.forEach((n) => { const k = pix(I[n].d); HOUSEPIX.set(k, [...(HOUSEPIX.get(k) || []), n]); }); }
+    const hits = [it.open, it.checked].filter(Boolean).flatMap((d) => HOUSEPIX.get(pix(d)) || []);
+    const used = hits.find((n) => Object.keys(I[n].apps || {}).length);
+    return used ? { name: used, used: true } : hits.length ? { name: hits[0], used: false } : null;
+  };
   const csvg = (d, s) => `<svg class="px" width="${s}" height="${s}" viewBox="0 0 24 24" aria-hidden="true"><path d="${esc(d)}"/></svg>`;
   const cfile = (d) => `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" shape-rendering="crispEdges"><path d="${d}"/></svg>`;
   const when = (iso) => { try { return new Date(iso).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }); } catch { return ''; } };
@@ -134,9 +145,10 @@ button.danger { background: #DC2626; border-color: #DC2626; color: #fff; }
     g.innerHTML = CUSTOM.map((i) => `<div class="ccard" data-name="${esc(i.name)}">
       <div class="art">${csvg(i.open, 24)}${csvg(i.open, 48)}${i.checked ? `<span class="sep"></span>${csvg(i.checked, 24)}` : ''}</div>
       <div><div class="nm">${esc(i.name)}</div><div class="meta">${esc(String(i.by).split('@')[0])} · ${when(i.at)} · ${i.grid} × ${i.grid}</div></div>
+      ${(() => { const h = inHouse(i); return h ? `<a class="applied" href="?icon=${encodeURIComponent(h.name)}" title="An admin added it to the house icons as @${esc(h.name)}">${h.used ? 'In the apps' : 'In the house'} as ${esc(h.name)}</a>` : ''; })()}
       ${asking === i.name
         ? `<div class="ask">Delete ${esc(i.name)} for everyone? <button type="button" class="danger" data-c="del-yes">Delete</button><button type="button" data-c="del-no">Cancel</button></div>`
-        : `<div class="acts"><button type="button" data-c="copy">Copy SVG</button>${i.checked ? '<button type="button" data-c="copy-checked">Copy checked</button>' : ''}<button type="button" data-c="download">Download</button><a class="btn" href="/look/maker/?custom=${encodeURIComponent(i.name)}">Edit</a><button type="button" data-c="del">Delete</button></div>`}
+        : `<div class="acts"><button type="button" data-c="copy" title="${i.checked ? 'Open and Checked SVGs, labelled' : 'The SVG'}">${i.checked ? 'Copy both' : 'Copy SVG'}</button><button type="button" data-c="download">Download</button><a class="btn" href="/look/maker/?custom=${encodeURIComponent(i.name)}">Edit</a><button type="button" data-c="del">Delete</button></div>`}
     </div>`).join('');
   }
   async function loadCustom() {
@@ -151,7 +163,11 @@ button.danger { background: #DC2626; border-color: #DC2626; color: #fff; }
     const b = e.target.closest('[data-c]'); if (!b) return;
     const name = b.closest('.ccard').dataset.name, it = CUSTOM.find((i) => i.name === name); if (!it) return;
     const act = b.dataset.c;
-    if (act === 'copy' || act === 'copy-checked') { try { await navigator.clipboard.writeText(cfile(act === 'copy' ? it.open : it.checked)); toast('Copied'); } catch { toast('Copy blocked by the browser'); } return; }
+    if (act === 'copy') {
+      const text = it.checked ? `<!-- ${it.name} (open) -->\n${cfile(it.open)}\n<!-- ${it.name} (checked) -->\n${cfile(it.checked)}\n` : cfile(it.open);
+      try { await navigator.clipboard.writeText(text); toast(it.checked ? 'Both copied' : 'Copied'); } catch { toast('Copy blocked by the browser'); }
+      return;
+    }
     if (act === 'download') {
       for (const [d, suffix] of [[it.open, ''], [it.checked, '-checked']]) {
         if (!d) continue;
