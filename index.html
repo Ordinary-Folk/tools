@@ -152,7 +152,7 @@ h1 {
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .card .path { font-family: var(--mono); font-size: 11px; color: var(--faint); }
-.card .chev { width: 14px; height: 14px; flex: none; display: block; stroke: var(--faint); }
+.card .chev { width: 12px; height: 12px; flex: none; display: block; fill: var(--faint); }
 .tag {
   font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em;
   color: var(--muted);
@@ -184,9 +184,11 @@ h1 {
   .tile { width: 40px; height: 40px; }
   .card .desc { white-space: normal; }
   .card .path { display: none; }
-  .card .chev { width: 16px; height: 16px; }
   .footnote-more { display: none; }
 }
+
+/* House pixel icons (tools.ordinary.co/look): smooth on 3x phones so line weights stay even. */
+@media (min-resolution: 2.5dppx) { svg[shape-rendering="crispEdges"] { shape-rendering: geometricPrecision; } }
 </style>
 </head>
 <body>
@@ -224,7 +226,7 @@ h1 {
           <span class="desc">Frame-accurate video review and comments</span>
         </span>
         <span class="path">/review</span>
-        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+        <svg class="chev" viewBox="0 0 24 24" shape-rendering="crispEdges" aria-hidden="true"><path d="M8 5H10V7H8ZM10 7H12V9H10ZM12 9H14V11H12ZM14 11H16V13H14ZM14 13V15H12V13ZM12 15V17H10V15ZM10 17V19H8V17Z"/></svg>
       </a>
 
       <a class="card" href="/project-tracker/">
@@ -237,7 +239,7 @@ h1 {
           <span class="desc">Shot tracking through design and animation</span>
         </span>
         <span class="path">/project-tracker</span>
-        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+        <svg class="chev" viewBox="0 0 24 24" shape-rendering="crispEdges" aria-hidden="true"><path d="M8 5H10V7H8ZM10 7H12V9H10ZM12 9H14V11H12ZM14 11H16V13H14ZM14 13V15H12V13ZM12 15V17H10V15ZM10 17V19H8V17Z"/></svg>
       </a>
 
       <a class="card" href="/schedule/">
@@ -250,7 +252,7 @@ h1 {
           <span class="desc">Production schedule</span>
         </span>
         <span class="path">/schedule</span>
-        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+        <svg class="chev" viewBox="0 0 24 24" shape-rendering="crispEdges" aria-hidden="true"><path d="M8 5H10V7H8ZM10 7H12V9H10ZM12 9H14V11H12ZM14 11H16V13H14ZM14 13V15H12V13ZM12 15V17H10V15ZM10 17V19H8V17Z"/></svg>
       </a>
 
       <a class="card" href="/time-tracker/">
@@ -263,7 +265,7 @@ h1 {
           <span class="desc">Track time across projects</span>
         </span>
         <span class="path">/time-tracker</span>
-        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+        <svg class="chev" viewBox="0 0 24 24" shape-rendering="crispEdges" aria-hidden="true"><path d="M8 5H10V7H8ZM10 7H12V9H10ZM12 9H14V11H12ZM14 11H16V13H14ZM14 13V15H12V13ZM12 15V17H10V15ZM10 17V19H8V17Z"/></svg>
       </a>
 
       <a class="card" href="/scripts/">
@@ -276,7 +278,7 @@ h1 {
           <span class="desc">AE scripts and OF-made tools, newest versions and where they live</span>
         </span>
         <span class="path">/scripts</span>
-        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+        <svg class="chev" viewBox="0 0 24 24" shape-rendering="crispEdges" aria-hidden="true"><path d="M8 5H10V7H8ZM10 7H12V9H10ZM12 9H14V11H12ZM14 11H16V13H14ZM14 13V15H12V13ZM12 15V17H10V15ZM10 17V19H8V17Z"/></svg>
       </a>
 
       <a class="card" href="/look/">
@@ -289,7 +291,7 @@ h1 {
           <span class="desc">Design principles, house icons and the icon maker every OF tool uses</span>
         </span>
         <span class="path">/look</span>
-        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+        <svg class="chev" viewBox="0 0 24 24" shape-rendering="crispEdges" aria-hidden="true"><path d="M8 5H10V7H8ZM10 7H12V9H10ZM12 9H14V11H12ZM14 11H16V13H14ZM14 13V15H12V13ZM12 15V17H10V15ZM10 17V19H8V17Z"/></svg>
       </a>
 
       <!-- Admin: hidden by default. The hub worker shows it (or drops it) from
@@ -309,7 +311,7 @@ h1 {
           <span class="desc">Studio master database</span>
         </span>
         <span class="path">/admin</span>
-        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+        <svg class="chev" viewBox="0 0 24 24" shape-rendering="crispEdges" aria-hidden="true"><path d="M8 5H10V7H8ZM10 7H12V9H10ZM12 9H14V11H12ZM14 11H16V13H14ZM14 13V15H12V13ZM12 15V17H10V15ZM10 17V19H8V17Z"/></svg>
       </a>
     </nav>
 

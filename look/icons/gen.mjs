@@ -27,6 +27,7 @@
 // Output in <dir>: paths.ts (generated path data), pixelIconDom.ts (plain DOM helper),
 // PixelIcon.tsx (React), pixel-icons.css. Only the listed icons are written.
 
+import { outline } from './outline.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -47,6 +48,9 @@ const RUNTIME = ['pixelIconDom.ts', 'PixelIcon.tsx', 'pixel-icons.css'];
 
 function fail(msg) { console.error(`pixel-icons: ${msg}`); process.exit(1); }
 
+/** <path> matches -> [{ d, evenOdd }] for outline(): every icon becomes one seam-free outline, same pixels. */
+function parts(paths) { return paths.map(m => ({ d: (m[1].match(/\sd="([^"]+)"/) || [])[1] || '', evenOdd: /fill-rule="evenodd"/.test(m[1]) })); }
+
 function fileFor(name, style) {
   return path.join(SOURCE, style === 'base' ? `${name}.svg` : `${name}-${style}.svg`);
 }
@@ -60,8 +64,7 @@ function readCustom(spec, appRoot) {
   if (!/viewBox="0 0 24 24"/.test(svg)) fail(`${spec} is not on the 24px grid (viewBox 0 0 24 24)`);
   const paths = [...svg.matchAll(/<path\b([^>]*)\/?>/g)];
   if (!paths.length) fail(`${spec} has no <path>`);
-  const d = paths.map(m => (m[1].match(/\sd="([^"]+)"/) || [])[1]).join('');
-  return { name: path.basename(spec, '.svg'), style: 'custom', d, evenOdd: paths.some(m => /fill-rule="evenodd"/.test(m[1])) };
+  return { name: path.basename(spec, '.svg'), style: 'custom', d: outline(parts(paths)), evenOdd: false };
 }
 
 export function readIcon(spec, appRoot) {
@@ -83,9 +86,7 @@ export function readIcon(spec, appRoot) {
     if (!/viewBox="0 0 24 24"/.test(svg)) fail(`${path.basename(f)} is not on the 24px grid`);
     const paths = [...svg.matchAll(/<path\b([^>]*)\/?>/g)];
     if (!paths.length) fail(`${path.basename(f)} has no <path>`);
-    const d = paths.map(m => (m[1].match(/\sd="([^"]+)"/) || [])[1]).join('');
-    const evenOdd = paths.some(m => /fill-rule="evenodd"/.test(m[1]));
-    return { name, style, d, evenOdd };
+    return { name, style, d: outline(parts(paths)), evenOdd: false };
   }
   if (!fs.existsSync(SOURCE)) fail(`icon source not found: ${SOURCE} (set PIXELARTICONS_DIR)`);
   fail(`no icon "${spec}" (try: node gen-pixel-icons.mjs --find ${name.split('-')[0]})`);

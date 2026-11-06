@@ -131,7 +131,7 @@ a.card:hover { background: var(--card-hover); }
 .badge.off { border-color: var(--border); color: var(--faint); }
 .desc { font-size: 12px; color: var(--muted); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .when { font-family: var(--mono); font-size: 11px; color: var(--faint); white-space: nowrap; }
-.chev { width: 14px; height: 14px; flex: none; display: block; stroke: var(--faint); margin-top: 2px; }
+.chev { width: 12px; height: 12px; flex: none; display: block; fill: var(--faint); margin-top: 3px; }
 .also { font-size: 12px; color: var(--muted); margin: 0; }
 .also code { font-family: var(--mono); font-size: 11px; color: var(--text); }
 .also .v { font-family: var(--mono); }
@@ -139,7 +139,7 @@ a.card:hover { background: var(--card-hover); }
 /* detail view: one tool, its own URL */
 .back { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--muted); text-decoration: none; width: fit-content; }
 .back:hover { color: var(--text); }
-.back svg { width: 14px; height: 14px; stroke: currentColor; }
+.back svg { width: 12px; height: 12px; fill: currentColor; }
 .detail-head { display: flex; align-items: flex-start; gap: 16px; }
 .detail-head .tile { width: 56px; height: 56px; }
 .detail-head .text { gap: 4px; }
@@ -220,7 +220,6 @@ a.card:focus-visible, .back:focus-visible, .btn:focus-visible, .account a:focus-
   .tile { width: 40px; height: 40px; }
   .desc { white-space: normal; }
   .grid { grid-template-columns: 1fr; }
-  .chev { width: 16px; height: 16px; }
   .detail-head { flex-wrap: wrap; }
   .detail-head .tile { width: 44px; height: 44px; }
   .detail-head h1 { font-size: 22px; }
@@ -231,6 +230,9 @@ a.card:focus-visible, .back:focus-visible, .btn:focus-visible, .account a:focus-
   .shelf { flex-direction: column; align-items: flex-start; gap: 8px; }
   .shelf code { white-space: normal; word-break: break-all; width: 100%; }
 }
+.ia { width: 12px; height: 12px; fill: currentColor; display: inline-block; vertical-align: -1px; }
+/* House pixel icons (tools.ordinary.co/look): smooth on 3x phones so line weights stay even. */
+@media (min-resolution: 2.5dppx) { svg[shape-rendering="crispEdges"] { shape-rendering: geometricPrecision; } }
 </style>
 </head>
 <body>
@@ -437,7 +439,7 @@ a.card:focus-visible, .back:focus-visible, .btn:focus-visible, .account a:focus-
     return '<a class="card" href="' + BASE + esc(tool.id) + '" data-tool="' + esc(tool.id) + '">' +
       '<span class="tile">' + tileSvg(tool) + '</span>' +
       '<span class="text"><span class="meta-row">' + (pill || '<span class="pill faint">no build</span>') + when + badgeFor(m) + '</span><h3>' + esc(tool.name) + '</h3><span class="desc">' + esc(tool.blurb) + '</span></span>' +
-      '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></a>';
+      '<svg class="chev" viewBox="0 0 24 24" shape-rendering="crispEdges" aria-hidden="true"><path d="M8 5H10V7H8ZM10 7H12V9H10ZM12 9H14V11H12ZM14 11H16V13H14ZM14 13V15H12V13ZM12 15V17H10V15ZM10 17V19H8V17Z"/></svg></a>';
   }
   const cap = (t) => { t = String(t || '').trim(); if (!t) return t; t = t.charAt(0).toUpperCase() + t.slice(1); return /[.!?)]$/.test(t) ? t : t + '.'; };
   function fileBlock(rel, name, label, version, mtime, kind, cls) {
@@ -470,7 +472,7 @@ a.card:focus-visible, .back:focus-visible, .btn:focus-visible, .account a:focus-
     let install = '';
     if (tool.kbar && f.entry) {
       install += '<div class="kb"><span class="mini">' + tileSvg(tool) + '</span><div class="lines"><span>KBar button <b>' + esc(tool.kbar.button) + '</b>' + (tool.kbar.note ? ' (' + esc(tool.kbar.note) + ')' : '') + '</span>' +
-        '<span>Run JSX File → <code>' + esc(f.entry) + '</code></span>' +
+        '<span>Run JSX File <svg class="ia" viewBox="0 0 24 24" shape-rendering="crispEdges" aria-hidden="true"><path d="M12 4H14V6H16V8H18V10H20V14H18V16H16V18H14V20H12V14H4V10H12Z"/></svg> <code>' + esc(f.entry) + '</code></span>' +
         '<span class="dl">Icon <a href="/scripts/icons/' + tool.id + '.png" download>PNG</a><a href="/scripts/icons/' + tool.id + '.svg" download>SVG</a><a href="/scripts/icons/' + tool.id + '-mono.png" download>mono</a></span></div></div>';
       install += '<p class="alt">Or File &gt; Scripts &gt; Run Script File when you need it once.' + (tool.panel ? ' For a dockable panel, copy the loader into <code>Scripts/ScriptUI Panels</code> and restart AE.' : '') + '</p>';
     }
@@ -481,7 +483,7 @@ a.card:focus-visible, .back:focus-visible, .btn:focus-visible, .account a:focus-
     const whatsnew = cl ? '<div class="panel"><h4>What\'s new</h4><div class="whatsnew-head"><span class="v">v' + esc(cl.version) + (cl.part ? ' (' + esc(cl.part) + ')' : '') + '</span>' + (cl.date ? '<span class="d">' + esc(fmtDate(cl.date)) + '</span>' : '') + '</div>' +
       (cl.notes && cl.notes.length ? '<ul class="notes">' + cl.notes.slice(0, 4).map((n) => '<li>' + esc(cap(n)) + '</li>').join('') + '</ul>' : '') + '</div>' : '';
     const meta = '<p class="meta"><span>' + esc(tool.app) + '</span><span>' + esc(tool.platforms) + '</span>' + (m.updated ? '<span>updated ' + esc(fmtDate(m.updated)) + '</span>' : '') + '</p>';
-    return '<a class="back" href="' + BASE + '" data-back><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>Scripts</a>' +
+    return '<a class="back" href="' + BASE + '" data-back><svg viewBox="0 0 24 24" shape-rendering="crispEdges" aria-hidden="true"><path d="M10 4H12V10H20V14H12V20H10V18H8V16H6V14H4V10H6V8H8V6H10Z"/></svg>Scripts</a>' +
       '<div class="detail-head"><span class="tile">' + tileSvg(tool) + '</span><div class="text"><h1>' + esc(tool.name) + '</h1><p class="lead">' + esc(tool.blurb) + '</p><div class="sub">' + pill + badgeFor(m) + meta + '</div></div>' +
       '<span class="acts"><button class="btn" data-copy-link>Copy link</button></span></div>' +
       '<div class="detail-grid"><div class="col">' +

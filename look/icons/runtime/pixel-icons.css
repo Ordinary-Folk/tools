@@ -17,3 +17,9 @@
   height: 24px;
   vertical-align: -5px;
 }
+
+/* On 3x phones one icon unit is 1.5 device pixels, so crisp edges come out uneven.
+   Paths are single traced outlines (no internal seams), so smooth edges stay clean there. */
+@media (min-resolution: 2.5dppx) {
+  .px-icon { shape-rendering: geometricPrecision; }
+}
