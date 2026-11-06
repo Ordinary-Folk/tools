@@ -21,15 +21,19 @@ body { background: var(--bg); color: var(--ink); font: 14px/1.5 var(--f-body); }
 .mk-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 20px; margin-bottom: 18px; }
 h1 { font: 700 30px/1.1 var(--f-display); letter-spacing: -.01em; margin: 0; }
 .lede { color: var(--muted); margin: 6px 0 0; max-width: 62ch; }
-.name { display: flex; align-items: center; gap: 8px; }
-.name input { font: 500 14px var(--f-mono); color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 3px; padding: 6px 10px; width: 200px; }
-.layout { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+.toolbar input.nm { font: 500 13px var(--f-mono); flex: 1 1 110px; min-width: 0; }
+#preset { width: 136px; }
+#gridSize { width: 108px; padding-right: 28px; }
+@media (max-width: 560px) { .toolbar input.nm { flex-basis: 100%; } .toolbar .sep { display: none; } #preset { flex: 1; } }
+.grow { flex: 1; }
+.layout { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 20px; align-items: stretch; }
 @media (max-width: 900px) { .layout { grid-template-columns: minmax(0, 1fr); } }
-.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 16px; min-width: 0; }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 0; padding: 20px; min-width: 0; }
 .panel h2 { font: 600 11px var(--f-body); text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 0 0 12px; }
-.toolbar { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 14px; }
-.sep { width: 1px; height: 22px; background: var(--line); margin: 0 4px; }
-button, select { font: 500 13px var(--f-body); color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 3px; padding: 5px 10px; cursor: pointer; }
+.toolbar { display: flex; flex-wrap: wrap; gap: 6px 4px; align-items: center; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--line); }
+.sep { width: 1px; height: 20px; background: var(--line); margin: 0 2px; }
+button, select, .toolbar input { font: 500 13px var(--f-body); color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 0; height: 32px; padding: 0 10px; cursor: pointer; line-height: 1; }
+.toolbar input { cursor: text; }
 button:hover { border-color: var(--muted); }
 button[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
 button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
@@ -38,14 +42,16 @@ select { padding-right: 28px; }
 .frames { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
 @media (max-width: 560px) { .frames { grid-template-columns: minmax(0, 1fr); } }
 .frame { min-width: 0; }
-.frame-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+.frame-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; height: 28px; margin-bottom: 8px; flex-wrap: nowrap; }
 .frame-head b { font-weight: 600; }
-.frame-head .acts { display: flex; gap: 4px; flex-wrap: wrap; }
-.frame-head .acts button { font-size: 12px; padding: 3px 8px; }
+.frame-head .acts { display: flex; gap: 4px; flex-wrap: nowrap; }
+.frame-head .acts button { font-size: 12px; height: 26px; padding: 0 8px; }
 .frame.active canvas { outline: 2px solid var(--accent); outline-offset: 2px; }
 canvas.grid { width: 100%; aspect-ratio: 1; display: block; touch-action: none; cursor: crosshair; image-rendering: pixelated; background: var(--surface); border: 1px solid var(--line); }
 .hint { color: var(--muted); font-size: 12px; margin-top: 10px; }
-.previews { display: grid; gap: 14px; }
+.previews { display: flex; flex-direction: column; gap: 12px; }
+.previews h2 { margin: 0; }
+.previews h2 + * { margin-bottom: 8px; }
 .card { background: #15171B; border: 1px solid #262A31; padding: 12px 14px 8px; color: #C2C7D0; }
 .card .hd { display: flex; align-items: center; gap: 8px; }
 .card .av { width: 22px; height: 22px; border-radius: 50%; background: #363B44; flex: none; }
@@ -56,11 +62,17 @@ canvas.grid { width: 100%; aspect-ratio: 1; display: block; touch-action: none; 
 .card .ft .sp { flex: 1; }
 .card .state { font-size: 10px; color: #5C626D; }
 .card button.ic { background: none; border: 0; padding: 4px; display: inline-flex; color: inherit; cursor: pointer; }
-.sizes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-.swatch { padding: 14px; display: flex; align-items: center; gap: 18px; flex-wrap: wrap; border: 1px solid var(--line); }
-.swatch.dark { background: #15171B; }
-.swatch.light { background: #ffffff; }
-.swatch small { font: 10px var(--f-mono); color: #8A909B; width: 100%; }
+.sz { display: grid; grid-template-columns: auto repeat(6, minmax(0, 1fr)); border: 1px solid var(--line); }
+.sz > *, .sz > [style] > * { display: flex; align-items: center; justify-content: center; min-height: 64px; padding: 6px; }
+.sz .hd { min-height: 0; padding: 6px; font: 11px var(--f-mono); color: var(--muted); border-bottom: 1px solid var(--line); }
+.sz .hd.d { background: #15171B; color: #8A909B; border-color: #262A31; }
+.sz .d { background: #15171B; }
+.sz .l { background: #FFFFFF; }
+.sz .rl { justify-content: flex-start; gap: 8px; padding: 6px 12px; font-size: 13px; color: var(--muted); border-right: 1px solid var(--line); }
+.sz .rl input[type="color"] { width: 22px; height: 22px; border: 1px solid var(--line); padding: 0; background: none; cursor: pointer; }
+.sz .r2 { border-top: 1px solid var(--line); }
+.sz .r2.d { border-color: #262A31; }
+.sz-foot { display: flex; justify-content: flex-end; }
 .colors { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; font-size: 13px; color: var(--muted); }
 .colors label { display: flex; gap: 6px; align-items: center; }
 .colors input[type="color"] { width: 32px; height: 24px; border: 1px solid var(--line); padding: 0; background: none; cursor: pointer; }
@@ -91,12 +103,13 @@ svg.mk-px { shape-rendering: crispEdges; flex: none; }
       <h1>Icon maker</h1>
       <p class="lede">Draw on the pixel grid, see it at real size and in a comment card, then copy the SVG. Two frames: <b>Open</b> and <b>Checked</b>, for icons that change when you click them. Grid matches Pixelarticons (12 pixels on a 24 viewBox). Start from any <a href="/look/icons/">house icon</a>; each icon name keeps its own saved work in this browser.</p>
     </div>
-    <label class="name">Name <input id="iconName" value="resolve" spellcheck="false" aria-label="Icon name"></label>
   </div>
 
   <div class="layout">
     <section class="panel" aria-label="Editor">
       <div class="toolbar" role="toolbar" aria-label="Tools">
+        <input id="iconName" class="nm" value="resolve" spellcheck="false" aria-label="Icon name" title="Icon name (each name saves separately)">
+        <span class="sep"></span>
         <button type="button" data-tool="pen" aria-pressed="true" title="Click or drag to paint; starting on a filled pixel erases">Pencil</button>
         <button type="button" data-tool="fill" aria-pressed="false" title="Fill an area">Fill</button>
         <span class="sep"></span>
@@ -132,8 +145,8 @@ svg.mk-px { shape-rendering: crispEdges; flex: none; }
         <div class="frame" data-frame="checked">
           <div class="frame-head"><b>Checked</b>
             <span class="acts">
-              <button type="button" data-act="copy" title="Copy the Open frame here">Same as Open</button>
-              <button type="button" data-act="solid" title="Fill the inside of the Open shape and cut its marks out">Solid version</button>
+              <button type="button" data-act="copy" title="Copy the Open frame here">Copy Open</button>
+              <button type="button" data-act="solid" title="Fill the inside of the Open shape and cut its marks out">Solid</button>
               <button type="button" data-act="clear">Clear</button>
             </span>
           </div>
@@ -151,15 +164,12 @@ svg.mk-px { shape-rendering: crispEdges; flex: none; }
         <div class="ft"><span id="ctxThumb"></span><span class="sp"></span><span class="state" id="ctxState">Open · click to check</span><button type="button" class="ic" id="ctxToggle" aria-label="Toggle checked"></button></div>
       </div>
       <h2>Sizes</h2>
-      <div class="sizes">
-        <div class="swatch dark" id="swDark"></div>
-        <div class="swatch light" id="swLight"></div>
+      <div class="sz" id="sizes">
+        <span class="hd"></span><span class="hd d">12</span><span class="hd d">24</span><span class="hd d">48</span><span class="hd">12</span><span class="hd">24</span><span class="hd">48</span>
+        <label class="rl">Open <input type="color" id="colOpen" value="#8A909B"></label><span id="rowOpen" style="display:contents"></span>
+        <label class="rl r2">Checked <input type="color" id="colChecked" value="#34D399"></label><span id="rowChecked" style="display:contents"></span>
       </div>
-      <div class="colors">
-        <label>Open <input type="color" id="colOpen" value="#8A909B"></label>
-        <label>Checked <input type="color" id="colChecked" value="#34D399"></label>
-        <button type="button" id="resetColors">Reset</button>
-      </div>
+      <div class="sz-foot"><button type="button" id="resetColors">Reset colours</button></div>
     </section>
   </div>
 
@@ -328,9 +338,10 @@ svg.mk-px { shape-rendering: crispEdges; flex: none; }
     $('ctxThumb').innerHTML = svgEl(THUMB, 12, '#8A909B');
     $('ctxToggle').innerHTML = svgEl(ctxChecked ? state.checked : state.open, 12, ctxChecked ? cc : co);
     $('ctxState').textContent = ctxChecked ? 'Checked · click to open' : 'Open · click to check';
-    const sizes = (bgLabel, colO) => [12, 24, 48].map((s) => svgEl(state.open, s, colO)).join('') + [12, 24, 48].map((s) => svgEl(state.checked, s, cc)).join('') + `<small>${bgLabel}: open 12 · 24 · 48, then checked</small>`;
-    $('swDark').innerHTML = sizes('Dark', co);
-    $('swLight').innerHTML = sizes('Light', '#5C626D');
+    const LIGHT_OPEN = '#5C626D';
+    const cells = (a, col, row) => [12, 24, 48].map((sz) => `<span class="d${row}">${svgEl(a, sz, col)}</span>`).join('') + [12, 24, 48].map((sz) => `<span class="l${row}">${svgEl(a, sz, row ? col : (col === co ? LIGHT_OPEN : col))}</span>`).join('');
+    $('rowOpen').innerHTML = cells(state.open, $('colOpen').value, '');
+    $('rowChecked').innerHTML = cells(state.checked, $('colChecked').value, ' r2');
     $('outOpen').value = svgStr(state.open, 24);
     $('outChecked').value = svgStr(state.checked, 24);
     save();
