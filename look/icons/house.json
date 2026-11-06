@@ -46,15 +46,16 @@
       }
     },
     "arrow-down": {
-      "icon": "arrow-down:outline",
+      "icon": "custom/arrow-down.svg",
       "apps": {
         "tracker": [
           "arrow-down"
         ]
-      }
+      },
+      "note": "Pixelarticons arrow redrawn on the whole-pixel grid (source sits on half pixels)"
     },
     "arrow-left": {
-      "icon": "arrow-left:outline",
+      "icon": "custom/arrow-left.svg",
       "apps": {
         "tracker": [
           "arrow-left"
@@ -62,7 +63,8 @@
         "review": [
           "back"
         ]
-      }
+      },
+      "note": "Pixelarticons arrow redrawn on the whole-pixel grid (source sits on half pixels)"
     },
     "arrow-return-left": {
       "icon": "arrow-return-left:outline",
@@ -76,7 +78,7 @@
       }
     },
     "arrow-right": {
-      "icon": "arrow-right:outline",
+      "icon": "custom/arrow-right.svg",
       "apps": {
         "tracker": [
           "arrow-right"
@@ -84,15 +86,17 @@
         "review": [
           "arrowRight"
         ]
-      }
+      },
+      "note": "Pixelarticons arrow redrawn on the whole-pixel grid (source sits on half pixels)"
     },
     "arrow-up": {
-      "icon": "arrow-up:outline",
+      "icon": "custom/arrow-up.svg",
       "apps": {
         "tracker": [
           "arrow-up"
         ]
-      }
+      },
+      "note": "Pixelarticons arrow redrawn on the whole-pixel grid (source sits on half pixels)"
     },
     "calendar": {
       "icon": "calendar:outline",
