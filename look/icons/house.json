@@ -795,7 +795,7 @@
       }
     },
     "lock": {
-      "icon": "lock",
+      "icon": "custom/lock.svg",
       "apps": {
         "tracker": [
           "lock"
@@ -806,7 +806,13 @@
         "schedule": [
           "lock"
         ]
-      }
+      },
+      "note": "Jorge's lock with a keyhole, after Lorena's UI icons (2026-11-06). Solid; outline is lock-outline"
+    },
+    "lock-outline": {
+      "icon": "custom/lock-outline.svg",
+      "apps": {},
+      "note": "Outline of the house lock (not used yet)"
     },
     "mention": {
       "icon": "at-sign",
