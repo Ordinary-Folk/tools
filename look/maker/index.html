@@ -102,6 +102,8 @@ canvas.grid { width: 100%; aspect-ratio: 1; display: block; touch-action: none; 
 .colors label { display: flex; gap: 6px; align-items: center; }
 .colors input[type="color"] { width: 32px; height: 24px; border: 1px solid var(--line); padding: 0; background: none; cursor: pointer; }
 .export { margin-top: 20px; }
+.exp-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+.exp-head h2 { margin: 0; }
 .export-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
 @media (max-width: 760px) { .export-row { grid-template-columns: minmax(0, 1fr); } }
 textarea { width: 100%; min-height: 82px; font: 12px/1.5 var(--f-mono); color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 3px; padding: 8px; resize: vertical; box-sizing: border-box; }
@@ -207,7 +209,7 @@ svg.mk-px { shape-rendering: crispEdges; flex: none; }
   </div>
 
   <section class="panel export" aria-label="Export">
-    <h2>Export</h2>
+    <div class="exp-head"><h2>Export</h2><button type="button" class="primary" id="copyBoth" title="Both SVGs, Open then Checked, labelled">Copy both</button></div>
     <div class="export-row">
       <div>
         <b>Open</b>
@@ -561,6 +563,10 @@ svg.mk-px { shape-rendering: crispEdges; flex: none; }
     catch { if (fallbackEl) { fallbackEl.focus(); fallbackEl.select(); } toast('Press ⌘C to copy'); }
   }
   document.querySelectorAll('[data-copy]').forEach((b) => b.addEventListener('click', () => { const w = b.dataset.copy; copy(svgStr(state[w], 24), 'SVG', $(w === 'open' ? 'outOpen' : 'outChecked')); }));
+  $('copyBoth').addEventListener('click', () => {
+    const n = cleanName() || 'icon';
+    copy(`<!-- ${n} (open) -->\n${svgStr(state.open, 24)}\n<!-- ${n} (checked) -->\n${svgStr(state.checked, 24)}\n`, 'Both SVGs', null);
+  });
   document.querySelectorAll('[data-path]').forEach((b) => b.addEventListener('click', () => copy(toPath(state[b.dataset.path]), 'Path', null)));
   document.querySelectorAll('[data-save]').forEach((b) => b.addEventListener('click', () => {
     const w = b.dataset.save;
