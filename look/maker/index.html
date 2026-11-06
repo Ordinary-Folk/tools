@@ -44,6 +44,12 @@ h1 { font: 700 30px/1.1 var(--f-display); letter-spacing: -.01em; margin: 0; }
 .confirm { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; font-size: 13px; background: var(--sunk); padding: 8px 10px; margin: -8px 0 16px; }
 .confirm span { flex: 1 1 200px; min-width: 0; }
 .confirm[hidden] { display: none; }
+.leave { position: fixed; inset: 0; z-index: 30; display: flex; align-items: center; justify-content: center; padding: 16px; background: rgba(21, 23, 27, 0.28); }
+.leave[hidden] { display: none; }
+.leave-box { background: var(--surface); border: 1px solid var(--line); box-shadow: 0 24px 64px rgba(21, 23, 27, 0.18); padding: 20px; width: 100%; max-width: 420px; display: flex; flex-direction: column; gap: 10px; }
+.leave-box h2 { font: 600 16px var(--f-body); margin: 0; text-transform: none; letter-spacing: 0; color: var(--ink); }
+.leave-box p { margin: 0; color: var(--muted); font-size: 13px; }
+.leave-box .row { margin-top: 6px; }
 .layout { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 20px; align-items: stretch; }
 @media (max-width: 900px) { .layout { grid-template-columns: minmax(0, 1fr); } }
 .panel { background: var(--surface); border: 1px solid var(--line); border-radius: 0; padding: 20px; min-width: 0; }
@@ -180,7 +186,7 @@ svg.mk-px { shape-rendering: crispEdges; flex: none; }
         </div>
       </div>
       </div>
-      <p class="hint">Shift-drag erases with the pencil. Arrow keys nudge the active frame (or the lasso selection) one pixel. Work in progress stays in this browser under each name; <b>Save</b> puts it in Custom icons for everyone. To make one a house icon the apps use, ask Jorge.</p>
+      <p class="hint">Shift-drag erases with the pencil. Arrow keys nudge the active frame (or the lasso selection) one pixel. Work in progress stays in this browser under each name; <b>Save</b> puts it in Custom icons for everyone; it doesn't change the icon in the apps (an admin does that in the code).</p>
     </section>
 
     <section class="panel previews" aria-label="Preview">
@@ -218,6 +224,14 @@ svg.mk-px { shape-rendering: crispEdges; flex: none; }
     <textarea id="importBox" placeholder="Paste an SVG or a path d= (24 × 24 viewBox), then pick a frame" aria-label="Import SVG"></textarea>
     <div class="row"><button type="button" data-import="open">Into Open</button><button type="button" data-import="checked">Into Checked</button><span class="hint" id="importMsg" style="margin:0"></span></div>
   </section>
+</div>
+<div class="leave" id="leave" hidden role="dialog" aria-modal="true" aria-labelledby="leaveTitle">
+  <div class="leave-box">
+    <h2 id="leaveTitle">Save before you leave?</h2>
+    <p id="leaveMsg"></p>
+    <p>Saving doesn't change the icon in the apps. An admin does that in the code.</p>
+    <div class="row"><button type="button" class="primary" id="leaveSave">Save</button><button type="button" id="leaveDiscard">Discard</button><span class="grow"></span><button type="button" id="leaveStay">Cancel</button></div>
+  </div>
 </div>
 <div class="toast" id="toast" role="status"></div>
 <script src="/look/icons/library.js"></script>
@@ -584,17 +598,18 @@ svg.mk-px { shape-rendering: crispEdges; flex: none; }
   }
   async function saveCustom() {
     const name = cleanName();
-    if (!name) { toast('Give the icon a name first'); $('iconName').focus(); return; }
-    if (!state.open.some(Boolean)) { toast('Nothing drawn yet'); return; }
+    if (!name) { toast('Give the icon a name first'); $('iconName').focus(); return false; }
+    if (!state.open.some(Boolean)) { toast('Nothing drawn yet'); return false; }
     sel = null;
     const body = { name, grid: N, open: toPath(state.open), checked: state.checked.some(Boolean) ? toPath(state.checked) : '' };
     try {
       const r = await fetch('/look/__icons', { method: 'POST', credentials: 'same-origin', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
-      if (r.status === 401) { toast('Sign in on tools.ordinary.co to save'); return; }
-      if (!r.ok) { toast('Could not save (' + r.status + ')'); return; }
-      $('iconName').value = name; save();
+      if (r.status === 401) { toast('Sign in on tools.ordinary.co to save'); return false; }
+      if (!r.ok) { toast('Could not save (' + r.status + ')'); return false; }
+      $('iconName').value = name; save(); markSaved();
       await loadCustom(); toast('Saved to Custom icons');
-    } catch { toast('Could not save: offline?'); }
+      return true;
+    } catch { toast('Could not save: offline?'); return false; }
   }
   $('saveCustom').addEventListener('click', async () => {
     const name = cleanName(); if (!name) { saveCustom(); return; }
@@ -607,6 +622,32 @@ svg.mk-px { shape-rendering: crispEdges; flex: none; }
   $('replaceYes').addEventListener('click', () => { $('replaceRow').hidden = true; saveCustom(); });
   $('replaceNo').addEventListener('click', () => { $('replaceRow').hidden = true; });
 
+  // ---- leaving with unsaved changes: ask to save or discard ----
+  const sig = () => JSON.stringify([N, state.open, state.checked]);
+  let savedSig = '', leaving = false, pendingHref = '';
+  function markSaved() { savedSig = sig(); }
+  const dirty = () => !leaving && sig() !== savedSig && state.open.some(Boolean);
+  function go(href) { leaving = true; location.href = href; }
+  document.addEventListener('click', (e) => {
+    const a = e.target.closest('a[href]');
+    if (!a || e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || a.target === '_blank' || !dirty()) return;
+    const u = new URL(a.href, location.href);
+    if (u.origin !== location.origin || (u.pathname === location.pathname && u.hash)) return;
+    e.preventDefault(); pendingHref = u.href;
+    const name = cleanName() || 'this icon', had = CUSTOM.some((i) => i.name === name);
+    $('leaveTitle').textContent = `Save ${name} before you leave?`;
+    $('leaveMsg').textContent = had ? `Saving replaces ${name} in Custom icons for the team.` : 'Saving adds it to Custom icons for the team.';
+    $('leave').hidden = false; $('leaveSave').focus();
+  });
+  $('leaveStay').addEventListener('click', () => { $('leave').hidden = true; });
+  $('leave').addEventListener('keydown', (e) => { if (e.key === 'Escape') { e.stopPropagation(); $('leave').hidden = true; } });
+  $('leaveDiscard').addEventListener('click', () => {
+    try { localStorage.removeItem(KEY + slotName()); localStorage.removeItem(LAST); } catch {}
+    go(pendingHref);
+  });
+  $('leaveSave').addEventListener('click', async () => { if (await saveCustom()) go(pendingHref); });
+  window.addEventListener('beforeunload', (e) => { if (dirty()) { e.preventDefault(); e.returnValue = ''; } });
+
   (function boot() {
     const H = window.OF_ICONS || {};
     document.querySelectorAll('.rail [data-ic], .toolbar [data-ic]').forEach((b) => { const ic = H[b.dataset.ic]; if (ic) b.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true"><path${ic.eo ? ' fill-rule="evenodd"' : ''} d="${ic.d}"/></svg>`; else b.textContent = b.getAttribute('aria-label'); });
@@ -617,10 +658,10 @@ svg.mk-px { shape-rendering: crispEdges; flex: none; }
     if (want) { if (!load(want)) { applyPreset(H[want] ? want : 'boldRing'); $('iconName').value = want; } }
     else if (!(last && load(last))) applyPreset('boldRing');
   })();
-  render();
+  render(); markSaved();
   loadCustom().then(() => {
     const want = new URLSearchParams(location.search).get('custom');
-    if (want && CUSTOM.some((i) => i.name === want)) { snap(); applyPreset('custom:' + want); render(); }
+    if (want && CUSTOM.some((i) => i.name === want)) { snap(); applyPreset('custom:' + want); render(); markSaved(); }
   });
   const ro = new ResizeObserver(() => { draw('open'); draw('checked'); }); ro.observe(canv.open); ro.observe(canv.checked);
   matchMedia('(prefers-color-scheme: dark)').addEventListener('change', render);
