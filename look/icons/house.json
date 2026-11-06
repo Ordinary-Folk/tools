@@ -17,6 +17,15 @@
         ]
       }
     },
+    "appointment": {
+      "icon": "calendar-2:outline",
+      "apps": {
+        "schedule": [
+          "appointment"
+        ]
+      },
+      "note": "repeats down a column, so outline"
+    },
     "archive": {
       "icon": "archive:outline",
       "apps": {
@@ -90,6 +99,17 @@
       "apps": {
         "review": [
           "calendar"
+        ],
+        "schedule": [
+          "calendar"
+        ]
+      }
+    },
+    "calendar-delete": {
+      "icon": "calendar-delete",
+      "apps": {
+        "schedule": [
+          "outside"
         ]
       }
     },
@@ -116,6 +136,9 @@
           "check"
         ],
         "review": [
+          "check"
+        ],
+        "schedule": [
           "check"
         ]
       }
@@ -144,6 +167,9 @@
         ],
         "review": [
           "chevronDown"
+        ],
+        "schedule": [
+          "chevron-down"
         ]
       }
     },
@@ -151,6 +177,9 @@
       "icon": "chevron-left",
       "apps": {
         "tracker": [
+          "chevron-left"
+        ],
+        "schedule": [
           "chevron-left"
         ]
       }
@@ -163,6 +192,9 @@
         ],
         "review": [
           "chevronRight"
+        ],
+        "schedule": [
+          "chevron-right"
         ]
       }
     },
@@ -170,6 +202,9 @@
       "icon": "chevron-up",
       "apps": {
         "tracker": [
+          "chevron-up"
+        ],
+        "schedule": [
           "chevron-up"
         ]
       }
@@ -256,6 +291,9 @@
           "close"
         ],
         "review": [
+          "close"
+        ],
+        "schedule": [
           "close"
         ]
       }
@@ -365,6 +403,14 @@
         ]
       }
     },
+    "end": {
+      "icon": "logout",
+      "apps": {
+        "schedule": [
+          "end"
+        ]
+      }
+    },
     "eraser": {
       "icon": "eraser:outline",
       "apps": {
@@ -382,6 +428,9 @@
         "review": [
           "external",
           "share"
+        ],
+        "schedule": [
+          "external-link"
         ]
       }
     },
@@ -416,6 +465,15 @@
           "film"
         ]
       }
+    },
+    "film-solid": {
+      "icon": "film",
+      "apps": {
+        "schedule": [
+          "animation"
+        ]
+      },
+      "note": "Solid film for Schedule section labels (house film is outline)"
     },
     "filter": {
       "icon": "filter:outline",
@@ -490,10 +548,29 @@
         ]
       }
     },
+    "handshake": {
+      "icon": "handshake",
+      "apps": {
+        "schedule": [
+          "handshake"
+        ]
+      }
+    },
+    "headphone": {
+      "icon": "headphone",
+      "apps": {
+        "schedule": [
+          "sound"
+        ]
+      }
+    },
     "hide": {
       "icon": "eye-off:outline",
       "apps": {
         "review": [
+          "hide"
+        ],
+        "schedule": [
           "hide"
         ]
       }
@@ -502,6 +579,22 @@
       "icon": "home:outline",
       "apps": {
         "tracker": [
+          "home"
+        ]
+      }
+    },
+    "hourglass": {
+      "icon": "hourglass",
+      "apps": {
+        "schedule": [
+          "holds"
+        ]
+      }
+    },
+    "house": {
+      "icon": "house",
+      "apps": {
+        "schedule": [
           "home"
         ]
       }
@@ -573,6 +666,9 @@
         ],
         "review": [
           "lock"
+        ],
+        "schedule": [
+          "lock"
         ]
       }
     },
@@ -592,6 +688,14 @@
         ]
       }
     },
+    "mic": {
+      "icon": "microphone",
+      "apps": {
+        "schedule": [
+          "mic"
+        ]
+      }
+    },
     "minimize": {
       "icon": "minimize",
       "apps": {
@@ -608,6 +712,17 @@
       "apps": {
         "tracker": [
           "minus"
+        ],
+        "schedule": [
+          "minus"
+        ]
+      }
+    },
+    "moon": {
+      "icon": "moon",
+      "apps": {
+        "schedule": [
+          "moon"
         ]
       }
     },
@@ -638,6 +753,24 @@
         ]
       }
     },
+    "music-solid": {
+      "icon": "music",
+      "apps": {
+        "schedule": [
+          "music"
+        ]
+      },
+      "note": "Solid music for the Schedule grid codes (house music is outline)"
+    },
+    "nord": {
+      "icon": "circle",
+      "apps": {
+        "schedule": [
+          "nord"
+        ]
+      },
+      "note": "Schedule NORD day + section status dots"
+    },
     "note": {
       "icon": "note:outline",
       "apps": {
@@ -653,6 +786,15 @@
           "palette"
         ]
       }
+    },
+    "palette-solid": {
+      "icon": "palette",
+      "apps": {
+        "schedule": [
+          "design"
+        ]
+      },
+      "note": "Solid palette for Schedule section labels (house palette is outline)"
     },
     "paperclip": {
       "icon": "paperclip",
@@ -678,6 +820,23 @@
       "apps": {
         "tracker": [
           "pencil"
+        ]
+      }
+    },
+    "pipette": {
+      "icon": "pipette",
+      "apps": {
+        "schedule": [
+          "dropper"
+        ]
+      },
+      "note": "colour dropper"
+    },
+    "plane": {
+      "icon": "airplane-takeoff",
+      "apps": {
+        "schedule": [
+          "plane"
         ]
       }
     },
@@ -708,6 +867,9 @@
         ],
         "review": [
           "add"
+        ],
+        "schedule": [
+          "plus"
         ]
       }
     },
@@ -718,6 +880,15 @@
           "pointer"
         ]
       }
+    },
+    "prayer": {
+      "icon": "hand",
+      "apps": {
+        "schedule": [
+          "prayer"
+        ]
+      },
+      "note": "praying hands (Prayer Partners)"
     },
     "presentation": {
       "icon": "presentation:outline",
@@ -745,6 +916,15 @@
           "redo"
         ]
       }
+    },
+    "remote": {
+      "icon": "laptop:outline",
+      "apps": {
+        "schedule": [
+          "remote"
+        ]
+      },
+      "note": "repeats down a column, so outline"
     },
     "replace": {
       "icon": "refresh:outline",
@@ -796,6 +976,14 @@
       "apps": {
         "tracker": [
           "save"
+        ]
+      }
+    },
+    "script": {
+      "icon": "script",
+      "apps": {
+        "schedule": [
+          "script"
         ]
       }
     },
@@ -859,6 +1047,9 @@
       "apps": {
         "review": [
           "sort"
+        ],
+        "schedule": [
+          "swap"
         ]
       }
     },
@@ -891,6 +1082,23 @@
       "apps": {
         "tracker": [
           "square-alert"
+        ]
+      }
+    },
+    "square-alert-solid": {
+      "icon": "square-alert",
+      "apps": {
+        "schedule": [
+          "alert"
+        ]
+      },
+      "note": "Solid alert for Schedule timeline drift (house square-alert is outline)"
+    },
+    "start": {
+      "icon": "login",
+      "apps": {
+        "schedule": [
+          "start"
         ]
       }
     },
@@ -935,6 +1143,14 @@
       "apps": {
         "review": [
           "stepFwd"
+        ]
+      }
+    },
+    "sun": {
+      "icon": "sun",
+      "apps": {
+        "schedule": [
+          "sun"
         ]
       }
     },
@@ -1028,11 +1244,27 @@
         ]
       }
     },
+    "users": {
+      "icon": "users",
+      "apps": {
+        "schedule": [
+          "people"
+        ]
+      }
+    },
     "versions": {
       "icon": "layers",
       "apps": {
         "review": [
           "versions"
+        ]
+      }
+    },
+    "video": {
+      "icon": "video",
+      "apps": {
+        "schedule": [
+          "meeting"
         ]
       }
     },
@@ -1044,6 +1276,9 @@
           "status-review"
         ],
         "review": [
+          "view"
+        ],
+        "schedule": [
           "view"
         ]
       }
