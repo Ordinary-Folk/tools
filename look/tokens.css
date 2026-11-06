@@ -32,7 +32,7 @@
   --of-danger: #DC2626;   --of-danger-text: #A32D2D;
 
   /* Status (the only colour that carries meaning in a table) */
-  --of-status-outstanding-bg: #FCEBEB; --of-status-outstanding-fg: #A32D2D; --of-status-outstanding-dot: #EF4444;
+  --of-status-outstanding-bg: #FCEBEB; --of-status-outstanding-fg: #A32D2D; --of-status-outstanding-dot: #DC2626;
   --of-status-progress-bg: #FAEEDA;    --of-status-progress-fg: #854F0B;    --of-status-progress-dot: #D97706;
   --of-status-review-bg: #EEEDFE;      --of-status-review-fg: #3C3489;      --of-status-review-dot: #8B5CF6;
   --of-status-revise-bg: #FCEDE3;      --of-status-revise-fg: #9A4A1E;      --of-status-revise-dot: #FF7343;
