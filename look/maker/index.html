@@ -26,7 +26,18 @@ h1 { font: 700 30px/1.1 var(--f-display); letter-spacing: -.01em; margin: 0; }
 #gridSize { width: 108px; padding-right: 28px; }
 @media (max-width: 560px) { .toolbar input.nm { flex-basis: 100%; } .toolbar .sep, .toolbar .grow { display: none; } #preset { flex: 1; } }
 .grow { flex: 1; }
-.toolbar.head { border-bottom: 0; padding-bottom: 0; margin-bottom: 8px; }
+.toolbar.head { margin-bottom: 16px; }
+.bench { display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 14px; align-items: start; }
+.rail { display: flex; flex-direction: column; gap: 4px; padding-top: 36px; position: sticky; top: 72px; }
+.rail button { width: 40px; height: 40px; padding: 0; display: flex; align-items: center; justify-content: center; }
+.rail button svg { width: 24px; height: 24px; fill: currentColor; shape-rendering: crispEdges; display: block; }
+.rail .sep { width: 24px; height: 1px; margin: 4px 8px; background: var(--line); }
+@media (min-resolution: 2.5dppx) { .rail button svg { shape-rendering: geometricPrecision; } }
+@media (max-width: 560px) {
+  .bench { grid-template-columns: minmax(0, 1fr); }
+  .rail { flex-direction: row; flex-wrap: wrap; padding-top: 0; position: static; }
+  .rail .sep { width: 1px; height: 24px; margin: 8px 2px; }
+}
 .toolbar.head #saveCustom { min-width: 64px; }
 .confirm { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; font-size: 13px; background: var(--sunk); padding: 8px 10px; margin: -8px 0 16px; }
 .confirm span { flex: 1 1 200px; min-width: 0; }
@@ -132,20 +143,21 @@ svg.mk-px { shape-rendering: crispEdges; flex: none; }
         </select>
         <button type="button" class="primary" id="saveCustom" title="Save to Custom icons (shared with the team)">Save</button>
       </div>
-      <div class="toolbar" role="toolbar" aria-label="Tools">
-        <button type="button" data-tool="pen" aria-pressed="true" title="Pencil (P). Drag to paint; starting on a filled pixel erases. Shift-drag erases.">Pencil</button>
-        <button type="button" data-tool="line" aria-pressed="false" title="Line (I). Shift snaps to straight and 45°. Option erases.">Line</button>
-        <button type="button" data-tool="rect" aria-pressed="false" title="Square (U). Shift keeps it square. Option erases.">Square</button>
-        <button type="button" data-tool="ellipse" aria-pressed="false" title="Circle (O). Shift keeps it round. Option erases.">Circle</button>
-        <button type="button" data-tool="fill" aria-pressed="false" title="Fill an area (G)">Fill</button>
-        <button type="button" data-tool="lasso" aria-pressed="false" title="Lasso (L). Draw around pixels, then drag them. Arrows nudge, Delete removes, Esc drops, ⌘A selects all.">Lasso</button>
-        <span class="sep"></span>
-        <button type="button" id="filled" aria-pressed="false" title="Draw squares and circles filled (F)">Filled</button>
-        <span class="grow"></span>
-        <button type="button" id="undo" title="Undo (⌘Z)">Undo</button>
-        <button type="button" id="redo" title="Redo (⇧⌘Z)">Redo</button>
-      </div>
       <div class="confirm" id="replaceRow" hidden><span id="replaceMsg"></span><button type="button" class="primary" id="replaceYes">Replace</button><button type="button" id="replaceNo">Cancel</button></div>
+      <div class="bench">
+      <div class="rail" role="toolbar" aria-label="Tools" aria-orientation="vertical">
+        <button type="button" data-tool="pen" data-ic="pencil" aria-pressed="true" aria-label="Pencil" title="Pencil (P). Drag to paint; starting on a filled pixel erases. Shift-drag erases."></button>
+        <button type="button" data-tool="line" data-ic="line" aria-pressed="false" aria-label="Line" title="Line (I). Shift snaps to straight and 45°. Option erases."></button>
+        <button type="button" data-tool="rect" data-ic="square" aria-pressed="false" aria-label="Square" title="Square (U). Shift keeps it square. Option erases."></button>
+        <button type="button" data-tool="ellipse" data-ic="circle" aria-pressed="false" aria-label="Circle" title="Circle (O). Shift keeps it round. Option erases."></button>
+        <button type="button" data-tool="fill" data-ic="fill" aria-pressed="false" aria-label="Fill" title="Fill an area (G)"></button>
+        <button type="button" data-tool="lasso" data-ic="lasso" aria-pressed="false" aria-label="Lasso" title="Lasso (L). Draw around pixels, then drag them. Arrows nudge, Delete removes, Esc drops, ⌘A selects all."></button>
+        <span class="sep"></span>
+        <button type="button" id="filled" data-ic="filled" aria-pressed="false" aria-label="Filled shapes" title="Draw squares and circles filled (F)"></button>
+        <span class="sep"></span>
+        <button type="button" id="undo" data-ic="undo" aria-label="Undo" title="Undo (⌘Z)"></button>
+        <button type="button" id="redo" data-ic="redo" aria-label="Redo" title="Redo (⇧⌘Z)"></button>
+      </div>
       <div class="frames">
         <div class="frame active" data-frame="open">
           <div class="frame-head"><b>Open</b>
@@ -167,6 +179,7 @@ svg.mk-px { shape-rendering: crispEdges; flex: none; }
           </div>
           <canvas class="grid" id="gridChecked" aria-label="Checked frame pixel grid"></canvas>
         </div>
+      </div>
       </div>
       <p class="hint">Shift-drag erases with the pencil. Arrow keys nudge the active frame (or the lasso selection) one pixel. Work in progress stays in this browser under each name; <b>Save</b> puts it in Custom icons for everyone. To make one a house icon the apps use, ask Jorge.</p>
     </section>
@@ -599,6 +612,7 @@ svg.mk-px { shape-rendering: crispEdges; flex: none; }
 
   (function boot() {
     const H = window.OF_ICONS || {};
+    document.querySelectorAll('.rail [data-ic]').forEach((b) => { const ic = H[b.dataset.ic]; if (ic) b.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true"><path${ic.eo ? ' fill-rule="evenodd"' : ''} d="${ic.d}"/></svg>`; else b.textContent = b.getAttribute('aria-label'); });
     const og = document.getElementById('houseOpts');
     og.innerHTML = Object.keys(H).sort().map((n) => `<option value="${n}">${n}</option>`).join('');
     const want = new URLSearchParams(location.search).get('icon');

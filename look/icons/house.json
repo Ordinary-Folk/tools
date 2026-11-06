@@ -261,6 +261,15 @@
         ]
       }
     },
+    "circle": {
+      "icon": "circle:outline",
+      "apps": {
+        "look": [
+          "circle"
+        ]
+      },
+      "note": "Icon maker tool"
+    },
     "circle-alert": {
       "icon": "circle-alert",
       "apps": {
@@ -546,6 +555,24 @@
         ]
       }
     },
+    "fill": {
+      "icon": "fill:outline",
+      "apps": {
+        "look": [
+          "fill"
+        ]
+      },
+      "note": "Icon maker tool"
+    },
+    "filled": {
+      "icon": "fill-half:outline",
+      "apps": {
+        "look": [
+          "filled"
+        ]
+      },
+      "note": "Icon maker tool"
+    },
     "film": {
       "icon": "film:outline",
       "apps": {
@@ -709,6 +736,15 @@
         ]
       }
     },
+    "lasso": {
+      "icon": "lasso-cursor:outline",
+      "apps": {
+        "look": [
+          "lasso"
+        ]
+      },
+      "note": "Icon maker tool"
+    },
     "lightbulb": {
       "icon": "lightbulb:outline",
       "apps": {
@@ -716,6 +752,15 @@
           "lightbulb"
         ]
       }
+    },
+    "line": {
+      "icon": "slash:outline",
+      "apps": {
+        "look": [
+          "line"
+        ]
+      },
+      "note": "Icon maker tool"
     },
     "link": {
       "icon": "link",
@@ -929,6 +974,9 @@
         ],
         "admin": [
           "pencil"
+        ],
+        "look": [
+          "pencil"
         ]
       }
     },
@@ -1031,6 +1079,9 @@
       "icon": "redo",
       "apps": {
         "tracker": [
+          "redo"
+        ],
+        "look": [
           "redo"
         ]
       }
@@ -1210,6 +1261,15 @@
         ]
       }
     },
+    "square": {
+      "icon": "square:outline",
+      "apps": {
+        "look": [
+          "square"
+        ]
+      },
+      "note": "Icon maker tool"
+    },
     "square-alert": {
       "icon": "square-alert:outline",
       "apps": {
@@ -1364,6 +1424,9 @@
       "icon": "undo",
       "apps": {
         "tracker": [
+          "undo"
+        ],
+        "look": [
           "undo"
         ]
       }

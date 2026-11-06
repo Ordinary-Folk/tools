@@ -71,7 +71,7 @@ button.danger { background: #DC2626; border-color: #DC2626; color: #fff; }
   </section>
   <div class="bar" role="search">
     <input type="search" id="q" placeholder="Search names, e.g. arrow, play, search" aria-label="Search icons">
-    <select id="app" aria-label="App"><option value="">All apps</option><option value="tracker">Project Tracker</option><option value="review">OF Review</option><option value="schedule">Schedule</option><option value="time-tracker">Time Tracker</option><option value="admin">OF Admin</option></select>
+    <select id="app" aria-label="App"><option value="">All apps</option><option value="tracker">Project Tracker</option><option value="review">OF Review</option><option value="schedule">Schedule</option><option value="time-tracker">Time Tracker</option><option value="admin">OF Admin</option><option value="look">Icon maker</option></select>
     <select id="style" aria-label="Style"><option value="">All styles</option><option value="outline">Outline</option><option value="solid">Solid</option><option value="custom">OF custom</option></select>
     <span class="count" id="count"></span>
   </div>
@@ -86,7 +86,7 @@ button.danger { background: #DC2626; border-color: #DC2626; color: #fff; }
 (() => {
   const I = window.OF_ICONS || {};
   const names = Object.keys(I).sort();
-  const APPN = { tracker: 'Project Tracker', review: 'OF Review', schedule: 'Schedule', 'time-tracker': 'Time Tracker', admin: 'OF Admin' };
+  const APPN = { tracker: 'Project Tracker', review: 'OF Review', schedule: 'Schedule', 'time-tracker': 'Time Tracker', admin: 'OF Admin', look: 'Icon maker' };
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
   const svg = (n, s) => `<svg class="px" width="${s}" height="${s}" viewBox="0 0 24 24" aria-hidden="true"><path${I[n].eo ? ' fill-rule="evenodd"' : ''} d="${I[n].d}"/></svg>`;
   const svgFile = (n) => `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" shape-rendering="crispEdges"><path${I[n].eo ? ' fill-rule="evenodd"' : ''} d="${I[n].d}"/></svg>`;

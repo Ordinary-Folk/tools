@@ -38,6 +38,19 @@
   --of-status-revise-bg: #FCEDE3;      --of-status-revise-fg: #9A4A1E;      --of-status-revise-dot: #F97316;
   --of-status-complete-bg: #E1F5EE;    --of-status-complete-fg: #0F6E56;    --of-status-complete-dot: #059669;
 
+  /* Tool colours: each tool's tile on the hub (from Lorena's UI icons, 2026-11).
+     Identity only, never interface or status colour. Glyphs are ink on every tile;
+     Admin is an ink tile with a light glyph. Same in both themes. */
+  --of-tool-review: #607CFF;
+  --of-tool-tracker: #FF8452;
+  --of-tool-schedule: #4D8E64;
+  --of-tool-time: #B1A16E;
+  --of-tool-scripts: #E1A6F7;
+  --of-tool-look: #82A8AA;
+  --of-tool-admin: #121411;
+  --of-tool-ink: #121411;
+  --of-tool-ink-on-admin: #EEECE8;
+
   /* Type */
   --of-font-display: 'DM Sans', system-ui, sans-serif;
   --of-font-ui: 'Inter', system-ui, -apple-system, sans-serif;
