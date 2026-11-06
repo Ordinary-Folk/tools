@@ -11,7 +11,7 @@
   /* Values from look/tokens.css (light): page = surface, cards = bg, text 2 for secondary copy. */
   color-scheme: light dark;
   --bg: #F7F8FA; --card: #FFFFFF; --card-hover: #F7F8FA; --sunk: #E6E8EC;
-  --text: #121411; --muted: #5C626D; --faint: #8A909B;
+  --text: #111411; --muted: #5C626D; --faint: #8A909B;
   --border: #E6E8EC; --border-strong: #C2C7D0;
   --accent: #1044F2; --accent-soft: rgba(16, 68, 242, 0.10);
   --success: #4D8E64;
@@ -23,10 +23,10 @@
   :root {
     /* tokens.css dark (.of-dark) */
     --bg: #0B0C0E; --card: #15171B; --card-hover: #262A31; --sunk: #262A31;
-    --text: #EEECE8; --muted: #C2C7D0; --faint: #8A909B;
+    --text: #F0EDE8; --muted: #C2C7D0; --faint: #8A909B;
     --border: #262A31; --border-strong: #5C626D;
     --accent: #607CFF; --accent-soft: rgba(16, 68, 242, 0.16);
-    --success: #7DB892;
+    --success: #4D8E64;
   }
 }
 * { box-sizing: border-box; }

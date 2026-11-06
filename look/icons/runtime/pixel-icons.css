@@ -43,13 +43,13 @@
   cursor: pointer;
 }
 :where(input[type="checkbox"]:not([role="switch"])):checked {
-  border-color: var(--px-check-fill, #121411);
-  background-color: var(--px-check-fill, #121411);
+  border-color: var(--px-check-fill, #111411);
+  background-color: var(--px-check-fill, #111411);
   background-image: var(--px-check-mark, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' shape-rendering='crispEdges'%3E%3Cpath fill='%23FFFFFF' d='M18 4H20V8H18V10H16V12H14V14H12V16H10V18H8V20H6V18H4V16H2V12H4V14H6V16H8V14H10V12H12V10H14V8H16V6H18Z'/%3E%3C/svg%3E"));
 }
 :where(input[type="checkbox"]:not([role="switch"])):indeterminate {
-  border-color: var(--px-check-fill, #121411);
-  background-color: var(--px-check-fill, #121411);
+  border-color: var(--px-check-fill, #111411);
+  background-color: var(--px-check-fill, #111411);
   background-image: linear-gradient(#FFFFFF, #FFFFFF);
   background-size: 8px 2px;
 }

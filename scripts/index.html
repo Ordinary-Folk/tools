@@ -23,14 +23,14 @@
   --bg: #F5F6F8;
   --card: #FFFFFF;
   --card-hover: #F5F6F8;
-  --text: #121411;
+  --text: #111411;
   --muted: #6F7681;
   --faint: #9AA1AB;
   --border: #E2E5EA;
   --border-strong: #C8CDD5;
   --accent: #1044F2; /* actions and links only */
   --mono: ui-monospace, SFMono-Regular, Menlo, monospace;
-  --ink: #121411;
+  --ink: #111411;
   --ink-glyph: #F5F6F8;
 }
 @media (prefers-color-scheme: dark) {
@@ -38,13 +38,13 @@
     --bg: #0F1114;
     --card: #16191D;
     --card-hover: #1C2027;
-    --text: #EEECE8;
+    --text: #F0EDE8;
     --muted: #9AA1AB;
     --faint: #6F7681;
     --border: #272B31;
     --border-strong: #3A3F47;
-    --ink: #EEECE8;
-    --ink-glyph: #121411;
+    --ink: #F0EDE8;
+    --ink-glyph: #111411;
   }
 }
 * { box-sizing: border-box; }
@@ -351,7 +351,7 @@ a.card:focus-visible, .back:focus-visible, .btn:focus-visible, .account a:focus-
   const tileSvg = (tool) => {
     const tiles = state.catalog.tile;
     if (tool.tile === 'ink') return glyphSvg(tool.glyph, 'var(--ink)', 'var(--ink-glyph)');
-    return glyphSvg(tool.glyph, tiles[tool.tile] || tiles.khaki, '#121411');
+    return glyphSvg(tool.glyph, tiles[tool.tile] || tiles.khaki, '#111411');
   };
   const absPath = (rel) => (state.helper.root || HOME_ROOT) + '/' + rel;
   const openUrl = (rel) => HELPER + '/open?p=' + encodeURIComponent(rel);

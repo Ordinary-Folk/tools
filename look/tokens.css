@@ -16,7 +16,7 @@
   --of-line-strong: #C2C7D0;  /* strong borders, control outlines, faint text (placeholders, disabled) */
 
   /* Text: warm ink (Lorena's palette, 2026-11-06) over cool greys */
-  --of-text: #121411;
+  --of-text: #111411;
   --of-text-2: #5C626D;
   --of-muted: #8A909B;
 
@@ -35,21 +35,41 @@
   --of-status-outstanding-bg: #FCEBEB; --of-status-outstanding-fg: #A32D2D; --of-status-outstanding-dot: #DC2626;
   --of-status-progress-bg: #FAEEDA;    --of-status-progress-fg: #854F0B;    --of-status-progress-dot: #D97706;
   --of-status-review-bg: #EEEDFE;      --of-status-review-fg: #3C3489;      --of-status-review-dot: #8B5CF6;
-  --of-status-revise-bg: #FCEDE3;      --of-status-revise-fg: #9A4A1E;      --of-status-revise-dot: #FF7343;
+  --of-status-revise-bg: #FCEDE3;      --of-status-revise-fg: #9A4A1E;      --of-status-revise-dot: #FF7342;
   --of-status-complete-bg: #E1F5EE;    --of-status-complete-fg: #32603C;    --of-status-complete-dot: #4D8E64;
+
+  /* OF brand colours (Lorena, Explorations V3, 2026-11-06). Named here; the tokens
+     below use these exact values:
+       Off-black #111411 · Off-white #F0EDE8 · Garibaldi blue #1044F2
+       Maple flame #FF7342 · Kraft canvas #B1A16E · Evergreen #1F4D29
+       Lilac #E1A6F7 · Sea glass #83A8AA · Lime #DBF78D · Burgundy #6C1534
+     Our lighter tints take the family name: Garibaldi light #607CFF,
+     Evergreen light #4D8E64. */
+  --of-brand-off-black: #111411;
+  --of-brand-off-white: #F0EDE8;
+  --of-brand-garibaldi: #1044F2;
+  --of-brand-garibaldi-light: #607CFF;
+  --of-brand-maple: #FF7342;
+  --of-brand-kraft: #B1A16E;
+  --of-brand-evergreen: #1F4D29;
+  --of-brand-evergreen-light: #4D8E64;
+  --of-brand-lilac: #E1A6F7;
+  --of-brand-sea-glass: #83A8AA;
+  --of-brand-lime: #DBF78D;
+  --of-brand-burgundy: #6C1534;
 
   /* Tool colours: each tool's tile on the hub (from Lorena's UI icons, 2026-11).
      Identity only, never interface or status colour. Glyphs are ink on every tile;
      Admin is an ink tile with a light glyph. Same in both themes. */
   --of-tool-review: #607CFF;
-  --of-tool-tracker: #FF8452;
+  --of-tool-tracker: #FF7342;
   --of-tool-schedule: #4D8E64;
   --of-tool-time: #B1A16E;
   --of-tool-scripts: #E1A6F7;
-  --of-tool-look: #82A8AA;
-  --of-tool-admin: #121411;  /* = light --of-text */
-  --of-tool-ink: #121411;    /* = light --of-text */
-  --of-tool-ink-on-admin: #EEECE8; /* = dark --of-text */
+  --of-tool-look: #83A8AA;
+  --of-tool-admin: #111411;  /* = light --of-text */
+  --of-tool-ink: #111411;    /* = light --of-text */
+  --of-tool-ink-on-admin: #F0EDE8; /* = dark --of-text */
 
   /* Type */
   --of-font-display: 'DM Sans', system-ui, sans-serif;
@@ -80,14 +100,14 @@
   --of-surface: #15171B;
   --of-line: #262A31;
   --of-line-strong: #5C626D;  /* lighter than a plain border so it still reads as faint text */
-  --of-text: #EEECE8;
+  --of-text: #F0EDE8;
   --of-text-2: #C2C7D0;
   --of-muted: #8A909B;
   --of-accent: #1044F2;
   --of-accent-hover: #2F5BFF;
   --of-accent-text: #607CFF;
   --of-accent-soft: rgba(16, 68, 242, 0.16);
-  --of-success: #4D8E64;  --of-success-text: #7DB892;
+  --of-success: #4D8E64;  --of-success-text: #4D8E64;
   --of-warning: #D97706;  --of-warning-text: #FBBF24;
   --of-danger: #DC2626;   --of-danger-text: #F87171;
   --of-shadow-popover: 0 8px 24px rgba(0, 0, 0, 0.45);

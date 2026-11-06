@@ -202,7 +202,7 @@ svg.mk-px { shape-rendering: crispEdges; flex: none; }
       <div class="sz" id="sizes">
         <span class="hd"></span><span class="hd d">12</span><span class="hd d">24</span><span class="hd d">48</span><span class="hd">12</span><span class="hd">24</span><span class="hd">48</span>
         <label class="rl">Open <input type="color" id="colOpen" value="#8A909B"></label><span id="rowOpen" style="display:contents"></span>
-        <label class="rl r2">Checked <input type="color" id="colChecked" value="#7DB892"></label><span id="rowChecked" style="display:contents"></span>
+        <label class="rl r2">Checked <input type="color" id="colChecked" value="#4D8E64"></label><span id="rowChecked" style="display:contents"></span>
       </div>
       <div class="sz-foot"><button type="button" id="resetColors">Reset colours</button></div>
     </section>
@@ -541,7 +541,7 @@ svg.mk-px { shape-rendering: crispEdges; flex: none; }
   })));
   $('ctxToggle').addEventListener('click', () => { ctxChecked = !ctxChecked; render(); });
   ['colOpen', 'colChecked'].forEach((id) => $(id).addEventListener('input', render));
-  $('resetColors').addEventListener('click', () => { $('colOpen').value = '#8A909B'; $('colChecked').value = '#7DB892'; render(); });
+  $('resetColors').addEventListener('click', () => { $('colOpen').value = '#8A909B'; $('colChecked').value = '#4D8E64'; render(); });
   $('iconName').addEventListener('change', () => { sel = null; if (!load(slotName())) save(); render(); });
   document.addEventListener('keydown', (e) => {
     if (e.target.closest('input, textarea, select')) return;
