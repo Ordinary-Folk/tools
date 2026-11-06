@@ -23,3 +23,52 @@
 @media (min-resolution: 2.5dppx) {
   .px-icon { shape-rendering: geometricPrecision; }
 }
+
+
+/* House checkbox: the same 14px square as the Time Tracker Checkbox component (line-strong
+   border, ink fill, white house check). :where() keeps it at zero specificity, so any app
+   rule or utility class still wins. Override per app or per control with the variables. */
+:where(input[type="checkbox"]:not([role="switch"])) {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  margin: 0;
+  flex: none;
+  display: inline-block;
+  vertical-align: -2px;
+  border: 1px solid var(--px-check-border, #C2C7D0);
+  border-radius: 0;
+  background: var(--px-check-bg, #FFFFFF) center / 12px 12px no-repeat;
+  cursor: pointer;
+}
+:where(input[type="checkbox"]:not([role="switch"])):checked {
+  border-color: var(--px-check-fill, #15171B);
+  background-color: var(--px-check-fill, #15171B);
+  background-image: var(--px-check-mark, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' shape-rendering='crispEdges'%3E%3Cpath fill='%23FFFFFF' d='M18 6H20V8H18ZM18 8V10H16V8ZM16 10V12H14V10ZM14 12V14H12V12ZM4 12H6V14H4ZM6 14H8V16H6ZM12 14V16H10V14ZM8 16H10V18H8Z'/%3E%3C/svg%3E"));
+}
+:where(input[type="checkbox"]:not([role="switch"])):indeterminate {
+  border-color: var(--px-check-fill, #15171B);
+  background-color: var(--px-check-fill, #15171B);
+  background-image: linear-gradient(#FFFFFF, #FFFFFF);
+  background-size: 8px 2px;
+}
+:where(input[type="checkbox"]:not([role="switch"])):disabled { opacity: 0.5; cursor: default; }
+:where(input[type="checkbox"]:not([role="switch"])):focus-visible { outline: 2px solid #2563EB; outline-offset: 2px; }
+
+/* Date, month and time fields: the house calendar and clock instead of the browser's.
+   The browser's own picker still opens on click (Chrome and Edge; Safari has no button). */
+:where(input[type="date"], input[type="month"], input[type="week"], input[type="datetime-local"])::-webkit-calendar-picker-indicator {
+  background: var(--px-picker-calendar, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' shape-rendering='crispEdges'%3E%3Cpath fill='%235C626D' d='M7 2H9V4H15V2H17V4H19V6H5V4H7ZM5 6V8H19V6H21V20H19V10H5V20H3V6ZM5 20H19V22H5Z'/%3E%3C/svg%3E")) center / 12px 12px no-repeat;
+  width: 12px;
+  height: 12px;
+  opacity: 1;
+  cursor: pointer;
+}
+:where(input[type="time"])::-webkit-calendar-picker-indicator {
+  background: var(--px-picker-clock, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' shape-rendering='crispEdges'%3E%3Cpath fill='%235C626D' d='M6 2H18V4H6ZM6 4V6H4V4ZM18 4H20V6H18ZM4 6V18H2V6ZM20 6H22V18H20ZM11 6H13V13H11ZM13 13H15V15H13ZM15 15H17V17H15ZM4 18H6V20H4ZM20 18V20H18V18ZM6 20H18V22H6Z'/%3E%3C/svg%3E")) center / 12px 12px no-repeat;
+  width: 12px;
+  height: 12px;
+  opacity: 1;
+  cursor: pointer;
+}
