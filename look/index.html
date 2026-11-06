@@ -16,7 +16,12 @@
 .theme h3 { color: var(--of-text); }
 .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 8px; }
 .sw { display: flex; flex-direction: column; gap: 4px; font-size: 11px; color: var(--of-muted); }
-.sw b { height: 36px; border: 1px solid var(--of-line); display: block; }
+.hexbox { height: 40px; width: 100%; border: 1px solid var(--of-line); display: flex; align-items: flex-end; justify-content: flex-start; padding: 0 8px 5px; font: 500 11px var(--mono); cursor: copy; text-align: left; }
+.hexbox:hover { outline: 2px solid var(--of-accent); outline-offset: 1px; }
+.hexbox.ofc { box-shadow: inset 0 0 0 2px var(--of-text); border-color: var(--of-text); }
+.sw .nm, .chip .nm { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.ofname { font-weight: 600; color: var(--of-text); }
+.oftag { font: 600 9px var(--sans); letter-spacing: .06em; color: var(--of-bg); background: var(--of-text); padding: 1px 4px; }
 .sw code { background: none; padding: 0; color: var(--of-text-2); font-size: 11px; }
 .pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
 .pill { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; padding: 3px 8px; }
@@ -31,7 +36,8 @@
 .fam > b { font-size: 12px; font-weight: 600; padding-top: 10px; }
 .fam .row { display: grid; grid-template-columns: repeat(auto-fill, minmax(124px, 1fr)); gap: 8px; }
 .chip { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
-.chip i { height: 40px; border: 1px solid var(--border); display: block; }
+.chip .hexbox { border-color: var(--border); }
+.chip .hexbox.ofc { box-shadow: inset 0 0 0 2px var(--text); border-color: var(--text); }
 .chip code { background: none; padding: 0; font-size: 11px; color: var(--text); }
 .chip small { font-size: 11px; color: var(--muted); line-height: 1.35; word-break: break-word; }
 .chip .nm { font-size: 12px; font-weight: 600; color: var(--text); display: flex; align-items: center; gap: 6px; }
@@ -163,6 +169,19 @@ table.adopt { width: 100%; border-collapse: collapse; font-size: 13px; }
   const I = window.OF_ICONS || {};
   const svg = (n, s = 24) => I[n] ? `<svg class="px" width="${s}" height="${s}" viewBox="0 0 24 24" aria-hidden="true"><path${I[n].eo ? ' fill-rule="evenodd"' : ''} d="${I[n].d}"/></svg>` : '';
   document.getElementById('iconCount').textContent = Object.keys(I).length;
+  // Swatch helpers: hex printed inside the box (ink or off-white for contrast), click copies it.
+  const rootCS = getComputedStyle(document.documentElement);
+  const BRANDS = [['off-black', 'Off-black', 1], ['off-white', 'Off-white', 1], ['garibaldi', 'Garibaldi blue', 1], ['garibaldi-light', 'Garibaldi light', 0], ['maple', 'Maple flame', 1], ['kraft', 'Kraft canvas', 1], ['evergreen', 'Evergreen', 1], ['evergreen-light', 'Evergreen light', 0], ['lilac', 'Lilac', 1], ['sea-glass', 'Sea glass', 1], ['lime', 'Lime', 1], ['burgundy', 'Burgundy', 1]];
+  const BRANDMAP = new Map(BRANDS.map(([k, n, core]) => [rootCS.getPropertyValue('--of-brand-' + k).trim().toUpperCase(), { name: n, core: !!core }]));
+  function brandOf(h) { return BRANDMAP.get(String(h).toUpperCase()) || null; }
+  function inkFor(h) { const [r, g, b] = [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16) / 255).map((c) => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4)); return 0.2126 * r + 0.7152 * g + 0.0722 * b > 0.25 ? '#111411' : '#F0EDE8'; }
+  function hexBox(h, core) { return `<button type="button" class="hexbox${core ? ' ofc' : ''}" data-hex="${h}" style="background:${h};color:${inkFor(h)}" title="Copy ${h}">${h}</button>`; }
+  document.addEventListener('click', async (e) => {
+    const b = e.target.closest('[data-hex]'); if (!b) return;
+    try { await navigator.clipboard.writeText(b.dataset.hex); hexToast('Copied ' + b.dataset.hex); } catch { hexToast('Copy blocked: ' + b.dataset.hex); }
+  });
+  let htt; function hexToast(t) { let el = document.getElementById('toast'); if (!el) { el = document.createElement('div'); el.id = 'toast'; el.className = 'toast'; el.setAttribute('role', 'status'); document.body.appendChild(el); } el.textContent = t; el.classList.add('show'); clearTimeout(htt); htt = setTimeout(() => el.classList.remove('show'), 1400); }
+
   const P = [
     ['square-alert', 'Sharp by default', 'Zero radius on everything. Round only for avatars, status dots and toggles.'],
     ['circle-check', 'Colour means status', 'Status pills and dots are the only colour in a table. Nothing decorative. Tool colours live only on tool tiles.'],
@@ -178,7 +197,7 @@ table.adopt { width: 100%; border-collapse: collapse; font-size: 13px; }
   const GREYS = [['--of-bg', 'bg'], ['--of-surface', 'surface'], ['--of-line', 'line'], ['--of-line-strong', 'line strong'], ['--of-muted', 'muted'], ['--of-text-2', 'text 2'], ['--of-text', 'text']];
   const COLOURS = [['--of-accent', 'accent'], ['--of-accent-text', 'accent text'], ['--of-success', 'success'], ['--of-warning', 'warning'], ['--of-danger', 'danger']];
   const lum = (hex) => { const m = hex.replace('#', '').match(/../g); if (!m) return 0; const [r, g, b] = m.map((x) => { const c = parseInt(x, 16) / 255; return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4; }); return 0.2126 * r + 0.7152 * g + 0.0722 * b; };
-  const sw = (cs) => ([v, l]) => `<div class="sw"><b style="background:var(${v})"></b>${l}<code>${cs.getPropertyValue(v).trim()}</code></div>`;
+  const sw = (cs) => ([v, l]) => { const h = cs.getPropertyValue(v).trim().toUpperCase(), b = brandOf(h); return `<div class="sw">${hexBox(h, b && b.core)}<span class="nm">${l}${b ? ` · <span class="ofname">${b.name}</span>${b.core ? '<span class="oftag">OF</span>' : ''}` : ''}</span></div>`; };
   document.querySelectorAll('[data-swatches]').forEach((el) => {
     const cs = getComputedStyle(el);
     const greys = GREYS.slice().sort((a, b) => lum(cs.getPropertyValue(b[0]).trim()) - lum(cs.getPropertyValue(a[0]).trim()));
@@ -201,7 +220,7 @@ table.adopt { width: 100%; border-collapse: collapse; font-size: 13px; }
     for (const [h, list] of uses) { const [H, S, L] = hsl(h); const k = list.some((u) => NEUTRAL.test(u)) ? 0 : 1 + FAMS.slice(1).findIndex(([, t]) => t(H, S, L)); groups[k][1].push({ h, list, L }); }
     document.querySelector('[data-families]').innerHTML = groups.filter(([, a]) => a.length).map(([n, a]) => `<div class="fam"><b>${n}</b><div class="row">${a.sort((x, y) => y.L - x.L).map((c) => (() => {
       const b = c.list.find((u) => BRAND[u]), core = b && !TINTS.has(b), rest = [...new Set(c.list.filter((u) => !BRAND[u]))];
-      return `<span class="chip${core ? ' ofc' : ''}"><i style="background:${c.h}"></i>${b ? `<span class="nm">${BRAND[b]}${core ? '<em>OF</em>' : ''}</span>` : ''}<code>${c.h}</code><small>${rest.join(' · ') || 'not used in the tools yet'}</small></span>`;
+      return `<span class="chip">${hexBox(c.h, core)}${b ? `<span class="nm">${BRAND[b]}${core ? '<em>OF</em>' : ''}</span>` : ''}<small>${rest.join(' · ') || 'not used in the tools yet'}</small></span>`;
     })()).join('')}</div></div>`).join('');
   })();
 
@@ -218,7 +237,7 @@ table.adopt { width: 100%; border-collapse: collapse; font-size: 13px; }
   const tcs = getComputedStyle(document.documentElement);
   document.querySelector('[data-tools]').innerHTML = TOOLS.map(([k, n, vb, d]) => {
     const bg = `var(--of-tool-${k})`, ink = k === 'admin' ? 'var(--of-tool-ink-on-admin)' : 'var(--of-tool-ink)';
-    return `<div class="tool"><span class="tile" style="background:${bg}"><svg viewBox="${vb}" style="fill:${ink}" aria-hidden="true"><path d="${d}"/></svg></span><b>${n}</b><code>${tcs.getPropertyValue('--of-tool-' + k).trim()}</code></div>`;
+    return `<div class="tool"><span class="tile" style="background:${bg}"><svg viewBox="${vb}" style="fill:${ink}" aria-hidden="true"><path d="${d}"/></svg></span><b>${n}</b>${(() => { const h = tcs.getPropertyValue('--of-tool-' + k).trim().toUpperCase(), b = brandOf(h); return `<code data-hex="${h}" style="cursor:copy" title="Copy ${h}">${h}</code>${b ? `<span class="nm"><span class="ofname">${b.name}</span>${b.core ? '<span class="oftag">OF</span>' : ''}</span>` : ''}`; })()}</div>`;
   }).join('');
   const ST = [['outstanding', 'Outstanding'], ['progress', 'In progress'], ['review', 'Review'], ['revise', 'Revise'], ['complete', 'Complete']];
   document.querySelector('[data-pills]').innerHTML = ST.map(([k, l]) => `<span class="pill" style="background:var(--of-status-${k}-bg);color:var(--of-status-${k}-fg)"><i style="background:var(--of-status-${k}-dot)"></i>${l}</span>`).join('');

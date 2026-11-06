@@ -1351,13 +1351,13 @@
       }
     },
     "stop": {
-      "icon": "stop",
+      "icon": "custom/stop.svg",
       "apps": {
         "time-tracker": [
           "stop"
         ]
       },
-      "note": "Stop a running timer (Time Tracker)"
+      "note": "Jorge's plain square stop (2026-11-06)"
     },
     "sun": {
       "icon": "sun",
