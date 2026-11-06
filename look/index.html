@@ -21,6 +21,7 @@
 .hexbox.ofc { box-shadow: inset 0 0 0 2px var(--of-text); border-color: var(--of-text); }
 .sw .nm, .chip .nm { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 .ofname { font-weight: 600; color: var(--of-text); }
+.sw .same { font-size: 10.5px; color: var(--of-muted); }
 .oftag { font: 600 9px var(--sans); letter-spacing: .06em; color: var(--of-bg); background: var(--of-text); padding: 1px 4px; }
 .sw code { background: none; padding: 0; color: var(--of-text-2); font-size: 11px; }
 .pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
@@ -197,7 +198,14 @@ table.adopt { width: 100%; border-collapse: collapse; font-size: 13px; }
   const GREYS = [['--of-bg', 'bg'], ['--of-surface', 'surface'], ['--of-line', 'line'], ['--of-line-strong', 'line strong'], ['--of-muted', 'muted'], ['--of-text-2', 'text 2'], ['--of-text', 'text']];
   const COLOURS = [['--of-accent', 'accent'], ['--of-accent-text', 'accent text'], ['--of-success', 'success'], ['--of-warning', 'warning'], ['--of-danger', 'danger']];
   const lum = (hex) => { const m = hex.replace('#', '').match(/../g); if (!m) return 0; const [r, g, b] = m.map((x) => { const c = parseInt(x, 16) / 255; return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4; }); return 0.2126 * r + 0.7152 * g + 0.0722 * b; };
-  const sw = (cs) => ([v, l]) => { const h = cs.getPropertyValue(v).trim().toUpperCase(), b = brandOf(h); return `<div class="sw">${hexBox(h, b && b.core)}<span class="nm">${l}${b ? ` · <span class="ofname">${b.name}</span>${b.core ? '<span class="oftag">OF</span>' : ''}` : ''}</span></div>`; };
+  // Label on one line, then the brand name + OF tag on its own line (never wraps mid-way).
+  // A token that equals the one before it in this theme says so (e.g. accent text = accent in light).
+  const sw = (cs) => ([v, l], i, all) => {
+    const h = cs.getPropertyValue(v).trim().toUpperCase(), b = brandOf(h);
+    const prev = all.slice(0, i).find(([pv]) => cs.getPropertyValue(pv).trim().toUpperCase() === h);
+    const same = prev && v === '--of-accent-text' ? `<span class="same">same as ${prev[1]} here; ${cs.getPropertyValue('--of-text').trim().toUpperCase() === '#111411' ? '#598BFF on dark' : 'Garibaldi on light'}</span>` : '';
+    return `<div class="sw">${hexBox(h, b && b.core)}<span>${l}</span>${b ? `<span class="nm"><span class="ofname">${b.name}</span>${b.core ? '<span class="oftag">OF</span>' : ''}</span>` : ''}${same}</div>`;
+  };
   document.querySelectorAll('[data-swatches]').forEach((el) => {
     const cs = getComputedStyle(el);
     const greys = GREYS.slice().sort((a, b) => lum(cs.getPropertyValue(b[0]).trim()) - lum(cs.getPropertyValue(a[0]).trim()));
