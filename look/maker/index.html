@@ -24,8 +24,13 @@ h1 { font: 700 30px/1.1 var(--f-display); letter-spacing: -.01em; margin: 0; }
 .toolbar input.nm { font: 500 13px var(--f-mono); flex: 1 1 110px; min-width: 0; }
 #preset { width: 136px; }
 #gridSize { width: 108px; padding-right: 28px; }
-@media (max-width: 560px) { .toolbar input.nm { flex-basis: 100%; } .toolbar .sep { display: none; } #preset { flex: 1; } }
+@media (max-width: 560px) { .toolbar input.nm { flex-basis: 100%; } .toolbar .sep, .toolbar .grow { display: none; } #preset { flex: 1; } }
 .grow { flex: 1; }
+.toolbar.head { border-bottom: 0; padding-bottom: 0; margin-bottom: 8px; }
+.toolbar.head #saveCustom { min-width: 64px; }
+.confirm { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; font-size: 13px; background: var(--sunk); padding: 8px 10px; margin: -8px 0 16px; }
+.confirm span { flex: 1 1 200px; min-width: 0; }
+.confirm[hidden] { display: none; }
 .layout { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 20px; align-items: stretch; }
 @media (max-width: 900px) { .layout { grid-template-columns: minmax(0, 1fr); } }
 .panel { background: var(--surface); border: 1px solid var(--line); border-radius: 0; padding: 20px; min-width: 0; }
@@ -47,6 +52,7 @@ select { padding-right: 28px; }
 .frame-head .acts { display: flex; gap: 4px; flex-wrap: nowrap; }
 .frame-head .acts button { font-size: 12px; height: 26px; padding: 0 8px; }
 .frame.active canvas { outline: 2px solid var(--accent); outline-offset: 2px; }
+canvas.grid.moving { cursor: move; }
 canvas.grid { width: 100%; aspect-ratio: 1; display: block; touch-action: none; cursor: crosshair; image-rendering: pixelated; background: var(--surface); border: 1px solid var(--line); }
 .hint { color: var(--muted); font-size: 12px; margin-top: 10px; }
 .previews { display: flex; flex-direction: column; gap: 12px; }
@@ -101,21 +107,14 @@ svg.mk-px { shape-rendering: crispEdges; flex: none; }
     <div>
       <span class="eyebrow">Look</span>
       <h1>Icon maker</h1>
-      <p class="lede">Draw on the pixel grid, see it at real size and in a comment card, then copy the SVG. Two frames: <b>Open</b> and <b>Checked</b>, for icons that change when you click them. Grid matches Pixelarticons (12 pixels on a 24 viewBox). Start from any <a href="/look/icons/">house icon</a>; each icon name keeps its own saved work in this browser.</p>
+      <p class="lede">Draw with the pencil, lines, squares and circles, lasso pixels to move them, then <b>Save</b> to <a href="/look/icons/#custom">Custom icons</a> for the whole team. Two frames: <b>Open</b> and <b>Checked</b>, for icons that change when you click them. Grid matches Pixelarticons (12 pixels on a 24 viewBox, or 24 for half-pixel detail). Start from any <a href="/look/icons/">house</a> or custom icon.</p>
     </div>
   </div>
 
   <div class="layout">
     <section class="panel" aria-label="Editor">
-      <div class="toolbar" role="toolbar" aria-label="Tools">
-        <input id="iconName" class="nm" value="resolve" spellcheck="false" aria-label="Icon name" title="Icon name (each name saves separately)">
-        <span class="sep"></span>
-        <button type="button" data-tool="pen" aria-pressed="true" title="Click or drag to paint; starting on a filled pixel erases">Pencil</button>
-        <button type="button" data-tool="fill" aria-pressed="false" title="Fill an area">Fill</button>
-        <span class="sep"></span>
-        <button type="button" id="undo" title="Undo (⌘Z)">Undo</button>
-        <button type="button" id="redo" title="Redo (⇧⌘Z)">Redo</button>
-        <span class="sep"></span>
+      <div class="toolbar head" role="group" aria-label="Icon">
+        <input id="iconName" class="nm" value="resolve" spellcheck="false" aria-label="Icon name" title="Icon name (also the name it saves under)">
         <select id="preset" aria-label="Start from">
           <option value="">Start from…</option>
           <optgroup label="Starting points">
@@ -124,13 +123,29 @@ svg.mk-px { shape-rendering: crispEdges; flex: none; }
             <option value="boldTick">Bold tick only</option>
             <option value="blank">Blank</option>
           </optgroup>
+          <optgroup label="Custom icons" id="customOpts"></optgroup>
           <optgroup label="House icons" id="houseOpts"></optgroup>
         </select>
         <select id="gridSize" aria-label="Grid" title="12 = standard Pixelarticons pixel; 24 = half-pixel detail">
           <option value="12">12 × 12</option>
           <option value="24">24 × 24</option>
         </select>
+        <button type="button" class="primary" id="saveCustom" title="Save to Custom icons (shared with the team)">Save</button>
       </div>
+      <div class="toolbar" role="toolbar" aria-label="Tools">
+        <button type="button" data-tool="pen" aria-pressed="true" title="Pencil (P). Drag to paint; starting on a filled pixel erases. Shift-drag erases.">Pencil</button>
+        <button type="button" data-tool="line" aria-pressed="false" title="Line (I). Shift snaps to straight and 45°. Option erases.">Line</button>
+        <button type="button" data-tool="rect" aria-pressed="false" title="Square (U). Shift keeps it square. Option erases.">Square</button>
+        <button type="button" data-tool="ellipse" aria-pressed="false" title="Circle (O). Shift keeps it round. Option erases.">Circle</button>
+        <button type="button" data-tool="fill" aria-pressed="false" title="Fill an area (G)">Fill</button>
+        <button type="button" data-tool="lasso" aria-pressed="false" title="Lasso (L). Draw around pixels, then drag them. Arrows nudge, Delete removes, Esc drops, ⌘A selects all.">Lasso</button>
+        <span class="sep"></span>
+        <button type="button" id="filled" aria-pressed="false" title="Draw squares and circles filled (F)">Filled</button>
+        <span class="grow"></span>
+        <button type="button" id="undo" title="Undo (⌘Z)">Undo</button>
+        <button type="button" id="redo" title="Redo (⇧⌘Z)">Redo</button>
+      </div>
+      <div class="confirm" id="replaceRow" hidden><span id="replaceMsg"></span><button type="button" class="primary" id="replaceYes">Replace</button><button type="button" id="replaceNo">Cancel</button></div>
       <div class="frames">
         <div class="frame active" data-frame="open">
           <div class="frame-head"><b>Open</b>
@@ -153,7 +168,7 @@ svg.mk-px { shape-rendering: crispEdges; flex: none; }
           <canvas class="grid" id="gridChecked" aria-label="Checked frame pixel grid"></canvas>
         </div>
       </div>
-      <p class="hint">Shift-drag erases. Arrow keys nudge the active frame one pixel. Each name saves separately in this browser. To add an icon to the house: save the SVG into <code>look/icons/custom/</code> and give it a name in <code>house.json</code> (or send it to Jorge).</p>
+      <p class="hint">Shift-drag erases with the pencil. Arrow keys nudge the active frame (or the lasso selection) one pixel. Work in progress stays in this browser under each name; <b>Save</b> puts it in Custom icons for everyone. To make one a house icon the apps use, ask Jorge.</p>
     </section>
 
     <section class="panel previews" aria-label="Preview">
@@ -179,12 +194,12 @@ svg.mk-px { shape-rendering: crispEdges; flex: none; }
       <div>
         <b>Open</b>
         <textarea id="outOpen" readonly aria-label="Open SVG"></textarea>
-        <div class="row"><button type="button" class="primary" data-copy="open">Copy SVG</button><button type="button" data-path="open">Copy path</button><button type="button" data-save="open" class="save">Save .svg</button></div>
+        <div class="row"><button type="button" class="primary" data-copy="open">Copy SVG</button><button type="button" data-path="open">Copy path</button><button type="button" data-save="open" class="save">Download</button></div>
       </div>
       <div>
         <b>Checked</b>
         <textarea id="outChecked" readonly aria-label="Checked SVG"></textarea>
-        <div class="row"><button type="button" class="primary" data-copy="checked">Copy SVG</button><button type="button" data-path="checked">Copy path</button><button type="button" data-save="checked" class="save">Save .svg</button></div>
+        <div class="row"><button type="button" class="primary" data-copy="checked">Copy SVG</button><button type="button" data-path="checked">Copy path</button><button type="button" data-save="checked" class="save">Download</button></div>
       </div>
     </div>
     <h2 style="margin-top:18px">Import</h2>
@@ -215,7 +230,10 @@ svg.mk-px { shape-rendering: crispEdges; flex: none; }
 
   let N = 12;
   const state = { open: new Array(144).fill(0), checked: new Array(144).fill(0) };
-  let active = 'open', tool = 'pen';
+  let active = 'open', tool = 'pen', filled = false;
+  let sel = null;   // lasso selection: { which, mask: Set of cells, pix: [[x, y]], base, dx, dy }
+  let drag = null;  // the gesture in progress
+  let CUSTOM = [];  // Custom icons from the hub (shared)
   const undo = [], redo = [];
   const $ = (id) => document.getElementById(id);
   const canv = { open: $('gridOpen'), checked: $('gridChecked') };
@@ -237,6 +255,13 @@ svg.mk-px { shape-rendering: crispEdges; flex: none; }
     return false;
   }
   function applyPreset(p) {
+    sel = null;
+    if (p.startsWith('custom:')) {
+      const c = CUSTOM.find((i) => i.name === p.slice(7)); if (!c) return;
+      N = c.grid; $('gridSize').value = String(N);
+      state.open = rasterPath(c.open, false); state.checked = rasterPath(c.checked || c.open, false);
+      $('iconName').value = c.name; return;
+    }
     N = 12; $('gridSize').value = '12';
     const ring = fromRows(RING);
     if (p === 'boldRing') { state.open = withCells(ring, BOLD); state.checked = solidOf(state.open); }
@@ -254,7 +279,7 @@ svg.mk-px { shape-rendering: crispEdges; flex: none; }
 
   // ---- history ----
   function snap() { undo.push(JSON.stringify({ N, open: state.open, checked: state.checked })); if (undo.length > 100) undo.shift(); redo.length = 0; }
-  function restore(s) { const o = JSON.parse(s); N = o.N; state.open = o.open; state.checked = o.checked; $('gridSize').value = String(N); }
+  function restore(s) { sel = null; const o = JSON.parse(s); N = o.N; state.open = o.open; state.checked = o.checked; $('gridSize').value = String(N); }
   function doUndo() { if (!undo.length) return; redo.push(JSON.stringify({ N, open: state.open, checked: state.checked })); restore(undo.pop()); render(); }
   function doRedo() { if (!redo.length) return; undo.push(JSON.stringify({ N, open: state.open, checked: state.checked })); restore(redo.pop()); render(); }
 
@@ -286,12 +311,76 @@ svg.mk-px { shape-rendering: crispEdges; flex: none; }
     for (let y = 0; y < to; y++) for (let x = 0; x < to; x++) { const sx = Math.floor(x * from / to), sy = Math.floor(y * from / to); out[y * to + x] = a[sy * from + sx]; }
     return out;
   }
-  // Path data on the 24 viewBox, one rect run per row (compact, crisp).
+  // Path data on the 24 viewBox: the filled pixels traced into one outline
+  // (same as look/icons/outline.mjs), so Safari has no inner edges to seam.
   function toPath(a) {
-    const u = 24 / N; let d = '';
-    for (let y = 0; y < N; y++) { let x = 0; while (x < N) { if (!a[y * N + x]) { x++; continue; } let w = 0; while (x + w < N && a[y * N + x + w]) w++; d += `M${x * u} ${y * u}h${w * u}v${u}h-${w * u}z`; x += w; } }
+    const u = 24 / N, on = (x, y) => x >= 0 && y >= 0 && x < N && y < N && a[y * N + x] === 1;
+    const edges = new Map(), add = (x1, y1, x2, y2) => { const k = x1 + ',' + y1; (edges.get(k) || edges.set(k, []).get(k)).push([x2, y2]); };
+    for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
+      if (!on(x, y)) continue;
+      if (!on(x, y - 1)) add(x, y, x + 1, y);
+      if (!on(x + 1, y)) add(x + 1, y, x + 1, y + 1);
+      if (!on(x, y + 1)) add(x + 1, y + 1, x, y + 1);
+      if (!on(x - 1, y)) add(x, y + 1, x, y);
+    }
+    let d = '';
+    for (;;) {
+      const startKey = [...edges.keys()].find((k) => edges.get(k).length); if (!startKey) break;
+      const pts = []; let [cx, cy] = startKey.split(',').map(Number), prev = null;
+      for (;;) {
+        const list = edges.get(cx + ',' + cy); if (!list || !list.length) break;
+        let idx = 0;
+        if (list.length > 1 && prev) { const din = [cx - prev[0], cy - prev[1]], right = [-din[1], din[0]]; idx = list.findIndex(([nx, ny]) => nx - cx === right[0] && ny - cy === right[1]); if (idx < 0) idx = 0; }
+        const [nx, ny] = list.splice(idx, 1)[0]; pts.push([cx, cy]); prev = [cx, cy]; cx = nx; cy = ny;
+        if (cx + ',' + cy === startKey) break;
+      }
+      const out = pts.filter((p, k) => { const q = pts[(k - 1 + pts.length) % pts.length], r = pts[(k + 1) % pts.length]; return !((q[0] === p[0] && p[0] === r[0]) || (q[1] === p[1] && p[1] === r[1])); });
+      if (out.length < 3) continue;
+      d += `M${out[0][0] * u} ${out[0][1] * u}` + out.slice(1).map(([x, y], k) => (x === out[k][0] ? `V${y * u}` : `H${x * u}`)).join('') + 'Z';
+    }
     return d;
   }
+
+  // ---- shapes ----
+  function lineCells(x0, y0, x1, y1) {
+    const out = [], dx = Math.abs(x1 - x0), dy = -Math.abs(y1 - y0), sx = x0 < x1 ? 1 : -1, sy = y0 < y1 ? 1 : -1; let err = dx + dy;
+    for (;;) { out.push([x0, y0]); if (x0 === x1 && y0 === y1) break; const e2 = 2 * err; if (e2 >= dy) { err += dy; x0 += sx; } if (e2 <= dx) { err += dx; y0 += sy; } }
+    return out;
+  }
+  function rectCells(x0, y0, x1, y1, fill) {
+    const out = [], [a, b] = [Math.min(x0, x1), Math.max(x0, x1)], [c, d] = [Math.min(y0, y1), Math.max(y0, y1)];
+    for (let y = c; y <= d; y++) for (let x = a; x <= b; x++) if (fill || x === a || x === b || y === c || y === d) out.push([x, y]);
+    return out;
+  }
+  // Ellipse inside the dragged box; the outline is the inside pixels that touch the outside (thin, 8-connected).
+  function ellipseCells(x0, y0, x1, y1, fill) {
+    const [a, b] = [Math.min(x0, x1), Math.max(x0, x1)], [c, d] = [Math.min(y0, y1), Math.max(y0, y1)];
+    const cx = (a + b) / 2, cy = (c + d) / 2, rx = (b - a + 1) / 2, ry = (d - c + 1) / 2;
+    const ins = (x, y) => x >= a && x <= b && y >= c && y <= d && ((x - cx) / rx) ** 2 + ((y - cy) / ry) ** 2 <= 1.02;
+    const out = [];
+    for (let y = c; y <= d; y++) for (let x = a; x <= b; x++) if (ins(x, y) && (fill || !ins(x + 1, y) || !ins(x - 1, y) || !ins(x, y + 1) || !ins(x, y - 1))) out.push([x, y]);
+    return out;
+  }
+  function shapeCells(kind, p0, p1, constrain) {
+    let [x1, y1] = p1; const [x0, y0] = p0;
+    if (constrain && kind === 'line') { const dx = x1 - x0, dy = y1 - y0, ax = Math.abs(dx), ay = Math.abs(dy); if (ax > 2 * ay) y1 = y0; else if (ay > 2 * ax) x1 = x0; else { const m = Math.max(ax, ay); x1 = x0 + Math.sign(dx || 1) * m; y1 = y0 + Math.sign(dy || 1) * m; } }
+    if (constrain && kind !== 'line') { const m = Math.max(Math.abs(x1 - x0), Math.abs(y1 - y0)); x1 = x0 + Math.sign(x1 - x0 || 1) * m; y1 = y0 + Math.sign(y1 - y0 || 1) * m; }
+    if (kind === 'line') return lineCells(x0, y0, x1, y1);
+    if (kind === 'rect') return rectCells(x0, y0, x1, y1, filled);
+    return ellipseCells(x0, y0, x1, y1, filled);
+  }
+
+  // ---- lasso selection ----
+  function compose() { const o = sel.base.slice(); for (const [x, y] of sel.pix) { const X = x + sel.dx, Y = y + sel.dy; if (X >= 0 && Y >= 0 && X < N && Y < N) o[Y * N + X] = 1; } state[sel.which] = o; }
+  function inSel(which, p) { if (!sel || sel.which !== which) return false; const x = p[0] - sel.dx, y = p[1] - sel.dy; return x >= 0 && y >= 0 && x < N && y < N && sel.mask.has(y * N + x); }
+  function lift(which, mask) {
+    if (!mask.size) { sel = null; return; }
+    snap();
+    const a = state[which], base = a.slice(), pix = [];
+    for (const k of mask) { if (a[k]) pix.push([k % N, Math.floor(k / N)]); base[k] = 0; }
+    sel = { which, mask, pix, base, dx: 0, dy: 0 };
+  }
+  function dropSel() { if (sel) { sel = null; return true; } return false; }
   function svgStr(a, size, color) { const d = toPath(a); return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="${color || 'currentColor'}" shape-rendering="crispEdges"><path d="${d}"/></svg>`; }
   function svgEl(a, size, color) { return svgStr(a, size, color).replace('<svg ', '<svg class="mk-px" aria-hidden="true" '); }
 
@@ -311,22 +400,75 @@ svg.mk-px { shape-rendering: crispEdges; flex: none; }
     const line = (color, step) => { g.fillStyle = color; for (let i = step; i < N; i += step) { const p = Math.round(i * cell) - Math.floor(t / 2); g.fillRect(p, 0, t, px); g.fillRect(0, p, px, t); } };
     line(cssVar('--grid'), 1);
     if (N === 24) line(cssVar('--line'), 2);
+    // Lasso: the path being drawn, then the selection's outline (dashed).
+    g.strokeStyle = cssVar('--accent'); g.lineWidth = 2 * t; g.setLineDash([4 * t, 3 * t]);
+    if (drag && drag.kind === 'lasso' && drag.which === which && drag.pts.length > 1) {
+      g.beginPath(); drag.pts.forEach(([x, y], i) => (i ? g.lineTo(x * cell, y * cell) : g.moveTo(x * cell, y * cell))); g.stroke();
+    }
+    if (sel && sel.which === which) {
+      g.beginPath();
+      for (const k of sel.mask) {
+        const x = k % N + sel.dx, y = Math.floor(k / N) + sel.dy, has = (X, Y) => sel.mask.has(Y * N + X);
+        const X = k % N, Y = Math.floor(k / N);
+        if (!has(X, Y - 1) || Y === 0) { g.moveTo(x * cell, y * cell); g.lineTo((x + 1) * cell, y * cell); }
+        if (!has(X, Y + 1) || Y === N - 1) { g.moveTo(x * cell, (y + 1) * cell); g.lineTo((x + 1) * cell, (y + 1) * cell); }
+        if (!has(X - 1, Y) || X === 0) { g.moveTo(x * cell, y * cell); g.lineTo(x * cell, (y + 1) * cell); }
+        if (!has(X + 1, Y) || X === N - 1) { g.moveTo((x + 1) * cell, y * cell); g.lineTo((x + 1) * cell, (y + 1) * cell); }
+      }
+      g.stroke();
+    }
+    g.setLineDash([]);
   }
-  let painting = null;
-  function cellAt(c, e) { const r = c.getBoundingClientRect(); const x = Math.floor((e.clientX - r.left) / r.width * N), y = Math.floor((e.clientY - r.top) / r.height * N); return (x < 0 || y < 0 || x >= N || y >= N) ? null : [x, y]; }
-  function setActive(which) { active = which; document.querySelectorAll('.frame').forEach((f) => f.classList.toggle('active', f.dataset.frame === which)); }
+  function cellRaw(c, e) { const r = c.getBoundingClientRect(); return [(e.clientX - r.left) / r.width * N, (e.clientY - r.top) / r.height * N]; }
+  function cellAt(c, e) { const [fx, fy] = cellRaw(c, e), x = Math.floor(fx), y = Math.floor(fy); return (x < 0 || y < 0 || x >= N || y >= N) ? null : [x, y]; }
+  function setActive(which) { if (which !== active && sel && sel.which !== which) sel = null; active = which; document.querySelectorAll('.frame').forEach((f) => f.classList.toggle('active', f.dataset.frame === which)); }
+  function paintShape(e) {
+    const o = drag.base.slice();
+    for (const [x, y] of shapeCells(tool, drag.start, drag.end, e.shiftKey)) if (x >= 0 && y >= 0 && x < N && y < N) o[y * N + x] = drag.val;
+    state[drag.which] = o;
+  }
   for (const which of ['open', 'checked']) {
     const c = canv[which];
     c.addEventListener('pointerdown', (e) => {
-      const p = cellAt(c, e); if (!p) return; setActive(which); snap();
+      const p = cellAt(c, e); if (!p) return; setActive(which);
+      c.setPointerCapture(e.pointerId);
+      if (tool === 'lasso') {
+        if (inSel(which, p)) { snap(); drag = { kind: 'move', which, start: p, dx: sel.dx, dy: sel.dy }; return; }
+        sel = null; drag = { kind: 'lasso', which, pts: [cellRaw(c, e)] }; render(); return;
+      }
+      sel = null; snap();
       const k = p[1] * N + p[0];
       if (tool === 'fill') { state[which] = flood(state[which], p[0], p[1], e.shiftKey ? 0 : (state[which][k] ? 0 : 1)); render(); return; }
-      painting = { which, val: e.shiftKey ? 0 : (state[which][k] ? 0 : 1) };
-      c.setPointerCapture(e.pointerId); state[which][k] = painting.val; render();
+      if (tool === 'pen') { drag = { kind: 'paint', which, val: e.shiftKey ? 0 : (state[which][k] ? 0 : 1) }; state[which][k] = drag.val; render(); return; }
+      drag = { kind: 'shape', which, base: state[which].slice(), start: p, end: p, val: e.altKey ? 0 : 1 }; paintShape(e); render();
     });
-    c.addEventListener('pointermove', (e) => { if (!painting || painting.which !== which) return; const p = cellAt(c, e); if (!p) return; const k = p[1] * N + p[0]; if (state[which][k] !== painting.val) { state[which][k] = painting.val; render(); } });
-    c.addEventListener('pointerup', () => { painting = null; });
-    c.addEventListener('pointercancel', () => { painting = null; });
+    c.addEventListener('pointermove', (e) => {
+      if (!drag) { c.classList.toggle('moving', tool === 'lasso' && !!cellAt(c, e) && inSel(which, cellAt(c, e))); return; }
+      if (drag.which !== which) return;
+      if (drag.kind === 'lasso') { drag.pts.push(cellRaw(c, e)); draw(which); return; }
+      if (drag.kind === 'move') {
+        const [fx, fy] = cellRaw(c, e), nx = drag.dx + Math.floor(fx) - drag.start[0], ny = drag.dy + Math.floor(fy) - drag.start[1];
+        if (nx !== sel.dx || ny !== sel.dy) { sel.dx = nx; sel.dy = ny; compose(); render(); }
+        return;
+      }
+      const [fx, fy] = cellRaw(c, e), q = [Math.max(0, Math.min(N - 1, Math.floor(fx))), Math.max(0, Math.min(N - 1, Math.floor(fy)))];
+      if (drag.kind === 'shape') { if (q[0] !== drag.end[0] || q[1] !== drag.end[1]) { drag.end = q; paintShape(e); render(); } return; }
+      const k = q[1] * N + q[0]; if (state[which][k] !== drag.val) { state[which][k] = drag.val; render(); }
+    });
+    const end = () => {
+      if (drag && drag.kind === 'lasso') {
+        const pts = drag.pts, mask = new Set();
+        if (pts.length > 2) {
+          const ctx = document.createElement('canvas').getContext('2d'), path = new Path2D();
+          pts.forEach(([x, y], i) => (i ? path.lineTo(x, y) : path.moveTo(x, y))); path.closePath();
+          for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) if (ctx.isPointInPath(path, x + .5, y + .5)) mask.add(y * N + x);
+        }
+        drag = null; lift(which, mask);
+      } else drag = null;
+      render();
+    };
+    c.addEventListener('pointerup', end);
+    c.addEventListener('pointercancel', end);
   }
 
   // ---- previews + export ----
@@ -348,12 +490,15 @@ svg.mk-px { shape-rendering: crispEdges; flex: none; }
   }
 
   // ---- toolbar ----
-  document.querySelectorAll('[data-tool]').forEach((b) => b.addEventListener('click', () => { tool = b.dataset.tool; document.querySelectorAll('[data-tool]').forEach((x) => x.setAttribute('aria-pressed', String(x === b))); }));
+  function setTool(t) { tool = t; if (t !== 'lasso') sel = null; document.querySelectorAll('[data-tool]').forEach((x) => x.setAttribute('aria-pressed', String(x.dataset.tool === t))); render(); }
+  document.querySelectorAll('[data-tool]').forEach((b) => b.addEventListener('click', () => setTool(b.dataset.tool)));
+  function setFilled(v) { filled = v; $('filled').setAttribute('aria-pressed', String(v)); }
+  $('filled').addEventListener('click', () => setFilled(!filled));
   $('undo').addEventListener('click', doUndo); $('redo').addEventListener('click', doRedo);
   $('preset').addEventListener('change', (e) => { if (!e.target.value) return; snap(); applyPreset(e.target.value); e.target.value = ''; render(); });
-  $('gridSize').addEventListener('change', (e) => { const to = Number(e.target.value); if (to === N) return; snap(); state.open = resample(state.open, N, to); state.checked = resample(state.checked, N, to); N = to; render(); });
+  $('gridSize').addEventListener('change', (e) => { const to = Number(e.target.value); if (to === N) return; sel = null; snap(); state.open = resample(state.open, N, to); state.checked = resample(state.checked, N, to); N = to; render(); });
   document.querySelectorAll('.frame').forEach((f) => f.querySelectorAll('[data-act]').forEach((b) => b.addEventListener('click', () => {
-    const which = f.dataset.frame; setActive(which); snap(); const a = state[which];
+    const which = f.dataset.frame; setActive(which); sel = null; snap(); const a = state[which];
     if (b.dataset.act === 'clear') state[which] = new Array(N * N).fill(0);
     if (b.dataset.act === 'invert') state[which] = a.map((v) => v ? 0 : 1);
     if (b.dataset.act === 'flip') { const o = []; for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) o.push(a[y * N + (N - 1 - x)]); state[which] = o; }
@@ -364,12 +509,23 @@ svg.mk-px { shape-rendering: crispEdges; flex: none; }
   $('ctxToggle').addEventListener('click', () => { ctxChecked = !ctxChecked; render(); });
   ['colOpen', 'colChecked'].forEach((id) => $(id).addEventListener('input', render));
   $('resetColors').addEventListener('click', () => { $('colOpen').value = '#8A909B'; $('colChecked').value = '#34D399'; render(); });
-  $('iconName').addEventListener('change', () => { if (!load(slotName())) save(); render(); });
+  $('iconName').addEventListener('change', () => { sel = null; if (!load(slotName())) save(); render(); });
   document.addEventListener('keydown', (e) => {
     if (e.target.closest('input, textarea, select')) return;
     const mod = e.metaKey || e.ctrlKey;
     if (mod && e.key.toLowerCase() === 'z') { e.preventDefault(); e.shiftKey ? doRedo() : doUndo(); return; }
+    if (mod && e.key.toLowerCase() === 'a') {
+      e.preventDefault(); setTool('lasso'); const a = state[active], mask = new Set(); a.forEach((v, k) => { if (v) mask.add(k); }); lift(active, mask); render(); return;
+    }
+    if (!mod && !e.altKey) {
+      const t = { p: 'pen', i: 'line', u: 'rect', o: 'ellipse', g: 'fill', l: 'lasso' }[e.key.toLowerCase()];
+      if (t) { setTool(t); return; }
+      if (e.key.toLowerCase() === 'f') { setFilled(!filled); return; }
+    }
+    if (e.key === 'Escape' && dropSel()) { render(); return; }
+    if ((e.key === 'Delete' || e.key === 'Backspace') && sel) { e.preventDefault(); snap(); sel.pix = []; compose(); sel = null; render(); return; }
     const dir = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }[e.key];
+    if (dir && sel) { e.preventDefault(); snap(); sel.dx += dir[0]; sel.dy += dir[1]; compose(); render(); return; }
     if (dir) { e.preventDefault(); snap(); const a = state[active], o = new Array(N * N).fill(0); for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) { const X = x + dir[0], Y = y + dir[1]; if (a[y * N + x] && X >= 0 && Y >= 0 && X < N && Y < N) o[Y * N + X] = 1; } state[active] = o; render(); }
   });
 
@@ -404,6 +560,43 @@ svg.mk-px { shape-rendering: crispEdges; flex: none; }
     snap(); state[b.dataset.import] = out; setActive(b.dataset.import); render(); msg.textContent = 'Imported. Odd-pixel icons look best on the 24 × 24 grid.';
   }));
 
+  // ---- Custom icons (shared on the hub, tools.ordinary.co/look/icons#custom) ----
+  const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+  const cleanName = () => slotName().toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 48);
+  async function loadCustom() {
+    try {
+      const r = await fetch('/look/__icons', { credentials: 'same-origin', cache: 'no-store' });
+      if (!r.ok) return false;
+      CUSTOM = (await r.json()).icons || [];
+    } catch { return false; }
+    $('customOpts').innerHTML = CUSTOM.map((i) => `<option value="custom:${esc(i.name)}">${esc(i.name)}</option>`).join('');
+    return true;
+  }
+  async function saveCustom() {
+    const name = cleanName();
+    if (!name) { toast('Give the icon a name first'); $('iconName').focus(); return; }
+    if (!state.open.some(Boolean)) { toast('Nothing drawn yet'); return; }
+    sel = null;
+    const body = { name, grid: N, open: toPath(state.open), checked: state.checked.some(Boolean) ? toPath(state.checked) : '' };
+    try {
+      const r = await fetch('/look/__icons', { method: 'POST', credentials: 'same-origin', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
+      if (r.status === 401) { toast('Sign in on tools.ordinary.co to save'); return; }
+      if (!r.ok) { toast('Could not save (' + r.status + ')'); return; }
+      $('iconName').value = name; save();
+      await loadCustom(); toast('Saved to Custom icons');
+    } catch { toast('Could not save: offline?'); }
+  }
+  $('saveCustom').addEventListener('click', async () => {
+    const name = cleanName(); if (!name) { saveCustom(); return; }
+    await loadCustom();
+    const old = CUSTOM.find((i) => i.name === name);
+    if (!old) { saveCustom(); return; }
+    $('replaceMsg').innerHTML = `<b>${esc(name)}</b> is already in Custom icons (saved by ${esc(String(old.by).split('@')[0])}). Replace it?`;
+    $('replaceRow').hidden = false; $('replaceYes').focus();
+  });
+  $('replaceYes').addEventListener('click', () => { $('replaceRow').hidden = true; saveCustom(); });
+  $('replaceNo').addEventListener('click', () => { $('replaceRow').hidden = true; });
+
   (function boot() {
     const H = window.OF_ICONS || {};
     const og = document.getElementById('houseOpts');
@@ -414,6 +607,10 @@ svg.mk-px { shape-rendering: crispEdges; flex: none; }
     else if (!(last && load(last))) applyPreset('boldRing');
   })();
   render();
+  loadCustom().then(() => {
+    const want = new URLSearchParams(location.search).get('custom');
+    if (want && CUSTOM.some((i) => i.name === want)) { snap(); applyPreset('custom:' + want); render(); }
+  });
   const ro = new ResizeObserver(() => { draw('open'); draw('checked'); }); ro.observe(canv.open); ro.observe(canv.checked);
   matchMedia('(prefers-color-scheme: dark)').addEventListener('change', render);
 })();

@@ -29,6 +29,19 @@
 .kv span:nth-child(odd) { color: var(--muted); }
 .acts { display: flex; flex-wrap: wrap; gap: 6px; }
 .empty { padding: 32px; text-align: center; color: var(--muted); background: var(--card); }
+.sec-head { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 8px 16px; margin-bottom: 12px; }
+.sec-head h2 { margin: 0; }
+.sec-head p { margin: 4px 0 0; color: var(--muted); font-size: 14px; }
+.cgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
+.cgrid .empty { grid-column: 1 / -1; border: 1px solid var(--border); }
+.ccard { background: var(--card); border: 1px solid var(--border); padding: 14px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.ccard .art { display: flex; gap: 14px; align-items: center; min-height: 48px; }
+.ccard .art .sep { width: 1px; align-self: stretch; background: var(--border); }
+.ccard .nm { font: 13px var(--mono); word-break: break-word; }
+.ccard .meta { font-size: 12px; color: var(--muted); }
+.ccard .acts button, .ccard .acts .btn { font-size: 12px; padding: 4px 8px; }
+.ccard .ask { font-size: 12px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+button.danger { background: #DC2626; border-color: #DC2626; color: #fff; }
 </style>
 </head>
 <body>
@@ -45,6 +58,16 @@
     <span class="eyebrow">Look</span>
     <h1>Icon library</h1>
     <p class="lede">Every icon the OF apps use, by its house name. Apps point at these names, so changing one here (in <code>look/icons/house.json</code>) changes it everywhere it appears. Pixelarticons Pro is licensed per seat: people who work with these icons need a seat.</p>
+  </section>
+  <section id="custom" aria-labelledby="customTitle">
+    <div class="sec-head">
+      <div><h2 id="customTitle">Custom icons</h2><p>Saved from the icon maker by anyone on the team. Copy, download, or keep working on one in the maker.</p></div>
+      <a class="btn primary" href="/look/maker/">New icon</a>
+    </div>
+    <div class="cgrid" id="cgrid"><div class="empty">Loading…</div></div>
+  </section>
+  <section aria-labelledby="houseTitle" style="margin-bottom:-16px">
+    <h2 id="houseTitle">House icons</h2>
   </section>
   <div class="bar" role="search">
     <input type="search" id="q" placeholder="Search names, e.g. arrow, play, search" aria-label="Search icons">
@@ -99,6 +122,55 @@
   [q, app, style].forEach((el) => el.addEventListener('input', list));
   let tt; function toast(t) { const el = document.getElementById('toast'); el.textContent = t; el.classList.add('show'); clearTimeout(tt); tt = setTimeout(() => el.classList.remove('show'), 1400); }
   list(); detail();
+
+  // ---- Custom icons (saved from the maker; shared on the hub) ----
+  let CUSTOM = [], asking = '';
+  const csvg = (d, s) => `<svg class="px" width="${s}" height="${s}" viewBox="0 0 24 24" aria-hidden="true"><path d="${esc(d)}"/></svg>`;
+  const cfile = (d) => `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" shape-rendering="crispEdges"><path d="${d}"/></svg>`;
+  const when = (iso) => { try { return new Date(iso).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }); } catch { return ''; } };
+  function custom() {
+    const g = document.getElementById('cgrid');
+    if (!CUSTOM.length) { g.innerHTML = '<div class="empty">None yet. Draw one in the <a href="/look/maker/">icon maker</a> and press Save.</div>'; return; }
+    g.innerHTML = CUSTOM.map((i) => `<div class="ccard" data-name="${esc(i.name)}">
+      <div class="art">${csvg(i.open, 24)}${csvg(i.open, 48)}${i.checked ? `<span class="sep"></span>${csvg(i.checked, 24)}` : ''}</div>
+      <div><div class="nm">${esc(i.name)}</div><div class="meta">${esc(String(i.by).split('@')[0])} · ${when(i.at)} · ${i.grid} × ${i.grid}</div></div>
+      ${asking === i.name
+        ? `<div class="ask">Delete ${esc(i.name)} for everyone? <button type="button" class="danger" data-c="del-yes">Delete</button><button type="button" data-c="del-no">Cancel</button></div>`
+        : `<div class="acts"><button type="button" data-c="copy">Copy SVG</button>${i.checked ? '<button type="button" data-c="copy-checked">Copy checked</button>' : ''}<button type="button" data-c="download">Download</button><a class="btn" href="/look/maker/?custom=${encodeURIComponent(i.name)}">Edit</a><button type="button" data-c="del">Delete</button></div>`}
+    </div>`).join('');
+  }
+  async function loadCustom() {
+    try {
+      const r = await fetch('/look/__icons', { credentials: 'same-origin', cache: 'no-store' });
+      if (!r.ok) throw new Error(r.status);
+      CUSTOM = (await r.json()).icons || [];
+      custom();
+    } catch { document.getElementById('cgrid').innerHTML = '<div class="empty">Custom icons load on tools.ordinary.co once you are signed in.</div>'; }
+  }
+  document.getElementById('cgrid').addEventListener('click', async (e) => {
+    const b = e.target.closest('[data-c]'); if (!b) return;
+    const name = b.closest('.ccard').dataset.name, it = CUSTOM.find((i) => i.name === name); if (!it) return;
+    const act = b.dataset.c;
+    if (act === 'copy' || act === 'copy-checked') { try { await navigator.clipboard.writeText(cfile(act === 'copy' ? it.open : it.checked)); toast('Copied'); } catch { toast('Copy blocked by the browser'); } return; }
+    if (act === 'download') {
+      for (const [d, suffix] of [[it.open, ''], [it.checked, '-checked']]) {
+        if (!d) continue;
+        const url = URL.createObjectURL(new Blob([cfile(d)], { type: 'image/svg+xml' }));
+        const a = document.createElement('a'); a.href = url; a.download = it.name + suffix + '.svg'; document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      }
+      return;
+    }
+    if (act === 'del') { asking = name; custom(); return; }
+    if (act === 'del-no') { asking = ''; custom(); return; }
+    if (act === 'del-yes') {
+      asking = '';
+      const r = await fetch('/look/__icons?name=' + encodeURIComponent(name), { method: 'DELETE', credentials: 'same-origin' }).catch(() => null);
+      if (r && r.ok) { CUSTOM = CUSTOM.filter((i) => i.name !== name); toast('Deleted'); } else toast('Could not delete');
+      custom();
+    }
+  });
+  loadCustom();
 })();
 </script>
 </body>

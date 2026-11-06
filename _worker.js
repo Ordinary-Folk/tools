@@ -89,6 +89,12 @@ export default {
     if (url.pathname === '/scripts/manifest.json') {
       return handleScriptsManifest(request, env, url)
     }
+    // Look custom icons (tools.ordinary.co/look/icons#custom): icons saved
+    // from the icon maker, shared by the team. One JSON list in TOOLS_DATA.
+    if (url.pathname === '/look/__icons') {
+      return handleCustomIcons(request, env, url)
+    }
+
     // One URL per tool (/scripts/smart-queue): same page, it reads the path.
     // Real files under /scripts/ have an extension or a deeper path, so only a
     // bare one-segment id is rewritten.
@@ -455,4 +461,85 @@ async function proxyTo(request, url, app, prefix) {
     statusText: upstream.statusText,
     headers: upstream.headers,
   })
+}
+
+// --- Look custom icons ---------------------------------------------------------
+// GET    /look/__icons             -> { icons: [{ name, grid, open, checked, by, at }] }
+// POST   /look/__icons  body JSON  -> save (or replace) one icon by name
+// DELETE /look/__icons?name=<name> -> remove one
+// Only for a signed-in OF person: a verified Access JWT (tools.ordinary.co),
+// or DEV_IDENTITY on localhost. The pages.dev host is not behind Access, so
+// the JWT check (not the hostname) is what keeps it private.
+const CUSTOM_ICONS_KEY = 'look/custom-icons.json'
+const ICON_PATH_RE = /^[MmHhVvLlZz0-9 .,-]*$/
+
+async function lookIdentity(request, env, url) {
+  const jwt = request.headers.get('Cf-Access-Jwt-Assertion') || readCookie(request, 'CF_Authorization')
+  if (jwt) {
+    const claims = await verifyAccessJwt(jwt).catch(() => null)
+    const email = String(claims?.email || '').toLowerCase()
+    if (email) return email
+  }
+  const local = url.hostname === 'localhost' || url.hostname === '127.0.0.1'
+  if (local && env.DEV_IDENTITY) return String(env.DEV_IDENTITY).toLowerCase()
+  return ''
+}
+
+async function readCustomIcons(env) {
+  const obj = await env.TOOLS_DATA.get(CUSTOM_ICONS_KEY)
+  if (!obj) return []
+  try {
+    const data = await obj.json()
+    return Array.isArray(data?.icons) ? data.icons : []
+  } catch {
+    return []
+  }
+}
+
+async function handleCustomIcons(request, env, url) {
+  if (!env.TOOLS_DATA) return jsonResp({ error: 'unconfigured' }, 500)
+  const email = await lookIdentity(request, env, url)
+  if (!email) return jsonResp({ error: 'sign-in' }, 401)
+
+  if (request.method === 'GET') return jsonResp({ icons: await readCustomIcons(env) })
+
+  if (request.method === 'POST') {
+    const text = await request.text()
+    if (text.length > 100_000) return jsonResp({ error: 'too-large' }, 413)
+    let body
+    try {
+      body = JSON.parse(text)
+    } catch {
+      return jsonResp({ error: 'not-json' }, 400)
+    }
+    const name = String(body?.name || '').trim().toLowerCase()
+    const grid = Number(body?.grid)
+    const open = String(body?.open || '')
+    const checked = String(body?.checked || '')
+    if (!/^[a-z0-9][a-z0-9-]{0,47}$/.test(name)) return jsonResp({ error: 'bad-name' }, 400)
+    if (grid !== 12 && grid !== 24) return jsonResp({ error: 'bad-grid' }, 400)
+    if (!open || open.length > 20_000 || !ICON_PATH_RE.test(open)) return jsonResp({ error: 'bad-path' }, 400)
+    if (checked.length > 20_000 || !ICON_PATH_RE.test(checked)) return jsonResp({ error: 'bad-path' }, 400)
+    const icons = (await readCustomIcons(env)).filter((i) => i.name !== name)
+    const icon = { name, grid, open, checked: checked && checked !== open ? checked : '', by: email, at: new Date().toISOString() }
+    icons.unshift(icon)
+    if (icons.length > 500) return jsonResp({ error: 'full' }, 409)
+    await env.TOOLS_DATA.put(CUSTOM_ICONS_KEY, JSON.stringify({ icons }), {
+      httpMetadata: { contentType: 'application/json' },
+    })
+    return jsonResp({ ok: true, icon })
+  }
+
+  if (request.method === 'DELETE') {
+    const name = String(url.searchParams.get('name') || '').toLowerCase()
+    const icons = await readCustomIcons(env)
+    const next = icons.filter((i) => i.name !== name)
+    if (next.length === icons.length) return jsonResp({ error: 'not-found' }, 404)
+    await env.TOOLS_DATA.put(CUSTOM_ICONS_KEY, JSON.stringify({ icons: next }), {
+      httpMetadata: { contentType: 'application/json' },
+    })
+    return jsonResp({ ok: true })
+  }
+
+  return jsonResp({ error: 'method' }, 405)
 }

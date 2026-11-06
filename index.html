@@ -37,14 +37,16 @@
   --accent: #2563EB; /* actions and links only; decorative use is off-limits */
   --mono: ui-monospace, SFMono-Regular, Menlo, monospace;
   /* tool tile colors: identity, not UI color (rebrand secondaries + ink) */
-  --tile-review: #FB6D36;
-  --tile-tracker: #85AEB2;
-  --tile-schedule: #DDA8F5;
-  --tile-time: #AFA278;
-  --tile-admin: #14161A;
-  --tile-admin-glyph: #F5F6F8;
-  --tile-scripts: #E9C46A;
-  --tile-look: #A9C7A1;
+  --tile-review: #607CFF;
+  --tile-tracker: #FF8452;
+  --tile-schedule: #4D8E64;
+  --tile-time: #B1A16E;
+  --tile-scripts: #E1A6F7;
+  --tile-look: #82A8AA;
+  --tile-admin: #121411;
+  --tile-glyph: #121411;
+  --tile-admin-glyph: #EEECE8;
+  --tile-admin-edge: transparent;
 }
 @media (prefers-color-scheme: dark) {
   :root {
@@ -56,8 +58,7 @@
     --faint: #6F7681;
     --border: #272B31;
     --border-strong: #3A3F47;
-    --tile-admin: #EDEFF3;
-    --tile-admin-glyph: #14161A;
+    --tile-admin-edge: #3A3F47;
   }
 }
 * { box-sizing: border-box; }
@@ -132,15 +133,15 @@ h1 {
 .card:last-child { border-bottom: 0; }
 .card:hover { background: var(--card-hover); }
 .tile {
-  width: 36px; height: 36px; flex: none;
+  width: 32px; height: 32px; flex: none;
   overflow: hidden;
 }
-.tile svg { width: 100%; height: 100%; display: block; }
+.tile svg { width: 100%; height: 100%; display: block; fill: var(--tile-glyph); }
 .tile-review { background: var(--tile-review); }
 .tile-tracker { background: var(--tile-tracker); }
 .tile-schedule { background: var(--tile-schedule); }
 .tile-time { background: var(--tile-time); }
-.tile-admin { background: var(--tile-admin); }
+.tile-admin { background: var(--tile-admin); box-shadow: inset 0 0 0 1px var(--tile-admin-edge); }
 .tile-admin svg { fill: var(--tile-admin-glyph); }
 .tile-scripts { background: var(--tile-scripts); }
 .tile-look { background: var(--tile-look); }
@@ -218,8 +219,8 @@ h1 {
     <nav class="list">
       <a class="card" href="/review/">
         <span class="tile tile-review">
-          <!-- pixel magnifying glass -->
-          <svg viewBox="0 0 16 16" shape-rendering="crispEdges" fill="#14161A"><path d="M5 3h3v1H5zM4 4h1v1H4zM8 4h1v1H8zM3 5h1v1H3zM9 5h1v1H9zM3 6h1v1H3zM9 6h1v1H9zM3 7h1v1H3zM9 7h1v1H9zM4 8h1v1H4zM8 8h1v1H8zM5 9h3v1H5zM9 9h2v1H9zM9 10h3v1H9zM10 11h3v1H10zM11 12h2v1H11z"/></svg>
+          <!-- magnifier (Lorena, UI_icons_V2) -->
+          <svg viewBox="0 0 16 16" shape-rendering="crispEdges"><path d="M6 4H9V5H6ZM6 5V6H5V5ZM9 5H10V6H9ZM5 6V9H4V6ZM10 6H11V9H10ZM5 9H6V10H5ZM10 9V10H9V9ZM6 10H9V11H6ZM10 10H11V11H10ZM11 11H12V12H11ZM12 12H13V13H12Z"/></svg>
         </span>
         <span class="text">
           <h2>OF Review</h2>
@@ -231,8 +232,8 @@ h1 {
 
       <a class="card" href="/project-tracker/">
         <span class="tile tile-tracker">
-          <!-- pixel overlapping squares -->
-          <svg viewBox="0 0 16 16" shape-rendering="crispEdges" fill="#14161A"><path d="M3 3h7v1H3zM3 4h7v1H3zM3 5h7v1H3zM3 6h7v1H3zM3 7h7v1H3zM11 7h3v1H11zM3 8h7v1H3zM13 8h1v1H13zM3 9h7v1H3zM13 9h1v1H13zM13 10h1v1H13zM7 11h1v1H7zM13 11h1v1H13zM7 12h1v1H7zM13 12h1v1H13zM7 13h7v1H7z"/></svg>
+          <!-- stacked frames (Lorena, UI_icons_V2) -->
+          <svg viewBox="0 0 16 16" shape-rendering="crispEdges"><path d="M4 4H9V6H10V7H9V9H7V10H6V9H4ZM5 5V8H8V5ZM10 7H11V8H12V9H11V10H10ZM12 9H13V12H12ZM7 10H10V11H9V12H8V11H7ZM9 12H12V13H9Z"/></svg>
         </span>
         <span class="text">
           <h2>Project Tracker</h2>
@@ -244,8 +245,8 @@ h1 {
 
       <a class="card" href="/schedule/">
         <span class="tile tile-schedule">
-          <!-- pixel document -->
-          <svg viewBox="0 0 16 16" shape-rendering="crispEdges" fill="#14161A"><path d="M6 3h7v1H6zM5 4h2v1H5zM12 4h1v1H12zM4 5h3v1H4zM12 5h1v1H12zM4 6h1v1H4zM12 6h1v1H12zM4 7h1v1H4zM6 7h5v1H6zM12 7h1v1H12zM4 8h1v1H4zM6 8h5v1H6zM12 8h1v1H12zM4 9h1v1H4zM12 9h1v1H12zM4 10h1v1H4zM6 10h5v1H6zM12 10h1v1H12zM4 11h1v1H4zM6 11h5v1H6zM12 11h1v1H12zM4 12h1v1H4zM12 12h1v1H12zM4 13h9v1H4z"/></svg>
+          <!-- page (Lorena, UI_icons_V2) -->
+          <svg viewBox="0 0 16 16" shape-rendering="crispEdges"><path d="M6 3H12V4H8V6H7V4H6ZM6 4V5H5V4ZM12 4H13V12H12ZM5 5V6H7V7H5V12H4V5ZM6 8H11V9H6ZM6 10H11V11H6ZM5 12H12V13H5Z"/></svg>
         </span>
         <span class="text">
           <h2>Master Schedule</h2>
@@ -257,8 +258,8 @@ h1 {
 
       <a class="card" href="/time-tracker/">
         <span class="tile tile-time">
-          <!-- pixel clock -->
-          <svg viewBox="0 0 16 16" shape-rendering="crispEdges" fill="#14161A"><path d="M5 2h5v1H5zM4 3h1v1H4zM10 3h1v1H10zM3 4h1v1H3zM7 4h1v1H7zM11 4h1v1H11zM2 5h1v1H2zM7 5h1v1H7zM12 5h1v1H12zM2 6h1v1H2zM7 6h1v1H7zM12 6h1v1H12zM2 7h1v1H2zM7 7h4v1H7zM12 7h1v1H12zM2 8h1v1H2zM12 8h1v1H12zM2 9h1v1H2zM12 9h1v1H12zM3 10h1v1H3zM11 10h1v1H11zM4 11h1v1H4zM10 11h1v1H10zM5 12h5v1H5z"/></svg>
+          <!-- clock (Lorena, UI_icons_V2) -->
+          <svg viewBox="0 0 16 16" shape-rendering="crispEdges"><path d="M7 4H10V5H7ZM7 5V6H6V5ZM10 5H11V6H10ZM6 6V7H5V6ZM11 6H12V7H11ZM5 7V10H4V7ZM8 6H9V8H10V9H8ZM12 7H13V10H12ZM5 10H6V11H5ZM12 10V11H11V10ZM6 11H7V12H6ZM11 11V12H10V11ZM7 12H10V13H7Z"/></svg>
         </span>
         <span class="text">
           <h2>Time Tracker</h2>
@@ -270,8 +271,8 @@ h1 {
 
       <a class="card" href="/scripts/">
         <span class="tile tile-scripts">
-          <!-- pixel prompt: > _ -->
-          <svg viewBox="0 0 16 16" shape-rendering="crispEdges" fill="#14161A"><path d="M3 3h2v1H3zM4 4h2v1H4zM5 5h2v1H5zM6 6h2v1H6zM7 7h2v1H7zM6 8h2v1H6zM5 9h2v1H5zM4 10h2v1H4zM3 11h2v1H3zM8 12h6v1H8zM8 13h6v1H8z"/></svg>
+          <!-- code </> (Lorena, UI_icons_V2) -->
+          <svg viewBox="0 0 16 16" shape-rendering="crispEdges"><path d="M5 5H6V6H5ZM5 6V7H4V6ZM9 5H10V7H9ZM11 5H12V6H11ZM12 6H13V7H12ZM4 7V9H3V7ZM9 7V9H8V7ZM13 7H14V9H13ZM4 9H5V10H4ZM8 9V11H7V9ZM13 9V10H12V9ZM5 10H6V11H5ZM12 10V11H11V10Z"/></svg>
         </span>
         <span class="text">
           <h2>Scripts</h2>
@@ -283,8 +284,8 @@ h1 {
 
       <a class="card" href="/look/">
         <span class="tile tile-look">
-          <!-- house palette icon -->
-          <svg viewBox="-4 -4 32 32" shape-rendering="crispEdges" fill="#14161A"><path d="M4 8H8V4H10V8H12V10H10V14H14V12H16V14H20V16H16V20H20V22H4V20H8V16H4V20H2V4H4V8ZM10 20H14V16H10V20ZM22 20H20V16H22V20ZM4 14H8V10H4V14ZM18 12H16V10H18V12ZM16 10H14V8H16V10ZM20 10H18V8H20V10ZM14 8H12V6H14V8ZM22 8H20V6H22V8ZM16 6H14V4H16V6ZM20 6H18V4H20V6ZM8 4H4V2H8V4ZM18 4H16V2H18V4Z"/></svg>
+          <!-- spray can (Lorena, UI_icons_V2) -->
+          <svg viewBox="0 0 16 16" shape-rendering="crispEdges"><path d="M11 2H12V3H11ZM11 3V4H10V3ZM10 4V5H9V4ZM6 4H8V6H9V7H5V6H6ZM10 5H11V6H10ZM11 6H12V7H11ZM5 7V13H9V12H6V9H9V7H10V14H4V7ZM7 10V11H9V10Z"/></svg>
         </span>
         <span class="text">
           <h2>Look</h2>
@@ -300,8 +301,8 @@ h1 {
            itself also self-gates to the admin team. -->
       <a class="card" id="admin-card" href="/admin/" style="display:none">
         <span class="tile tile-admin">
-          <!-- pixel padlock -->
-          <svg viewBox="0 0 16 16" shape-rendering="crispEdges" fill="#F5F6F8"><path d="M6 4h4v1H6zM6 5h1v1H6zM9 5h1v1H9zM6 6h1v1H6zM9 6h1v1H9zM5 7h6v1H5zM5 8h6v1H5zM5 9h2v1H5zM9 9h2v1H9zM5 10h2v1H5zM9 10h2v1H9zM5 11h6v1H5zM5 12h6v1H5z"/></svg>
+          <!-- padlock (Lorena, UI_icons_V2) -->
+          <svg viewBox="0 0 16 16" shape-rendering="crispEdges"><path d="M7 3H10V4H7ZM7 4V7H10V4H11V7H12V8H5V7H6V4ZM5 8V12H4V8ZM12 8H13V12H12ZM8 9H9V11H8ZM5 12H12V13H5Z"/></svg>
         </span>
         <span class="text">
           <span class="name-row">
