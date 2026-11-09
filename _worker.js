@@ -356,9 +356,19 @@ function sameSecret(given, expected) {
 const escAttr = (v) =>
   String(v).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 
-async function reviewMeta(slug) {
+// A comment (?c=) or time (?t=) link gets its own card: that comment and frame.
+function reviewAt(url) {
+  const q = new URLSearchParams()
+  const c = url.searchParams.get('c')
+  const t = url.searchParams.get('t')
+  if (c) q.set('c', c)
+  else if (t) q.set('t', t)
+  return q.toString()
+}
+
+async function reviewMeta(slug, at = '') {
   try {
-    const r = await fetch(`${OF_REVIEW_WORKER}/meta?slug=${encodeURIComponent(slug)}`, {
+    const r = await fetch(`${OF_REVIEW_WORKER}/meta?slug=${encodeURIComponent(slug)}${at ? `&${at}` : ''}`, {
       cf: { cacheTtl: 300, cacheEverything: true },
     })
     return r.ok ? await r.json() : null
@@ -369,9 +379,11 @@ async function reviewMeta(slug) {
 
 async function withReviewPreview(res, slug, url) {
   if (!(res.headers.get('content-type') || '').includes('text/html')) return res
-  const m = await reviewMeta(slug)
+  const m = await reviewMeta(slug, reviewAt(url))
   if (!m) return res
-  const page = `${url.origin}/review/v/${slug}`
+  // The worker echoes back the ?c= / ?t= it actually used (none if it didn't
+  // apply, e.g. a protected cut), so the card's URL matches what it shows.
+  const page = `${url.origin}/review/v/${slug}${m.url.includes('?') ? m.url.slice(m.url.indexOf('?')) : ''}`
   const tags = [
     ['property', 'og:site_name', 'OF Review'],
     ['property', 'og:type', 'video.other'],
