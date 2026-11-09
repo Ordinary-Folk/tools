@@ -45,7 +45,7 @@
 :where(input[type="checkbox"]:not([role="switch"])):checked {
   border-color: var(--px-check-fill, #111411);
   background-color: var(--px-check-fill, #111411);
-  background-image: var(--px-check-mark, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' shape-rendering='crispEdges'%3E%3Cpath fill='%23FFFFFF' d='M18 4H20V8H18V10H16V12H14V14H12V16H10V18H8V20H6V18H4V16H2V12H4V14H6V16H8V14H10V12H12V10H14V8H16V6H18Z'/%3E%3C/svg%3E"));
+  background-image: var(--px-check-mark, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' shape-rendering='crispEdges'%3E%3Cpath fill='%23FFFFFF' d='M18 4H20V6H22V8H20V10H18V12H16V14H14V16H12V18H10V20H8V18H6V16H4V14H2V12H4V10H6V12H8V14H10V12H12V10H14V8H16V6H18Z'/%3E%3C/svg%3E"));
 }
 :where(input[type="checkbox"]:not([role="switch"])):indeterminate {
   border-color: var(--px-check-fill, #111411);

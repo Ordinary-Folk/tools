@@ -35,7 +35,7 @@
       }
     },
     "arrow-diagonal-ne": {
-      "icon": "arrow-diagonal-ne:outline",
+      "icon": "custom/arrow-diagonal-ne.svg",
       "apps": {
         "tracker": [
           "arrow-diagonal-ne"
@@ -43,7 +43,8 @@
         "review": [
           "drawArrow"
         ]
-      }
+      },
+      "note": "Lorena's redraw (2026-11-09)"
     },
     "arrow-down": {
       "icon": "custom/arrow-down.svg",
@@ -174,7 +175,7 @@
           "check"
         ]
       },
-      "note": "Jorge's bolder check, steady 2px stroke (2026-11-06)"
+      "note": "Lorena's redraw (2026-11-09)"
     },
     "checkbox": {
       "icon": "checkbox:outline",
@@ -193,7 +194,7 @@
       }
     },
     "chevron-down": {
-      "icon": "chevron-down",
+      "icon": "custom/chevron-down.svg",
       "apps": {
         "tracker": [
           "chevron-down"
@@ -210,10 +211,11 @@
         "admin": [
           "chevron-down"
         ]
-      }
+      },
+      "note": "Lorena's redraw (2026-11-09)"
     },
     "chevron-left": {
-      "icon": "chevron-left",
+      "icon": "custom/chevron-left.svg",
       "apps": {
         "tracker": [
           "chevron-left"
@@ -227,10 +229,11 @@
         "admin": [
           "chevron-left"
         ]
-      }
+      },
+      "note": "Lorena's redraw (2026-11-09)"
     },
     "chevron-right": {
-      "icon": "chevron-right",
+      "icon": "custom/chevron-right.svg",
       "apps": {
         "tracker": [
           "chevron-right"
@@ -247,10 +250,11 @@
         "admin": [
           "chevron-right"
         ]
-      }
+      },
+      "note": "Lorena's redraw (2026-11-09)"
     },
     "chevron-up": {
-      "icon": "chevron-up",
+      "icon": "custom/chevron-up.svg",
       "apps": {
         "tracker": [
           "chevron-up"
@@ -261,7 +265,8 @@
         "admin": [
           "chevron-up"
         ]
-      }
+      },
+      "note": "Lorena's redraw (2026-11-09)"
     },
     "circle": {
       "icon": "circle:outline",
@@ -357,7 +362,7 @@
       }
     },
     "close": {
-      "icon": "close",
+      "icon": "custom/close.svg",
       "apps": {
         "tracker": [
           "close"
@@ -374,7 +379,8 @@
         "admin": [
           "close"
         ]
-      }
+      },
+      "note": "Lorena's redraw (2026-11-09)"
     },
     "columns": {
       "icon": "columns:outline",
@@ -477,12 +483,13 @@
       }
     },
     "edit": {
-      "icon": "edit:outline",
+      "icon": "custom/edit.svg",
       "apps": {
         "review": [
           "edit"
         ]
-      }
+      },
+      "note": "Lorena's redraw (2026-11-09)"
     },
     "end": {
       "icon": "logout",
@@ -493,12 +500,13 @@
       }
     },
     "eraser": {
-      "icon": "eraser:outline",
+      "icon": "custom/eraser.svg",
       "apps": {
         "tracker": [
           "eraser"
         ]
-      }
+      },
+      "note": "Jorge's eraser (2026-11-06)"
     },
     "external-link": {
       "icon": "external-link:outline",
@@ -630,23 +638,17 @@
       }
     },
     "fullscreen": {
-      "icon": "arrows-scale",
+      "icon": "custom/fullscreen.svg",
       "apps": {
         "tracker": [
-          "arrows-scale"
+          "arrows-scale",
+          "media-fullscreen"
         ],
         "review": [
           "fullscreen"
         ]
-      }
-    },
-    "fullscreen-outline": {
-      "icon": "arrows-scale:outline",
-      "apps": {
-        "tracker": [
-          "media-fullscreen"
-        ]
-      }
+      },
+      "note": "Lorena's redraw (2026-11-09) · merged with fullscreen-outline (same drawing)"
     },
     "hand": {
       "icon": "hand:outline",
@@ -687,28 +689,25 @@
       }
     },
     "home": {
-      "icon": "home:outline",
+      "icon": "custom/home.svg",
       "apps": {
         "tracker": [
           "home"
+        ],
+        "schedule": [
+          "home"
         ]
-      }
+      },
+      "note": "Lorena's redraw (2026-11-09) · merged with house (same drawing)"
     },
     "hourglass": {
-      "icon": "hourglass",
+      "icon": "custom/hourglass.svg",
       "apps": {
         "schedule": [
           "holds"
         ]
-      }
-    },
-    "house": {
-      "icon": "house",
-      "apps": {
-        "schedule": [
-          "home"
-        ]
-      }
+      },
+      "note": "Lorena's redraw (2026-11-09)"
     },
     "image": {
       "icon": "image",
@@ -780,12 +779,13 @@
       }
     },
     "loader": {
-      "icon": "loader",
+      "icon": "custom/loader.svg",
       "apps": {
         "tracker": [
           "loader"
         ]
-      }
+      },
+      "note": "Lorena's redraw (2026-11-09)"
     },
     "lock": {
       "icon": "custom/lock.svg",
@@ -924,21 +924,16 @@
       }
     },
     "palette": {
-      "icon": "palette:outline",
+      "icon": "custom/palette.svg",
       "apps": {
         "tracker": [
           "palette"
-        ]
-      }
-    },
-    "palette-solid": {
-      "icon": "palette",
-      "apps": {
+        ],
         "schedule": [
           "design"
         ]
       },
-      "note": "Solid palette for Schedule section labels (house palette is outline)"
+      "note": "Lorena's redraw (2026-11-09) · merged with palette-solid (same drawing)"
     },
     "paperclip": {
       "icon": "paperclip",
@@ -989,12 +984,13 @@
       "note": "colour dropper"
     },
     "plane": {
-      "icon": "airplane-takeoff",
+      "icon": "custom/plane.svg",
       "apps": {
         "schedule": [
           "plane"
         ]
-      }
+      },
+      "note": "Lorena's redraw (2026-11-09)"
     },
     "play": {
       "icon": "play",
