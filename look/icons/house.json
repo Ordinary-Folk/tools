@@ -18,7 +18,7 @@
       }
     },
     "appointment": {
-      "icon": "calendar-2:outline",
+      "icon": "custom/appointment.svg",
       "apps": {
         "schedule": [
           "appointment"
@@ -121,7 +121,7 @@
       "note": "Pixelarticons arrow redrawn on the whole-pixel grid (source sits on half pixels)"
     },
     "calendar": {
-      "icon": "calendar:outline",
+      "icon": "custom/calendar.svg",
       "apps": {
         "review": [
           "calendar"
@@ -509,7 +509,7 @@
       "note": "Jorge's eraser (2026-11-06)"
     },
     "external-link": {
-      "icon": "external-link:outline",
+      "icon": "custom/external-link.svg",
       "apps": {
         "tracker": [
           "external-link"
@@ -662,7 +662,7 @@
       }
     },
     "handshake": {
-      "icon": "handshake",
+      "icon": "custom/handshake.svg",
       "apps": {
         "schedule": [
           "handshake"
@@ -1043,7 +1043,7 @@
       }
     },
     "prayer": {
-      "icon": "hand",
+      "icon": "custom/prayer.svg",
       "apps": {
         "schedule": [
           "prayer"
