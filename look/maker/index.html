@@ -112,6 +112,38 @@ textarea { width: 100%; min-height: 82px; font: 12px/1.5 var(--f-mono); color: v
 .toast { position: fixed; left: 0; right: 0; margin: 0 auto; width: fit-content; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); background: var(--ink); color: var(--bg); padding: 8px 14px; border-radius: 3px; font-size: 13px; opacity: 0; transition: opacity .2s; pointer-events: none; }
 .toast.show { opacity: 1; }
 svg.mk-px { shape-rendering: crispEdges; flex: none; }
+/* In context: the drawing at real size inside copies of real app UI. Fixed app colours (each app's
+   own theme), so they read the same in light and dark Look. The icon being drawn replaces the house
+   icon of the same name; otherwise it sits in an extra slot (dashed) to try it there. */
+.scenes { display: flex; flex-direction: column; gap: 12px; }
+.cx-lab { display: flex; align-items: center; gap: 6px; font: 600 10px var(--f-body); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+.cx-lab .uses { font: 500 10px var(--f-body); letter-spacing: 0; text-transform: none; color: var(--success); }
+.cx { overflow-x: auto; }
+.cx .slot { outline: 1px dashed #1044F2; outline-offset: 1px; }
+.cx-rv { background: #0B0C0E; padding: 10px 12px; display: flex; gap: 8px; justify-content: flex-end; align-items: center; }
+.cx-rv .b { height: 28px; min-width: 28px; box-sizing: border-box; border: 1px solid #262A31; background: #0F1013; color: #C2C7D0; display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 0 8px; }
+.cx-rv .b .dim { color: #8A909B; display: inline-flex; }
+.cx-rv .int { border-color: #B08A2A; background: #2A2210; color: #FBBF24; font: 600 13px var(--f-body); }
+.cx-rv .av { width: 28px; height: 28px; box-sizing: border-box; border: 1px solid #262A31; display: inline-flex; align-items: center; justify-content: center; }
+.cx-rv .av i { width: 20px; height: 20px; border-radius: 50%; background: #EEECE8; }
+.cx-tt { background: #fff; border: 1px solid #E2E5EA; color: #111411; min-width: 360px; }
+.cx-tt .band { display: flex; justify-content: space-between; padding: 5px 10px; font: 600 11px var(--f-body); letter-spacing: .06em; background: #E6ECFD; }
+.cx-tt .band b { font: 600 11px var(--f-mono); }
+.cx-tt .band.y { background: #6F7681; color: #fff; }
+.cx-tt .r { display: flex; align-items: center; gap: 8px; padding: 6px 6px 6px 10px; border-bottom: 1px solid #ECEEF1; }
+.cx-tt .dot { width: 6px; height: 6px; border-radius: 50%; flex: none; }
+.cx-tt .who { flex: 1; min-width: 0; line-height: 1.25; }
+.cx-tt .who small { display: block; font-size: 10px; }
+.cx-tt .who span { font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
+.cx-tt .who em { font-style: normal; color: #8A909B; }
+.cx-tt .dur { font: 12px var(--f-mono); color: #5C626D; }
+.cx-tt .ib { width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; color: #5C626D; flex: none; }
+.cx-tt .ib.go { background: #E8EDFE; color: #1044F2; }
+.cx-sc { display: grid; grid-template-columns: repeat(5, 26px) 13px 13px repeat(5, 26px); width: max-content; border-top: 1px solid #E2E5EA; border-left: 1px solid #E2E5EA; background: #fff; }
+.cx-sc i { height: 20px; box-sizing: border-box; border-right: 1px solid #E2E5EA; border-bottom: 1px solid #E2E5EA; display: flex; align-items: center; justify-content: center; color: #4A4F57; font: normal 500 10px var(--f-body); position: relative; }
+.cx-sc i.we { background: #F7F8FA; }
+.cx-sc i.today { background: #E3E8FD; }
+.cx-sc i.n::after { content: ''; position: absolute; top: 0; right: 0; border-style: solid; border-width: 0 6px 6px 0; border-color: transparent #6F7681 transparent transparent; }
 @media (prefers-reduced-motion: reduce) { .toast { transition: none; } }
 </style>
 </head>
@@ -194,6 +226,9 @@ svg.mk-px { shape-rendering: crispEdges; flex: none; }
 
     <section class="panel previews" aria-label="Preview">
       <h2>In context</h2>
+      <p class="hint" id="ctxUsed" style="margin:-4px 0 0"></p>
+      <div id="ctxScenes" class="scenes"></div>
+      <div class="cx-lab">Review · comment</div>
       <div class="card">
         <div class="hd"><span class="av"></span><b>Mona</b><span class="tc">00:03:54:06</span></div>
         <div class="tx">im a bit confused conceptually about the shadow here.</div>
@@ -519,9 +554,54 @@ svg.mk-px { shape-rendering: crispEdges; flex: none; }
     const cells = (a, col, row) => [12, 24, 48].map((sz) => `<span class="d${row}">${svgEl(a, sz, col)}</span>`).join('') + [12, 24, 48].map((sz) => `<span class="l${row}">${svgEl(a, sz, row ? col : (col === co ? LIGHT_OPEN : col))}</span>`).join('');
     $('rowOpen').innerHTML = cells(state.open, $('colOpen').value, '');
     $('rowChecked').innerHTML = cells(state.checked, $('colChecked').value, ' r2');
+    renderScenes();
     $('outOpen').value = svgStr(state.open, 24);
     $('outChecked').value = svgStr(state.checked, 24);
     save();
+  }
+
+  // ---- in context: real app UI at real size ----
+  // Each scene lists the house icons it shows. If the icon being drawn has one of those names it
+  // replaces it in place; otherwise it gets one extra slot (dashed) so it can be tried there.
+  const APP_NAMES = { review: 'Review', tracker: 'Project Tracker', schedule: 'Schedule', 'time-tracker': 'Time Tracker', admin: 'Admin' };
+  function houseSvg(name, color) {
+    const h = (window.OF_ICONS || {})[name]; if (!h) return '';
+    return `<svg class="mk-px" aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="${color || 'currentColor'}" shape-rendering="crispEdges"><path d="${h.d}"${h.eo ? ' fill-rule="evenodd"' : ''}/></svg>`;
+  }
+  function renderScenes() {
+    const me = cleanName(), H = window.OF_ICONS || {}, apps = (H[me] && H[me].apps) || {};
+    const used = Object.keys(apps).map((a) => APP_NAMES[a] || a);
+    $('ctxUsed').textContent = used.length ? `${me} is used in ${used.join(', ')}.` : `${me} isn't a house icon yet, so it's tried in a spare slot (dashed).`;
+    const mine = (color) => svgEl(state.open, 12, color);
+    const scene = (key, label, names, body) => {
+      const has = names.includes(me);
+      const ico = (n, color) => (n === me ? mine(color) : houseSvg(n, color));
+      const slot = (wrap) => (has ? '' : wrap(mine()));
+      return `<div><div class="cx-lab">${label}${apps[key] ? '<span class="uses">uses it</span>' : ''}</div><div class="cx">${body(ico, slot)}</div></div>`;
+    };
+    $('ctxScenes').innerHTML = [
+      scene('review', 'Review · player header', ['download', 'chevron-down', 'external-link'], (ico, slot) =>
+        `<div class="cx-rv"><span class="b int">Int</span>${slot((s) => `<span class="b slot">${s}</span>`)}<span class="b">${ico('download')}<span class="dim">${ico('chevron-down')}</span></span><span class="b">${ico('external-link')}</span><span class="av"><i></i></span></div>`),
+      scene('time-tracker', 'Time Tracker · recent sessions', ['play', 'duplicate', 'close'], (ico, slot) => {
+        const row = (dot, proj, task, when, dur) => `<div class="r"><span class="dot" style="background:${dot}"></span><span class="who"><small style="color:${dot}">${proj}</small><span>${task} <em>· ${when}</em></span></span><span class="dur">${dur}</span><span class="ib go">${ico('play')}</span>${slot((s) => `<span class="ib slot">${s}</span>`)}<span class="ib">${ico('duplicate')}</span><span class="ib">${ico('close')}</span></div>`;
+        return `<div class="cx-tt"><div class="band">TODAY<b>6:36</b></div>${row('#C9B47A', '[205] BPSON', 'Creative Direction', '01:08 PM', '3:34')}${row('#8A93C9', '[OF] Ordinary Folk', 'Admin', '09:30 AM–12:31 PM', '3:01')}<div class="band y">YESTERDAY<b>7:06</b></div></div>`;
+      }),
+      scene('schedule', 'Schedule · grid', ['appointment', 'remote', 'nord', 'home'], (ico, slot) => {
+        // 12 columns: Mon–Fri, weekend (half width), Mon–Fri. Today = column 8.
+        const R = [
+          ['@home', '', '@appointment', '', '', '', '', '@remote', '@remote', '@appointment·n', '', '@remote'],
+          ['@remote', '@nord', '@remote', '@remote', '', '', '', '@appointment·n', '', '@remote', '@nord', '@remote'],
+          ['', '@appointment·n', '', '', '@remote', '', '', '', '@remote', '', '@appointment', ''],
+        ];
+        if (!R.flat().some((c) => c.includes('@' + me))) { R[0][4] = '@@slot'; R[2][9] = '@@slot'; R[1][11] = '@@slot'; }
+        return `<div class="cx-sc">${R.map((r) => r.map((c, i) => {
+          const note = c.endsWith('·n'), n = c.replace('·n', '').replace(/^@/, '');
+          const inner = !c ? '' : n === '@slot' ? mine() : ico(n);
+          const cls = [i === 5 || i === 6 ? 'we' : '', i === 8 ? 'today' : '', note ? 'n' : '', n === '@slot' ? 'slot' : ''].filter(Boolean).join(' ');
+          return `<i class="${cls}">${inner}</i>`;
+        }).join('')).join('')}</div>`;
+      }),
+    ].join('');
   }
 
   // ---- toolbar ----
