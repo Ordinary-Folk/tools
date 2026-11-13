@@ -343,6 +343,49 @@
       ]
     },
     {
+      "id": "flow-stroke",
+      "name": "Flow Stroke",
+      "group": "ae",
+      "app": "After Effects",
+      "platforms": "Mac only",
+      "folder": "ae-shelf",
+      "files": {
+        "versioned": "^Flow Stroke v(\\d+\\.\\d+\\.\\d+)\\.jsx$",
+        "entry": "Flow Stroke.jsx"
+      },
+      "kbar": {
+        "button": "Flow Stroke"
+      },
+      "blurb": "Builds a soft, fat stroke that rides a path, with blur, colour and taper that travel along it.",
+      "install": [
+        "Needs the Helvetica font, which every Mac has."
+      ],
+      "tile": "orange",
+      "glyph": [
+        "................",
+        "................",
+        ".....######.....",
+        "...##########...",
+        "..####....####..",
+        "..###......###..",
+        ".###........###.",
+        ".###........###.",
+        ".###........###.",
+        ".###............",
+        "..###...........",
+        "..####..........",
+        "...#####........",
+        ".....###........",
+        "................",
+        "................"
+      ],
+      "does": [
+        "Run it in a comp: you get a stroke, four control nulls on a circle and trim keyframes. Move, rotate and scale the nulls to shape the path; duplicate the top one to extend it.",
+        "Keyframe Trim Start and Trim End to send the stroke along the path. Blur, softness, three colours and taper each have their own control.",
+        "Select an existing stroke and run it again to update that stroke to the newest version, keeping its keyframes."
+      ]
+    },
+    {
       "id": "extract-comp-info",
       "name": "Extract Comp Info",
       "group": "ae",
