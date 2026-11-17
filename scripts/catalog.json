@@ -358,7 +358,7 @@
       },
       "blurb": "Builds a soft, fat stroke that rides a path, with blur, colour and taper that travel along it.",
       "install": [
-        "Needs the Helvetica font, which every Mac has."
+        "Uses the Geneva font for its dots, which every Mac has."
       ],
       "tile": "orange",
       "glyph": [
