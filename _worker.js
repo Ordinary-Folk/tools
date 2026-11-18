@@ -39,6 +39,11 @@ const APPS = {
   // its own rewrite — the Xero/Gmail OAuth callbacks and the gmail-sync cron
   // stay on that bare host. Access already gates /admin/ (no policy change).
   '/admin': { origin: 'https://of-admin.vercel.app', strip: true },
+  // OF Feedback: client comments on Google Slides review decks, as a feed
+  // (/feedback = project list, /feedback/<project> = one deck). A Cloudflare
+  // Worker that serves under the prefix itself, so strip:false. It checks the
+  // forwarded Access JWT on every request; its workers.dev URL alone is a 401.
+  '/feedback': { origin: 'https://of-feedback.ordinary-folk-hosting.workers.dev', strip: false },
 }
 
 // For reference only - these are enforced as Access *bypass* policies in the
