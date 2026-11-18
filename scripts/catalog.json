@@ -381,7 +381,7 @@
       ],
       "does": [
         "Run it in a comp: you get a stroke, four control nulls on a circle and trim keyframes. Move, rotate and scale the nulls to shape the path; duplicate the top one to extend it.",
-        "Keyframe Trim Start and Trim End to send the stroke along the path. Blur, softness, taper and any number of colours each have their own control.",
+        "Keyframe Trim Start and Trim End to send the stroke along the path. Everything else sits in one Flow Stroke effect, in folding groups: shape, colours or the brand spectrum, and blur.",
         "Select an existing stroke and run it again to update that stroke to the newest version, keeping its keyframes."
       ]
     },
