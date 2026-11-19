@@ -31,7 +31,14 @@ WATCH=$("$PY" "$BIN/of-scripts-catalog" --print-watch-paths)
   echo '<plist version="1.0"><dict>'
   echo "  <key>Label</key><string>$LABEL</string>"
   echo '  <key>ProgramArguments</key><array>'
-  echo "    <string>$PY</string><string>$BIN/of-scripts-catalog</string>"
+  # Where Dropbox lives in ~/Library/CloudStorage, macOS refuses a bare python3
+  # started by launchd and shows no prompt. Run through the OF Jobs helper app
+  # when it is installed (Apps/_shared/tools/of-jobs), so macOS can ask once.
+  if [ -x "$HOME/Applications/OF Jobs.app/Contents/MacOS/OFJobs" ]; then
+    echo "    <string>$HOME/Applications/OF Jobs.app/Contents/MacOS/OFJobs</string><string>scripts-catalog</string>"
+  else
+    echo "    <string>$PY</string><string>$BIN/of-scripts-catalog</string>"
+  fi
   echo '  </array>'
   echo '  <key>WatchPaths</key><array>'
   printf '%s\n' "$WATCH" | while IFS= read -r p; do
