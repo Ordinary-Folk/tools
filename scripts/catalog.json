@@ -358,8 +358,7 @@
       },
       "blurb": "Builds a soft, fat stroke that rides a path, with blur, colour and taper that travel along it.",
       "install": [
-        "Uses the Geneva font for its dots, which every Mac has.",
-        "\"Flow Stroke Google Gradient.jsx\", in the same folder, loads the Google brand gradient into a selected stroke's colour points. Give it its own KBar button."
+        "Uses the Geneva font for its dots, which every Mac has."
       ],
       "tile": "orange",
       "glyph": [
@@ -381,7 +380,7 @@
         "................"
       ],
       "does": [
-        "Run it in a comp: you get a stroke, four control nulls on a circle and trim keyframes. Move, rotate and scale the nulls to shape the path; duplicate the top one to extend it.",
+        "Run it in a comp: you get a stroke with the Google brand gradient, four control nulls on a circle and trim keyframes. Move, rotate and scale the nulls to shape the path; duplicate the top one to extend it.",
         "Keyframe Trim Start and Trim End to send the stroke along the path, or tick Use Path Layer Trim and it follows the Trim Paths on its path shape layer, so you can animate the light shape layer first. Send Trim To Path Layer does the reverse: the shape layer follows the stroke's trims, so you can switch the heavy stroke off while you time them. Everything else sits in one Flow Stroke effect, in folding groups: shape, fade, a gradient of up to 16 colour points, and blur.",
         "Select an existing stroke and run it again to update that stroke to the newest version, keeping its keyframes."
       ]
